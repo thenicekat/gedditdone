@@ -6,7 +6,7 @@ import { PORT } from './constants'
 import { loggerMiddleware } from './middleware/logger.middleware'
 import { errorsMiddleware } from './middleware/error.middleware'
 // Routes
-import { helloRouter } from './routes/hello'
+import { helloRouter } from './routes/hello.route'
 
 const app: Express = express()
 
