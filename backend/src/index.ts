@@ -7,6 +7,7 @@ import { loggerMiddleware } from './middleware/logger.middleware'
 import { errorsMiddleware } from './middleware/error.middleware'
 // Routes
 import { helloRouter } from './routes/hello.route'
+import { postsRouter } from './routes/posts.route'
 
 const app: Express = express()
 
@@ -18,7 +19,7 @@ app.use(errorsMiddleware)
 
 // Add routes
 app.use('/hello', helloRouter)
-
+app.use('/posts', postsRouter)
 
 // Start the server
 app.listen(PORT, () => {
