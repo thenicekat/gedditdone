@@ -9,3 +9,34 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
+model Post {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  author User @relation(fields: [authorId], references: [id])
+  authorId String @db.ObjectId
+  costInPoints Int @default(0)
+  source String
+  destination String
+  service String
+  requests Request[]
+}
+
+model User {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  name String
+  email String
+  password String
+  phoneNumber String
+  karmaPoints Int @default(0)
+  posts Post[]
+  requests Request[]
+}
+
+model Request {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  status String @default("open")
+  sender User @relation(fields: [senderId], references: [id])
+  senderId String @db.ObjectId
+  post Post @relation(fields: [postId], references: [id])
+  postId String @db.ObjectId
+}
