@@ -4,14 +4,7 @@ import { Divider } from "@nextui-org/divider";
 import { Link } from "@nextui-org/link";
 import { Avatar } from "@nextui-org/avatar";
 import { Chip } from "@nextui-org/chip";
-
-type PostProps = {
-    authorName: string;
-    source: string;
-    destination: string;
-    service: string;
-    costInPoints: number;
-}
+import { Post } from "@/types";
 
 export default function Post({
     authorName,
@@ -19,7 +12,7 @@ export default function Post({
     destination,
     service,
     costInPoints
-}: PostProps) {
+}: Post) {
     return (
         <Card className="min-w-md max-w-[400px] m-3">
             <CardHeader className="flex gap-3">
