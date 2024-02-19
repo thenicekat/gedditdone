@@ -1,8 +1,46 @@
-import { Link } from "@nextui-org/link";
-import { button as buttonStyles } from "@nextui-org/theme";
 import { title } from "@/components/primitives";
+import Post from "@/components/Post";
 
 export default function Home() {
+	const posts = [
+		{
+			authorName: "Divyateja",
+			source: "Mess 1",
+			destination: "V335",
+			service: "Pick up: Food",
+			costInPoints: 2
+		},
+		{
+			authorName: "Manan",
+			source: "CP",
+			destination: "V334",
+			service: "Pick up: Laundry",
+			costInPoints: 5
+		},
+		{
+			authorName: "Uday",
+			source: "New York",
+			destination: "Los Angeles",
+			service: "I need a ride from New York to Los Angeles.",
+			costInPoints: 2
+		},
+		{
+			authorName: "Prachi",
+			source: "Los Angeles",
+			destination: "New York",
+			service: "I need a ride from Los Angeles to New York.",
+			costInPoints: 2
+		}
+		,
+		{
+			authorName: "Adarsh",
+			source: "Los Angeles",
+			destination: "New York",
+			service: "I need a ride from Los Angeles to New York.",
+			costInPoints: 2
+		}
+	];
+
 	return (
 		<section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
 			<div className="inline-block max-w-lg text-center justify-center">
@@ -12,6 +50,22 @@ export default function Home() {
 				})} >
 					Get things done.
 				</h1>
+			</div>
+
+			<div
+				className="grid md:grid-cols-3 gap-4 m-4">
+				{
+					posts.map((post, index) => (
+						<Post
+							key={index}
+							authorName={post.authorName}
+							source={post.source}
+							destination={post.destination}
+							service={post.service}
+							costInPoints={post.costInPoints}
+						/>
+					))
+				}
 			</div>
 		</section>
 	);
