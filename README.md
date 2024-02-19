@@ -14,3 +14,10 @@ This project makes it possible to connect with students who are in the particula
 - Students will earn Karma points upon fulfilling the requests.
 - Students can redeem Karma points to prioritize their request on the portal and they stay higher on the post-board for the particular day.
 - Administrators will be able to see reports against other students and on the basis of the report they can penalize the student.
+
+## CONTRIBUTING
+- Clone the repository using `git clone`
+- You don't have to fork it
+- Create a new branch for every feature you are working on and name it with the feature: `git checkout -b user-profile`
+- Push code to that branch and create a Pull Request
+- Ensure you have not pushed any build files and runtime files
