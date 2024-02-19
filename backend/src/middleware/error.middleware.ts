@@ -8,7 +8,7 @@ export const errorsMiddleware = (error: CustomException, req: Request, res: Resp
     const status = error.status || HttpCodes.INTERNAL_SERVER_ERROR;
     const message = error.message || "Internal Server Error";
     res.status(status).json({
-        error: true,
+        err: true,
         status,
         message,
         data: {}

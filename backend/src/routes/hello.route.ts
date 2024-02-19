@@ -7,7 +7,7 @@ export const helloRouter = Router();
 
 helloRouter.get("/", (_, res) => {
     const response: CustomResponse = {
-        error: false,
+        err: false,
         message: helloService(),
         data: null
     }

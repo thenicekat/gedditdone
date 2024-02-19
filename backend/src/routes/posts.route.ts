@@ -10,7 +10,7 @@ postsRouter.get("/all", async (_, res) => {
 
     if (allPosts.error) {
         const response: CustomResponse = {
-            error: true,
+            err: true,
             message: "Error retrieving posts",
             data: null
         }
@@ -19,7 +19,7 @@ postsRouter.get("/all", async (_, res) => {
     }
 
     const response: CustomResponse = {
-        error: false,
+        err: false,
         message: "All posts retrieved successfully",
         data: allPosts.data
     }
