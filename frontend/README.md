@@ -1,19 +1,35 @@
-# Next.js & NextUI Template
-
-This is a template for creating applications using Next.js 13 (app directory) and NextUI (v2).
+# Geddit - Frontend
 
 ## Technologies Used
 
-- [Next.js 13](https://nextjs.org/docs/getting-started)
-- [NextUI v2](https://nextui.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Tailwind Variants](https://tailwind-variants.org)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [next-themes](https://github.com/pacocoursey/next-themes)
+-   [Next.js 13](https://nextjs.org/docs/getting-started)
+-   [NextUI v2](https://nextui.org/)
+-   [Tailwind CSS](https://tailwindcss.com/)
+-   [Tailwind Variants](https://tailwind-variants.org)
+-   [TypeScript](https://www.typescriptlang.org/)
+-   [Framer Motion](https://www.framer.com/motion/)
+-   [next-themes](https://github.com/pacocoursey/next-themes)
+
+## Template Layout
+
+```
+export default function AboutLayout({
+	children,
+}: {
+	children: React.ReactNode;
+}) {
+	return (
+		<section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+			<div className="inline-block max-w-lg text-center justify-center">
+				{children}
+			</div>
+		</section>
+	);
+}
+
+```
 
 ## How to Use
-
 
 ### Use the template with create-next-app
 
