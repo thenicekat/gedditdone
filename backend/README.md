@@ -7,6 +7,27 @@
 -   Run production environment using `yarn start`
 -   Run tests using `yarn test`
 
+## Response Formats
+
+-   Response return format
+
+```
+return {
+    error: false,
+    message: helloService(),
+    data: null,
+}
+```
+
+-   Service return format
+
+```
+return {
+    error: false,
+    data: null,
+}
+```
+
 ## Sample
 
 1. Service
@@ -22,7 +43,7 @@ export const helloService = () => {
 ```js
 helloRouter.get("/", (_, res) => {
     const response: CustomResponse = {
-        err: false,
+        error: false,
         message: helloService(),
         data: null,
     };

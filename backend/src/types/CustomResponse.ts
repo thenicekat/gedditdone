@@ -1,5 +1,5 @@
 export type CustomResponse = {
-    err: boolean;
+    error: boolean;
     message: string;
     data: any;
 }
