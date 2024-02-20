@@ -1,10 +1,15 @@
 import { Post, PrismaClient } from '@prisma/client'
+import { CustomReturn } from '../types/CustomReturn'
 
 const prisma = new PrismaClient()
 
-export const getAllPosts = async () => {
+export const getAllPosts = async (): Promise<CustomReturn<Post[]>> => {
     try {
-        let allPosts: Post[] = await prisma.post.findMany()
+        let allPosts: Post[] = await prisma.post.findMany({
+            include: {
+                author: true
+            }
+        })
         return {
             error: false,
             data: allPosts
@@ -13,17 +18,20 @@ export const getAllPosts = async () => {
     catch (error) {
         return {
             error: true,
-            data: error
+            data: null
         }
     }
 }
 
-export const getMyPosts = async (userId: string) => {
+
+export const getMyPosts = async (authorEmail: string): Promise<CustomReturn<Post[]>> => {
     try {
         let myPosts: Post[] = await prisma.post.findMany({
             where: {
-                authorId: userId
-            }
+                author: {
+                    email: authorEmail
+                }
+            },
         })
         return {
             error: false,
@@ -32,28 +40,33 @@ export const getMyPosts = async (userId: string) => {
     } catch (error) {
         return {
             error: true,
-            data: error
+            data: []
         }
     }
 }
 
 export const createPost = async (data: {
+    authorEmail: string,
     source: string,
     destination: string
-    authorId: string,
     costInPoints: number,
     service: string
-}) => {
+}): Promise<CustomReturn<Post>> => {
     try {
         let createPost = await prisma.post.create({
             data: {
                 source: data.source,
                 destination: data.destination,
-                authorId: data.authorId,
                 costInPoints: data.costInPoints,
-                service: data.service
-            }
-        });
+                service: data.service,
+                author: {
+                    connect: {
+                        email: data.authorEmail
+                    }
+                }
+            },
+
+        })
         return {
             error: false,
             data: createPost
@@ -61,7 +74,7 @@ export const createPost = async (data: {
     } catch (error) {
         return {
             error: true,
-            data: error
+            data: null
         }
     }
 }
