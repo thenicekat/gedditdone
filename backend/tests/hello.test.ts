@@ -1,6 +1,8 @@
 import { helloService } from "../src/service/hello.service";
-import { expect, test } from '@jest/globals';
+import { expect, describe } from '@jest/globals';
 
-test("check hello service", () => {
-    expect(helloService()).toBe("Hello World!");
+describe("check hello service", () => {
+    it('should return hello world', () => {
+        expect(helloService()).toBe("Hello World!");
+    })
 });

@@ -45,27 +45,48 @@ export const getMyPosts = async (authorEmail: string): Promise<CustomReturn<Post
     }
 }
 
-export const createPost = async (data: {
+export const createPost = async (post: {
     authorEmail: string,
     source: string,
     destination: string
     costInPoints: number,
     service: string
 }): Promise<CustomReturn<Post>> => {
+    if (!post.authorEmail) return {
+        error: true,
+        data: "Author email is required."
+    }
+
     try {
+        let user = await prisma.user.findUnique({
+            where: {
+                email: post.authorEmail
+            }
+        });
+
+        if (!user) return {
+            error: true,
+            data: "User does not exist."
+        }
+
+        if (user?.karmaPoints < post.costInPoints)
+            return {
+                error: true,
+                data: "Karma points not enough to create a post."
+            }
+
         let createPost = await prisma.post.create({
             data: {
-                source: data.source,
-                destination: data.destination,
-                costInPoints: data.costInPoints,
-                service: data.service,
+                source: post.source,
+                destination: post.destination,
+                costInPoints: post.costInPoints,
+                service: post.service,
                 author: {
                     connect: {
-                        email: data.authorEmail
+                        email: post.authorEmail
                     }
                 }
             },
-
         })
         return {
             error: false,

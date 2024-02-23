@@ -25,7 +25,6 @@ model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
   email String @unique()
-  password String
   phoneNumber String
   karmaPoints Int @default(0)
   posts Post[]

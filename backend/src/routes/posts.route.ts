@@ -59,7 +59,7 @@ postsRouter.post("/create", async (req, res) => {
     if (crePost.error) {
         const response: CustomResponse = {
             error: true,
-            message: "Error creating post",
+            message: crePost.data as string,
             data: null
         }
         return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);

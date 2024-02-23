@@ -1,4 +1,4 @@
 export type CustomReturn<T> = {
     error: boolean,
-    data: T | null
+    data: T | null | string
 }

@@ -2,8 +2,6 @@
 import 'dotenv/config'
 import express, { Express } from 'express'
 import { PORT, SESSIONKEY } from './constants'
-// Types
-import './types/SessionData'
 // Middleware
 import { loggerMiddleware } from './middleware/logger.middleware'
 import { errorsMiddleware } from './middleware/error.middleware'
