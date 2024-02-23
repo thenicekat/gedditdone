@@ -1,7 +1,7 @@
-import { Post, PrismaClient } from '@prisma/client'
+import { Post } from '@prisma/client'
 import { CustomReturn } from '../types/CustomReturn'
+import prisma from '../db'
 
-const prisma = new PrismaClient()
 
 export const getAllPosts = async (): Promise<CustomReturn<Post[]>> => {
     try {
