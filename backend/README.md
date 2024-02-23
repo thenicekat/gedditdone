@@ -10,6 +10,7 @@
 ## Resources
 
 -   https://www.prisma.io/docs/orm/prisma-client/testing/unit-testing
+-   https://akoskm.com/how-to-use-express-session-with-custom-sessiondata-typescript
 
 ## Response Formats
 
