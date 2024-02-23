@@ -7,6 +7,10 @@
 -   Run production environment using `yarn start`
 -   Run tests using `yarn test`
 
+## Resources
+
+-   https://www.prisma.io/docs/orm/prisma-client/testing/unit-testing
+
 ## Response Formats
 
 -   Response return format

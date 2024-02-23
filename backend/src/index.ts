@@ -2,6 +2,8 @@
 import 'dotenv/config'
 import express, { Express } from 'express'
 import { PORT, SESSIONKEY } from './constants'
+// Types
+import './types/SessionData'
 // Middleware
 import { loggerMiddleware } from './middleware/logger.middleware'
 import { errorsMiddleware } from './middleware/error.middleware'
@@ -17,6 +19,13 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(loggerMiddleware)
 app.use(errorsMiddleware)
+
+// Add session storage
+declare module "express-session" {
+    interface SessionData {
+        email: string
+    }
+}
 app.use(session({
     secret: SESSIONKEY,
     resave: false,
