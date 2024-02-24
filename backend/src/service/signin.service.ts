@@ -5,20 +5,17 @@ import { User } from '@prisma/client'
 import config from "../../config/default"
 import prisma from '../db'
 import { CustomReturn } from '../types/CustomReturn'
+import { GoogleTokensResult, GoogleUserResult } from '../types/GoogleOauth'
 
 export async function googleOAuthHandler(req: Request): Promise<CustomReturn<User>> {
     const code = req.query.code as string;
 
     try {
         const { id_token, access_token } = await getGoogleOAuthTokens({ code });
-        console.log({ id_token, access_token });
 
         const googleUser = await getGoogleUser({ id_token, access_token });
 
-        console.log({ googleUser });
-
         const userEmail = googleUser.email;
-
         req.session.email = userEmail;
 
         try {
@@ -37,33 +34,12 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
                 data: null
             }
         }
-
-        // req.session.email = googleUser.verified_email;
-
-        // if (!googleUser.verified_email) {
-        // return res.json().toString();
-        // }
-
-        // return new Promise<string>((resolve) => {
-        //     setTimeout(() => {
-        //         resolve("Async string");
-        //     }, 1000); // Simulating a delay of 1 second
-        // });
-
     } catch (e) {
         return {
             error: true,
             data: null
         }
     }
-}
-
-interface GoogleTokensResult {
-    access_token: string;
-    expires_in: Number;
-    refresh_token: string;
-    scope: string;
-    id_token: string;
 }
 
 async function getGoogleOAuthTokens({
@@ -99,17 +75,6 @@ async function getGoogleOAuthTokens({
     }
 }
 
-interface GoogleUserResult {
-    id: string;
-    email: string;
-    verified_email: boolean;
-    name: string;
-    given_name: string;
-    family_name: string;
-    picture: string;
-    locale: string;
-}
-
 async function getGoogleUser({
     id_token,
     access_token
@@ -128,7 +93,6 @@ async function getGoogleUser({
         );
         return res.data;
     } catch (error: any) {
-        // log.error(error, "Error fetching Google user");
         throw new Error(error.message);
     }
 }
