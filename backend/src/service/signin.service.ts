@@ -1,8 +1,11 @@
 import { Request } from 'express'
 import axios from "axios"
 import qs from "qs"
+import { User } from '@prisma/client'
 import config from "../../config/default"
-export async function googleOAuthHandler (req: Request): Promise<void> {
+import prisma from '../db'
+import { CustomReturn } from '../types/CustomReturn'
+export async function googleOAuthHandler (req: Request): Promise<CustomReturn<User>> {
     const code = req.query.code as string;
 
     try{
@@ -12,6 +15,27 @@ export async function googleOAuthHandler (req: Request): Promise<void> {
         const googleUser = await getGoogleUser({id_token, access_token});
 
         console.log({googleUser});
+
+        const userEmail = googleUser.email;
+
+        req.session.email = userEmail;
+
+        try{
+            let appUser = await prisma.user.findUnique({
+                where:{
+                    email: userEmail
+                },
+            });
+            return {
+                error: false,
+                data: appUser
+            }
+        }catch(error){
+            return {
+                error: true,
+                data: null
+            }
+        }
 
         // req.session.email = googleUser.verified_email;
 
@@ -26,7 +50,10 @@ export async function googleOAuthHandler (req: Request): Promise<void> {
         // });
       
     }catch(e){
-        console.error(e);
+        return{
+            error: true,
+            data: null
+        }
     }
 }
 
@@ -103,4 +130,29 @@ try {
     // log.error(error, "Error fetching Google user");
     throw new Error(error.message);
 }
+}
+
+export const newUser = async( user: {
+    name: string,
+    email: string,
+    phoneNumber: string,
+}): Promise<CustomReturn<User>> => {
+    try{
+        let newUser = await prisma.user.create({
+            data: {
+                name: user.name,
+                email: user.email,
+                phoneNumber: user.phoneNumber,
+            },
+        })
+        return {
+            error: false,
+            data: newUser
+        };
+    }catch(error){
+        return {
+            error: true,
+            data: null
+        }
+    }
 }
