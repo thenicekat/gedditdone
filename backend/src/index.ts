@@ -9,6 +9,7 @@ import { errorsMiddleware } from './middleware/error.middleware'
 import { helloRouter } from './routes/hello.route'
 import { postsRouter } from './routes/posts.route'
 import session from 'express-session'
+import { googleOAuthHandler } from './controllers/googleOAuthHandler.controller'
 
 const app: Express = express()
 
@@ -37,6 +38,8 @@ app.use(session({
 // Add routes
 app.use('/hello', helloRouter)
 app.use('/posts', postsRouter)
+app.get("/api/sessions/oauth/google", googleOAuthHandler);
+
 
 // Start the server
 app.listen(PORT, () => {
