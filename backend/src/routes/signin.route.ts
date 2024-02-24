@@ -5,24 +5,23 @@ import { googleOAuthHandler, newUser } from "../service/signin.service";
 
 export const signinRouter = Router();
 
-signinRouter.get("/", async(req, res)=>{
+signinRouter.get("/", async (req, res) => {
     const appUser = await googleOAuthHandler(req);
 
-    if(appUser.error){
+    if (appUser.error) {
         res.redirect('api/sessions/oauth/google/signup');
     }
 
     res.redirect('/');
-
 });
 
-signinRouter.post("/signup", async(req, res)=>{
+signinRouter.post("/signup", async (req, res) => {
     const data = req.body;
     const userEmail = req.session.email;
 
     data["email"] = userEmail;
     const createUser = await newUser(data);
-    
+
     if (createUser.error) {
         const response: CustomResponse = {
             error: true,
