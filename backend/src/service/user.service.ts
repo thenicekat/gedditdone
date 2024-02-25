@@ -1,6 +1,7 @@
 import { User } from '@prisma/client'
 import prisma from '../db'
 import { CustomReturn } from '../types/CustomReturn'
+
 export const newUser = async (user: {
     name: string,
     email: string,

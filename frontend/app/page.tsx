@@ -1,7 +1,8 @@
 import { title } from "@/components/primitives";
 import Post from "@/components/Post";
-import {Button, ButtonGroup} from "@nextui-org/react";
 import getGoogleOAuthUrl from "@/utils/getGoogleOAuthUrl";
+import { Button } from "@nextui-org/button";
+
 export default function Home() {
 	const posts = [
 		{
@@ -54,9 +55,9 @@ export default function Home() {
 			</div>
 
 			<div className="flex flex-wrap gap-4 justify-center items-center">
-			<Button color="primary" variant="bordered" radius="sm" size ="lg">
-			<a href = {getGoogleOAuthUrl()}> Login with Google </a>
-			</Button>
+				<Button color="primary" variant="bordered" radius="sm" size="lg">
+					<a href={getGoogleOAuthUrl()}> Login with Google </a>
+				</Button>
 			</div>
 			<div
 				className="grid md:grid-cols-3 gap-4 m-4">
