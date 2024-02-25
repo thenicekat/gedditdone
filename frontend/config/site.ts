@@ -2,6 +2,7 @@ export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
 	name: "Geddit",
+	server_url: "http://localhost:5000",
 	description: "Get things done.",
 	navItems: [
 		{
