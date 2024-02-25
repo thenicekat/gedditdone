@@ -7,11 +7,11 @@ export const userRouter = Router();
 
 userRouter.post("/signup", async (req, res) => {
     const data = req.body;
-    console.log(req);
+    console.log({req});
     const userEmail = req.session.email as string;
     console.log(userEmail);
     data["email"] = userEmail;
-    console.log(data);
+    console.log({data});
     const createUser = await newUser(data);
 
     if (createUser.error) {
