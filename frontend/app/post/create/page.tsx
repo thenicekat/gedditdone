@@ -34,7 +34,7 @@ export default function CreatePost() {
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-				action="/api/posts/create"
+				action="http://localhost:5000/posts/create"
 				encType={'application/json'}
 				onSuccess={async ({ response }) => {
 					setError(null)

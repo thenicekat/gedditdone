@@ -16,11 +16,10 @@ export default function CreatePost() {
 	return (
 		<div>
 			<h1 className={title()}>Sign up to Geddit</h1>
-			{/* <p className="text-green-600 text-center text-lg">{message}</p> */}
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-				action="/api/posts/create"
+				action="http://localhost:5000/user/signup"
 				encType={'application/json'}
 				onSuccess={async ({ response }) => {
 					setError(null)
