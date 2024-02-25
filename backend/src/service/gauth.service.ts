@@ -2,7 +2,7 @@ import { Request } from 'express'
 import axios from "axios"
 import qs from "qs"
 import { User } from '@prisma/client'
-import { google_client_id, google_client_secret, google_redirect_uri} from '../constants'
+import { google_client_id, google_client_secret, google_redirect_uri } from '../constants'
 import prisma from '../db'
 import { CustomReturn } from '../types/CustomReturn'
 import { GoogleTokensResult, GoogleUserResult } from '../types/GoogleOauth'
@@ -14,8 +14,8 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
         const { id_token, access_token } = await getGoogleOAuthTokens({ code });
 
         const googleUser = await getGoogleUser({ id_token, access_token });
-        console.log({googleUser});
         const userEmail = googleUser.email;
+
         req.session.email = userEmail;
 
         try {
@@ -24,11 +24,18 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
                     email: userEmail
                 },
             });
-            console.log({appUser});
-            return {
-                error: false,
-                data: appUser
+
+            if (!appUser) {
+                return {
+                    error: true,
+                    data: appUser
+                }
             }
+            else
+                return {
+                    error: false,
+                    data: appUser
+                }
         } catch (error) {
             return {
                 error: true,
