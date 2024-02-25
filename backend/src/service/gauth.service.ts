@@ -17,6 +17,7 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
         const userEmail = googleUser.email;
 
         req.session.email = userEmail;
+        console.log(req.session.email)
 
         try {
             let appUser = await prisma.user.findUnique({

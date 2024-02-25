@@ -7,7 +7,6 @@ export const userRouter = Router();
 
 userRouter.post("/signup", async (req, res) => {
     const data = req.body;
-    console.log({req});
     const userEmail = req.session.email as string;
     console.log(userEmail);
     data["email"] = userEmail;

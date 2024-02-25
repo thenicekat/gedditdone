@@ -12,7 +12,7 @@ import { gauthRouter } from './routes/gauth.route'
 import { userRouter } from './routes/user.route'
 import session from 'express-session'
 
-
+const cors = require('cors');
 const app: Express = express()
 
 // Add middleware
@@ -20,6 +20,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(loggerMiddleware)
 app.use(errorsMiddleware)
+app.use(cors())
 
 // Add session storage
 declare module "express-session" {
