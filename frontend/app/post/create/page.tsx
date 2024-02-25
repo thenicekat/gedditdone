@@ -5,6 +5,7 @@ import { Input } from "@nextui-org/input";
 import { Post } from "@/types";
 import { useState } from "react";
 import { Button } from "@nextui-org/button";
+import { siteConfig } from "@/config/site";
 
 
 export default function CreatePost() {
@@ -34,7 +35,7 @@ export default function CreatePost() {
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-				action="/api/posts/create"
+				action={siteConfig.server_url + "/api/posts/create"}
 				encType={'application/json'}
 				onSuccess={async ({ response }) => {
 					setError(null)
