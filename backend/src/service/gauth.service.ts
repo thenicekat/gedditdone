@@ -2,7 +2,7 @@ import { Request } from 'express'
 import axios from "axios"
 import qs from "qs"
 import { User } from '@prisma/client'
-import config from "../../config/default"
+import { google_client_id, google_client_secret, google_redirect_uri} from '../constants'
 import prisma from '../db'
 import { CustomReturn } from '../types/CustomReturn'
 import { GoogleTokensResult, GoogleUserResult } from '../types/GoogleOauth'
@@ -52,9 +52,9 @@ async function getGoogleOAuthTokens({
 
     const values = {
         code,
-        client_id: config.google_client_id,
-        client_secret: config.google_client_secret,
-        redirect_uri: config.google_redirect_uri,
+        client_id: google_client_id,
+        client_secret: google_client_secret,
+        redirect_uri: google_redirect_uri,
         grant_type: "authorization_code",
     };
 
