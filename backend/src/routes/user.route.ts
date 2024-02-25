@@ -1,21 +1,11 @@
 import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
-import { googleOAuthHandler, newUser } from "../service/signin.service";
+import { newUser } from "../service/user.service";
 
-export const signinRouter = Router();
+export const userRouter = Router();
 
-signinRouter.get("/", async (req, res) => {
-    const appUser = await googleOAuthHandler(req);
-
-    if (appUser.error) {
-        res.redirect('api/sessions/oauth/google/signup');
-    }
-
-    res.redirect('/');
-});
-
-signinRouter.post("/signup", async (req, res) => {
+userRouter.post("/user/signup", async (req, res) => {
     const data = req.body;
     const userEmail = req.session.email;
 
@@ -38,6 +28,4 @@ signinRouter.post("/signup", async (req, res) => {
     res.redirect('/');
     return res.status(HttpCodes.CREATED).json(response);
 });
-
-
 

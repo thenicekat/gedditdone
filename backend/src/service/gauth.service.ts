@@ -70,7 +70,6 @@ async function getGoogleOAuthTokens({
         return res.data;
     } catch (error: any) {
         console.error(error.response.data.error);
-        //   .error(error, "Failed to fetch Google Oauth Tokens");
         throw new Error(error.message);
     }
 }
@@ -94,30 +93,5 @@ async function getGoogleUser({
         return res.data;
     } catch (error: any) {
         throw new Error(error.message);
-    }
-}
-
-export const newUser = async (user: {
-    name: string,
-    email: string,
-    phoneNumber: string,
-}): Promise<CustomReturn<User>> => {
-    try {
-        let newUser = await prisma.user.create({
-            data: {
-                name: user.name,
-                email: user.email,
-                phoneNumber: user.phoneNumber,
-            },
-        })
-        return {
-            error: false,
-            data: newUser
-        };
-    } catch (error) {
-        return {
-            error: true,
-            data: null
-        }
     }
 }
