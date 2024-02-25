@@ -16,9 +16,11 @@
         "@prisma/client": "^5.9.1",
         "@types/express-session": "^1.17.10",
         "axios": "^1.6.7",
+        "connect-redis": "^7.1.1",
         "dotenv": "^16.4.1",
         "express": "^4.18.2",
         "express-session": "^1.18.0",
+        "redis": "^4.6.13",
         "winston": "^3.11.0"
     },
     "devDependencies": {
