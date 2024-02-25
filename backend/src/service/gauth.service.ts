@@ -14,7 +14,7 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
         const { id_token, access_token } = await getGoogleOAuthTokens({ code });
 
         const googleUser = await getGoogleUser({ id_token, access_token });
-
+        console.log({googleUser});
         const userEmail = googleUser.email;
         req.session.email = userEmail;
 
@@ -24,6 +24,7 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
                     email: userEmail
                 },
             });
+            console.log({appUser});
             return {
                 error: false,
                 data: appUser
