@@ -25,7 +25,6 @@ export default function CreatePost() {
 				name: data.name,
 				phoneNumber: data.phoneNumber
 			}, {
-				withCredentials: true,
 				headers: {
 					'Content-Type': 'application/json'
 				}
@@ -52,7 +51,8 @@ export default function CreatePost() {
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-				onSubmit={({ data }) => {
+				onSubmit={({ data }: any) => {
+					console.log(data)
 					onSubmit(data)
 				}}
 				onError={() => {
