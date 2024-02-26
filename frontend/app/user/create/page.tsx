@@ -20,7 +20,7 @@ export default function CreateUser() {
 	const [error, setError] = useState<string | null>(null)
 	const onSubmit = async (data: FormData) => {
 		try {
-			const res = await axios.post(siteConfig.server_url + "/user/signup", {
+			const res = await axios.post(siteConfig.server_url + "/user/create", {
 				name: data.name,
 				phoneNumber: data.phoneNumber
 			}, {
