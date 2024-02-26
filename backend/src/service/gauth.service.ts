@@ -52,7 +52,7 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
     }
 }
 
-async function getGoogleOAuthTokens({
+export async function getGoogleOAuthTokens({
     code,
 }: {
     code: string;
@@ -84,7 +84,7 @@ async function getGoogleOAuthTokens({
     }
 }
 
-async function getGoogleUser({
+export async function getGoogleUser({
     id_token,
     access_token
 }: {

@@ -7,15 +7,21 @@ export const newUser = async (user: {
     email: string,
     phoneNumber: string,
 }): Promise<CustomReturn<User>> => {
-    if(!user.name) return {
+    if (!user.name) return {
         error: true,
         data: "User name is required to create profile."
     }
 
-    if(!user.phoneNumber) return {
+    if (!user.phoneNumber) return {
         error: true,
         data: "Phone Number is required to create profile."
     }
+
+    if (!user.email) return {
+        error: true,
+        data: "Email is required to create profile."
+    }
+
     try {
         let newUser = await prisma.user.create({
             data: {

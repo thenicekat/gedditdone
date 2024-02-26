@@ -21,6 +21,23 @@ describe("Create a new user", () => {
         });
     });
 
+    it("should return an error if email is not given", () => {
+        const user = {
+            id: "1",
+            name: "name",
+            email: "",
+            phoneNumber: "phoneNumber",
+            karmaPoints: 0
+        }
+
+        prismaMock.user.create.mockResolvedValue(user);
+
+        expect(newUser(user)).resolves.toEqual({
+            error: true,
+            data: "Email is required to create profile."
+        });
+    })
+
     it("should return an error if name is not given", () => {
         const user = {
             id: "1",
