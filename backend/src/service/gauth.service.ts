@@ -6,6 +6,7 @@ import { google_client_id, google_client_secret, google_redirect_uri } from '../
 import prisma from '../db'
 import { CustomReturn } from '../types/CustomReturn'
 import { GoogleTokensResult, GoogleUserResult } from '../types/GoogleOauth'
+import { logger } from '../utils/logger'
 
 export async function googleOAuthHandler(req: Request): Promise<CustomReturn<User>> {
     const code = req.query.code as string;
@@ -16,8 +17,8 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
         const googleUser = await getGoogleUser({ id_token, access_token });
         const userEmail = googleUser.email;
 
-        sessionStorage.setItem("email", userEmail);
-        console.log(req.session.email)
+        req.session.email = userEmail;
+        req.session.save();
 
         try {
             let appUser = await prisma.user.findUnique({
@@ -78,7 +79,7 @@ async function getGoogleOAuthTokens({
         );
         return res.data;
     } catch (error: any) {
-        console.error(error.response.data.error);
+        logger.error(error.response.data.error);
         throw new Error(error.message);
     }
 }

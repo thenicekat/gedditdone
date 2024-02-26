@@ -1,36 +1,60 @@
 "use client"
 import { title } from "@/components/primitives";
-import { Form, useForm } from "react-hook-form";
+import { Form, FormSubmitHandler, SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "@nextui-org/input";
 import { User } from "@/types";
 import { useState, useEffect } from "react";
 import { Button } from "@nextui-org/button";
+import { siteConfig } from "@/config/site";
+import axios from "axios";
 
+type FormData = {
+	name: string
+	phoneNumber: string
+}
 
 export default function CreatePost() {
-	const { register, formState: { errors }, control,setValue } = useForm<User>()
+	const { register, handleSubmit, formState: { errors }, control } = useForm<FormData>()
 
 	const [message, setMessage] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
-	useEffect(() => {
-        // Set the session email value in the form when the component mounts
-        const sessionEmail = sessionStorage.getItem("email"); // Assuming the session email is stored in sessionStorage
-        setValue("email", sessionEmail);
-    }, [setValue]);
+
+	const onSubmit = async (data: FormData) => {
+		try {
+			const res = await axios.post(siteConfig.server_url + "/user/signup", {
+				name: data.name,
+				phoneNumber: data.phoneNumber
+			}, {
+				withCredentials: true,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (res.status == 201) {
+				setError(null)
+				setMessage("User created successfully.")
+				console.log(res.data);
+			} else {
+				console.log(res.data)
+				setError(res.data.error || "There was an error creating your profile.")
+			}
+		}
+		catch (err) {
+			console.error(err)
+			setError("There was an error creating your profile.")
+		}
+	}
 
 	return (
 		<div>
-			<h1 className={title()}>Sign up to Geddit</h1>
-
+			<h1 className={title()}>Sign up</h1>
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-				action="http://localhost:5000/user/signup"
-				encType={'application/json'}
-				onSuccess={async ({ response }) => {
-					setError(null)
-					const res = await response.json()
-					setMessage(res.data.message || "Profile created successfully.")
+				onSubmit={({ data }: any) => {
+					console.log(data)
+					onSubmit(data)
 				}}
 				onError={() => {
 					setMessage(null)
