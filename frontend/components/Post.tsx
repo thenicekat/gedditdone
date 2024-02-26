@@ -6,7 +6,7 @@ import { Avatar } from "@nextui-org/avatar";
 import { Chip } from "@nextui-org/chip";
 import { Post } from "@/types";
 
-export default function Post({
+export default function PostComponent({
     authorName,
     source,
     destination,
