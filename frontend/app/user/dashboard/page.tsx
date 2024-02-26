@@ -1,15 +1,65 @@
 "use client"
+import { useEffect } from "react";
 import { title } from "@/components/primitives";
 import { Form, useForm } from "react-hook-form";
 import { Input } from "@nextui-org/input";
 import { useState } from "react";
 import { Button } from "@nextui-org/button";
+import axios from "axios";
+
+type FormData = {
+    name: string;
+    email: string;
+    phone: string;
+  };
+  
+  type UserProfile = {
+    name: string;
+    email: string;
+    phone: string;
+  };
 
 export default function UserProfile() {
-  const { register, formState: { errors }, control } = useForm();
+  const { register, handleSubmit, formState: { errors }, control, setValue } = useForm();
 
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  // Function to fetch user data
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.get("/api/user/get-profile"); 
+      const userData = response.data; 
+
+      // Set values for the form fields
+      setValue("name", userData.name);
+      setValue("email", userData.email);
+      setValue("phone", userData.phone);
+
+      setMessage("User data loaded successfully.");
+      setError(null);
+    } catch (err) {
+      setMessage(null);
+      setError("Error fetching user data.");
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []); 
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("/api/user/update-profile", data); 
+      const res = response.data;
+
+      setMessage(res.data.message || "Profile updated successfully.");
+      setError(null);
+    } catch (err) {
+      setMessage(null);
+      setError("There was an error updating your profile.");
+    }
+  };
 
   return (
     <div>
@@ -19,17 +69,7 @@ export default function UserProfile() {
 
       <Form
         className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-        action="/api/user/update-profile"
-        encType={'application/json'}
-        onSuccess={async ({ response }) => {
-          setError(null);
-          const res = await response.json();
-          setMessage(res.data.message || "Profile updated successfully.");
-        }}
-        onError={() => {
-          setMessage(null);
-          setError("There was an error updating your profile.");
-        }}
+        onSubmit={handleSubmit(onSubmit)}
         control={control}
       >
         <Input label="Name" variant="underlined" {...register("name", { required: true })} />
@@ -42,6 +82,12 @@ export default function UserProfile() {
           </Button>
         </div>
       </Form>
+
+      <div className="mt-4">
+        <Button onClick={() => fetchUserData()} className="w-full" variant="light">
+          Edit Profile
+        </Button>
+      </div>
     </div>
   );
 }
