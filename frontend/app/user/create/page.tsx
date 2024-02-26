@@ -10,7 +10,6 @@ import axios from "axios";
 
 type FormData = {
 	name: string
-	email: string
 	phoneNumber: string
 }
 
@@ -23,12 +22,11 @@ export default function CreateUser() {
 		try {
 			const res = await axios.post(siteConfig.server_url + "/user/signup", {
 				name: data.name,
-				email: sessionStorage.getItem("email"),
 				phoneNumber: data.phoneNumber
 			}, {
 				headers: {
 					'Content-Type': 'application/json'
-				},
+				}
 			});
 
 			if (res.status == 201) {
@@ -47,6 +45,7 @@ export default function CreateUser() {
 	return (
 		<div>
 			<h1 className={title()}>Sign up</h1>
+
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
 				onSubmit={({ data }: any) => {
