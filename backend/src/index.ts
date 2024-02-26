@@ -18,11 +18,8 @@ const app: Express = express()
 // Add middleware
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(loggerMiddleware)
-app.use(errorsMiddleware)
-app.use(cors())
 
-// Add session storage
+// Add session middleware
 declare module "express-session" {
     interface SessionData {
         email: string
@@ -36,6 +33,11 @@ app.use(session({
         secure: true,
         maxAge: 1000 * 60 * 60 * 24 * 1 // 1 day
     },
+}))
+app.use(loggerMiddleware)
+app.use(errorsMiddleware)
+app.use(cors({
+    credentials: true
 }))
 
 // Add routes
