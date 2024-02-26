@@ -15,7 +15,7 @@ userRouter.post("/create", async (req, res) => {
     if (createUser.error) {
         const response: CustomResponse = {
             error: true,
-            message: "There was an error creating your profile",
+            message: createUser.data as string,
             data: null
         }
         return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);

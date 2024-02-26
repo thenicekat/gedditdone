@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors({
     optionsSuccessStatus: 200,
     credentials: true,
+    origin: "http://localhost:3000"
 }))
 
 // Add session middleware
@@ -48,7 +49,7 @@ app.use(errorsMiddleware)
 app.use("/api/sessions/oauth/google", gauthRouter)
 
 app.use('/hello', helloRouter)
-app.use('/posts', postsRouter)
+app.use('/post', postsRouter)
 app.use('/user', userRouter)
 
 
