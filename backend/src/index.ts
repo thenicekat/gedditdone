@@ -3,7 +3,7 @@ import 'dotenv/config'
 import express, { Express } from 'express'
 import session from 'express-session'
 const cors = require('cors');
-import { PORT, SESSIONKEY } from './constants'
+import { PORT, SESSIONKEY, __prod__ } from './constants'
 // Middleware
 import { loggerMiddleware } from './middleware/logger.middleware'
 import { errorsMiddleware } from './middleware/error.middleware'
@@ -21,7 +21,8 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors({
     origin:"http://localhost:3000",
     optionsSuccessStatus: 200,
-    credentials: true
+    credentials: true,
+    origin: "http://localhost:3000"
 }))
 
 // Add session middleware
@@ -31,12 +32,13 @@ declare module "express-session" {
     }
 }
 app.use(session({
+    name: "geddit-session",
+    store: new session.MemoryStore(),
     secret: SESSIONKEY,
     resave: false,
     saveUninitialized: true,
     cookie: {
-        httpOnly: true,
-        secure: true,
+        secure: __prod__,
         maxAge: 1000 * 60 * 60 * 24 * 1 // 1 day
     },
 }));

@@ -36,9 +36,7 @@ export default function CreateUser(mail: string) {
 			if (res.status == 201) {
 				setError(null)
 				setMessage("User created successfully.")
-				console.log(res.data);
 			} else {
-				console.log(res.data)
 				setError(res.data.error || "There was an error creating your profile.")
 			}
 		}

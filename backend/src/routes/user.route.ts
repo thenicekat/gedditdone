@@ -7,9 +7,10 @@ export const userRouter = Router();
 
 userRouter.post("/signup", async (req, res) => {
     const data = req.body;
-    // const userEmail = session.email as string;
-    // console.log(userEmail)
-    console.log(data)
+    const userEmail = req.session.email as string;
+
+    data["email"] = userEmail;
+
     const createUser = await newUser(data);
 
     if (createUser.error) {
@@ -25,7 +26,7 @@ userRouter.post("/signup", async (req, res) => {
         message: "User created successfully",
         data: createUser.data
     }
-    res.redirect('/');
+
     return res.status(HttpCodes.CREATED).json(response);
 });
 
