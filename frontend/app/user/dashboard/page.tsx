@@ -48,7 +48,7 @@ export default function UserProfile() {
     fetchUserData();
   }, []); 
 
-  const onSubmit = async (data) => {
+  const onSubmit = async (data:UserProfile) => {
     try {
       const response = await axios.post("/api/user/update-profile", data); 
       const res = response.data;
@@ -69,7 +69,10 @@ export default function UserProfile() {
 
       <Form
         className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={({ data }: any) => {
+					console.log(data)
+					onSubmit(data)
+				}}
         control={control}
       >
         <Input label="Name" variant="underlined" {...register("name", { required: true })} />
@@ -82,12 +85,6 @@ export default function UserProfile() {
           </Button>
         </div>
       </Form>
-
-      <div className="mt-4">
-        <Button onClick={() => fetchUserData()} className="w-full" variant="light">
-          Edit Profile
-        </Button>
-      </div>
     </div>
   );
 }
