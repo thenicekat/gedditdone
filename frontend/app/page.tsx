@@ -2,6 +2,9 @@ import { title } from "@/components/primitives";
 import Post from "@/components/Post";
 import getGoogleOAuthUrl from "@/utils/getGoogleOAuthUrl";
 import { Button } from "@nextui-org/button";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 export default function Home() {
 	const posts = [

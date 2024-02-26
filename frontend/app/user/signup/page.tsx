@@ -25,7 +25,6 @@ export default function CreatePost() {
 				name: data.name,
 				phoneNumber: data.phoneNumber
 			}, {
-				withCredentials: true,
 				headers: {
 					'Content-Type': 'application/json'
 				}
