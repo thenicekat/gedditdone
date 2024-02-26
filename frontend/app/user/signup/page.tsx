@@ -19,7 +19,7 @@ export default function CreatePost() {
 	const [message, setMessage] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
 
-	const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
+	const onSubmit = async (data: FormData) => {
 		try {
 			const res = await axios.post(siteConfig.server_url + "/user/signup", {
 				name: data.name,
@@ -52,7 +52,9 @@ export default function CreatePost() {
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-				onSubmit={handleSubmit(onSubmit)}
+				onSubmit={({ data }) => {
+					onSubmit(data)
+				}}
 				onError={() => {
 					setMessage(null)
 					setError("There was an error creating your profile.")
