@@ -24,7 +24,6 @@ export default function CreateUser() {
 				name: data.name,
 				phoneNumber: data.phoneNumber
 			}, {
-				withCredentials: true,
 				headers: {
 					'Content-Type': 'application/json'
 				}
