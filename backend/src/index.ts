@@ -22,7 +22,6 @@ app.use(cors({
     origin:"http://localhost:3000",
     optionsSuccessStatus: 200,
     credentials: true,
-    origin: "http://localhost:3000"
 }))
 
 // Add session middleware

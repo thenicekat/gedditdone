@@ -2,10 +2,9 @@ import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
 import { newUser } from "../service/user.service";
-// import session, { SessionData } from "express-session";
 export const userRouter = Router();
 
-userRouter.post("/signup", async (req, res) => {
+userRouter.post("/create", async (req, res) => {
     const data = req.body;
     const userEmail = req.session.email as string;
 

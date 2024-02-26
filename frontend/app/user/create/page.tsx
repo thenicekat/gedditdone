@@ -14,12 +14,11 @@ type FormData = {
 	phoneNumber: string
 }
 
-export default function CreateUser(mail: string) {
+export default function CreateUser() {
 	const { register, handleSubmit, formState: { errors }, control } = useForm<FormData>()
 
 	const [message, setMessage] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
-	sessionStorage.setItem("email", mail)
 	const onSubmit = async (data: FormData) => {
 		try {
 			const res = await axios.post(siteConfig.server_url + "/user/signup", {
