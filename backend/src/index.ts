@@ -20,7 +20,8 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cors({
     optionsSuccessStatus: 200,
-    credentials: true
+    credentials: true,
+    origin: "http://localhost:3000"
 }))
 
 // Add session middleware
@@ -30,6 +31,8 @@ declare module "express-session" {
     }
 }
 app.use(session({
+    name: "geddit-session",
+    store: new session.MemoryStore(),
     secret: SESSIONKEY,
     resave: false,
     saveUninitialized: true,
