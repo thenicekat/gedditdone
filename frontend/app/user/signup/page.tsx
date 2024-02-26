@@ -1,31 +1,48 @@
 "use client"
 import { title } from "@/components/primitives";
-import { Form, useForm } from "react-hook-form";
+import { Form, SubmitHandler, useForm } from "react-hook-form";
 import { Input } from "@nextui-org/input";
 import { User } from "@/types";
 import { useState } from "react";
 import { Button } from "@nextui-org/button";
+import { siteConfig } from "@/config/site";
+import axios from "axios";
 
 
 export default function CreatePost() {
-	const { register, formState: { errors }, control } = useForm<User>()
+	const { register, handleSubmit, formState: { errors }, control } = useForm<User>()
 
 	const [message, setMessage] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
 
+	const onSubmit: SubmitHandler<User> = async (data) => {
+		const res = await axios.post(siteConfig.server_url + "/user/signup", {
+			method: "POST",
+			credentials: "include",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify(data),
+		});
+
+		if (res.status == 201) {
+			setError(null)
+			setMessage("User created successfully.")
+			console.log(res.data);
+		} else {
+			console.log(res.data)
+			setError(res.data.error || "There was an error creating your profile.")
+		}
+	}
+
 	return (
 		<div>
-			<h1 className={title()}>Sign up to Geddit</h1>
+			<h1 className={title()}>Sign up</h1>
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-				action="http://localhost:5000/user/signup"
 				encType={'application/json'}
-				onSuccess={async ({ response }) => {
-					setError(null)
-					const res = await response.json()
-					setMessage(res.data.message || "Profile created successfully.")
-				}}
+				onSubmit={handleSubmit(onSubmit)}
 				onError={() => {
 					setMessage(null)
 					setError("There was an error creating your profile.")

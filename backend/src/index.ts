@@ -39,10 +39,11 @@ app.use(session({
 }))
 
 // Add routes
+app.use("/api/sessions/oauth/google", gauthRouter)
+
 app.use('/hello', helloRouter)
 app.use('/posts', postsRouter)
-app.use("/api/sessions/oauth/google", gauthRouter)
-app.use('/user',userRouter)
+app.use('/user', userRouter)
 
 
 // Start the server
