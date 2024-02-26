@@ -11,3 +11,9 @@ export type Post = {
   service: string;
   costInPoints: number;
 }
+
+export type User = {
+  name: string;
+  email: string;
+  phoneNumber: string;
+}
