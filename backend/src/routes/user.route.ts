@@ -11,7 +11,7 @@ userRouter.post("/signup", async (req, res) => {
     const userEmail = req.session.email as string;
 
     data["email"] = userEmail;
-    console.log(data)
+
     const createUser = await newUser(data);
 
     if (createUser.error) {
@@ -27,7 +27,7 @@ userRouter.post("/signup", async (req, res) => {
         message: "User created successfully",
         data: createUser.data
     }
-    res.redirect('/');
+
     return res.status(HttpCodes.CREATED).json(response);
 });
 

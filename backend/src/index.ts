@@ -3,7 +3,7 @@ import 'dotenv/config'
 import express, { Express } from 'express'
 import session from 'express-session'
 const cors = require('cors');
-import { PORT, SESSIONKEY } from './constants'
+import { PORT, SESSIONKEY, __prod__ } from './constants'
 // Middleware
 import { loggerMiddleware } from './middleware/logger.middleware'
 import { errorsMiddleware } from './middleware/error.middleware'
@@ -37,7 +37,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: {
-        secure: true,
+        secure: __prod__,
         maxAge: 1000 * 60 * 60 * 24 * 1 // 1 day
     },
 }))
