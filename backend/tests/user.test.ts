@@ -4,24 +4,22 @@ import { newUser } from "../src/service/user.service";
 
 
 describe("Create a new user", () => {
-    // it("should create a new post", () => {
-    //     const post = {
-    //         id: "1",
-    //         authorId: "1",
-    //         authorEmail: "authorEmail",
-    //         source: "source",
-    //         destination: "destination",
-    //         costInPoints: 10,
-    //         service: "service",
-    //     }
+    it("should create a new user", () => {
+        const user = {
+            id: "1",
+            name: "name",
+            email: "email@email.com",
+            phoneNumber: "9999999999",
+            karmaPoints: 0
+        }
 
-    //     prismaMock.post.create.mockResolvedValue(post);
+        prismaMock.user.create.mockResolvedValue(user);
 
-    //     expect(createPost(post)).resolves.toEqual({
-    //         error: false,
-    //         data: post
-    //     });
-    // });
+        expect(newUser(user)).resolves.toEqual({
+            error: false,
+            data: user
+        });
+    });
 
     it("should return an error if name is not given", () => {
         const user = {
@@ -40,7 +38,7 @@ describe("Create a new user", () => {
         });
     })
 
-    it("should return an error if name is not given", () => {
+    it("should return an error if phone number is not given", () => {
         const user = {
             id: "1",
             name: "name",
