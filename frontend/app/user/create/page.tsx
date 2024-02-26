@@ -26,7 +26,6 @@ export default function CreateUser() {
 				email: sessionStorage.getItem("email"),
 				phoneNumber: data.phoneNumber
 			}, {
-				withCredentials: true,
 				headers: {
 					'Content-Type': 'application/json'
 				},
