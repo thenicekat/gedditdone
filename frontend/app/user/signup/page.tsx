@@ -3,19 +3,25 @@ import { title } from "@/components/primitives";
 import { Form, useForm } from "react-hook-form";
 import { Input } from "@nextui-org/input";
 import { User } from "@/types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@nextui-org/button";
 
 
 export default function CreatePost() {
-	const { register, formState: { errors }, control } = useForm<User>()
+	const { register, formState: { errors }, control,setValue } = useForm<User>()
 
 	const [message, setMessage] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
+	useEffect(() => {
+        // Set the session email value in the form when the component mounts
+        const sessionEmail = sessionStorage.getItem("email"); // Assuming the session email is stored in sessionStorage
+        setValue("email", sessionEmail);
+    }, [setValue]);
 
 	return (
 		<div>
 			<h1 className={title()}>Sign up to Geddit</h1>
+
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
@@ -31,7 +37,7 @@ export default function CreatePost() {
 					setError("There was an error creating your profile.")
 				}}
 				control={control}
-			>
+			>   <input type="hidden" {...register("email")} />
 				<Input label="Name" variant="underlined" {...register("name", { required: true })} />
 				<Input label="Phone Number" variant="underlined" {...register("phoneNumber", { required: true })} />
 

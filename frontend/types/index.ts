@@ -14,5 +14,6 @@ export type Post = {
 
 export type User = {
   name: string;
+  email: string | null;
   phoneNumber: string;
 }

@@ -16,7 +16,7 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
         const googleUser = await getGoogleUser({ id_token, access_token });
         const userEmail = googleUser.email;
 
-        req.session.email = userEmail;
+        sessionStorage.setItem("email", userEmail);
         console.log(req.session.email)
 
         try {
