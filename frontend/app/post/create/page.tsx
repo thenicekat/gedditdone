@@ -6,7 +6,7 @@ import { Post } from "@/types";
 import { useState } from "react";
 import { Button } from "@nextui-org/button";
 import { siteConfig } from "@/config/site";
-
+import axios from "axios";
 
 export default function CreatePost() {
 	const { register, formState: { errors }, control } = useForm<Post>()
@@ -14,11 +14,41 @@ export default function CreatePost() {
 	const [message, setMessage] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
 
+	const onSubmit = async (data: Post) => {
+		try {
+			const res = await axios.post(siteConfig.server_url + "/post/create", {
+				source: data.source,
+				destination: data.destination,
+				service: data.service,
+				costInPoints: data.costInPoints
+			}, {
+				withCredentials: true,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+
+			if (res.status == 201) {
+				setError(null)
+				setMessage("Post created successfully.")
+			} else if (res.status == 401) {
+				window.location.href = "/"
+			}
+			else {
+				setError(res.data.error || "There was an error creating your post.")
+			}
+		}
+		catch (err) {
+			console.error(err)
+			setError("There was an error creating your post.")
+		}
+	}
+
 	return (
 		<div>
 			<h1 className={title()}>Create Post</h1>
 
-			<p className="text-red-600 text-center text-lg">
+			<p className="text-red-600 text-center text-lg m-2">
 				{
 					error ||
 					errors.authorName?.message ||
@@ -31,16 +61,12 @@ export default function CreatePost() {
 				}
 			</p>
 
-			<p className="text-green-600 text-center text-lg">{message}</p>
+			<p className="text-green-600 text-center text-lg m-2">{message}</p>
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-				action={siteConfig.server_url + "/posts/create"}
-				encType={'application/json'}
-				onSuccess={async ({ response }) => {
-					setError(null)
-					const res = await response.json()
-					setMessage(res.data.message || "Post created successfully.")
+				onSubmit={({ data }: any) => {
+					onSubmit(data)
 				}}
 				onError={() => {
 					setMessage(null)

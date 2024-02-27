@@ -18,12 +18,14 @@ export default function CreateUser() {
 
 	const [message, setMessage] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
+
 	const onSubmit = async (data: FormData) => {
 		try {
-			const res = await axios.post(siteConfig.server_url + "/user/signup", {
+			const res = await axios.post(siteConfig.server_url + "/user/create", {
 				name: data.name,
 				phoneNumber: data.phoneNumber
 			}, {
+				withCredentials: true,
 				headers: {
 					'Content-Type': 'application/json'
 				}
@@ -37,7 +39,6 @@ export default function CreateUser() {
 			}
 		}
 		catch (err) {
-			console.error(err)
 			setError("There was an error creating your profile.")
 		}
 	}
@@ -46,10 +47,19 @@ export default function CreateUser() {
 		<div>
 			<h1 className={title()}>Sign up</h1>
 
+			<p className="text-red-600 text-center text-lg m-2">
+				{
+					error ||
+					errors.name?.message ||
+					errors.phoneNumber?.message
+				}
+			</p>
+
+			<p className="text-green-600 text-center text-lg m-2">{message}</p>
+
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
 				onSubmit={({ data }: any) => {
-					console.log(data)
 					onSubmit(data)
 				}}
 				onError={() => {

@@ -28,6 +28,7 @@ export const newUser = async (user: {
                 name: user.name,
                 email: user.email,
                 phoneNumber: user.phoneNumber,
+                karmaPoints: 10
             },
         })
         return {

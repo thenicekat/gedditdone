@@ -12,6 +12,7 @@ import { helloRouter } from './routes/hello.route'
 import { postsRouter } from './routes/posts.route'
 import { gauthRouter } from './routes/gauth.route'
 import { userRouter } from './routes/user.route'
+import { validateMiddleware } from './middleware/auth.middleware';
 
 const app: Express = express()
 
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors({
     optionsSuccessStatus: 200,
     credentials: true,
+    origin: "http://localhost:3000"
 }))
 
 // Add session middleware
@@ -44,11 +46,13 @@ app.use(loggerMiddleware)
 app.use(errorsMiddleware)
 
 
-// Add routes
+// Not validated routes
 app.use("/api/sessions/oauth/google", gauthRouter)
 
+// Validated routes
+app.use(validateMiddleware)
 app.use('/hello', helloRouter)
-app.use('/posts', postsRouter)
+app.use('/post', postsRouter)
 app.use('/user', userRouter)
 
 

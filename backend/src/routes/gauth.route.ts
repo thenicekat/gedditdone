@@ -11,7 +11,7 @@ gauthRouter.get("/", async (req, res) => {
 
     if (appUser.error) {
         logger.info("Creating new user");
-        res.redirect('http://localhost:3000/user/signup');
+        res.redirect('http://localhost:3000/user/create');
         return;
     } else {
         logger.info("User already exists");

@@ -1,50 +1,40 @@
+"use client"
+import React from "react";
 import { title } from "@/components/primitives";
-import Post from "@/components/Post";
+import PostComponent from "@/components/Post";
 import getGoogleOAuthUrl from "@/utils/getGoogleOAuthUrl";
 import { Button } from "@nextui-org/button";
 import axios from "axios";
+import { siteConfig } from "@/config/site";
+import { Post } from "@/types";
+import { HttpCodes } from "@/types/HttpCodes";
 
 axios.defaults.withCredentials = true;
 
 export default function Home() {
-	const posts = [
-		{
-			authorName: "Divyateja",
-			source: "Mess 1",
-			destination: "V335",
-			service: "Pick up: Food",
-			costInPoints: 2
-		},
-		{
-			authorName: "Manan",
-			source: "CP",
-			destination: "V334",
-			service: "Pick up: Laundry",
-			costInPoints: 5
-		},
-		{
-			authorName: "Uday",
-			source: "New York",
-			destination: "Los Angeles",
-			service: "I need a ride from New York to Los Angeles.",
-			costInPoints: 2
-		},
-		{
-			authorName: "Prachi",
-			source: "Los Angeles",
-			destination: "New York",
-			service: "I need a ride from Los Angeles to New York.",
-			costInPoints: 2
-		}
-		,
-		{
-			authorName: "Adarsh",
-			source: "Los Angeles",
-			destination: "New York",
-			service: "I need a ride from Los Angeles to New York.",
-			costInPoints: 2
-		}
-	];
+	const [posts, setPosts] = React.useState<Post[]>([]);
+	const [amLoggedIn, setAmLoggedIn] = React.useState(false);
+
+	React.useEffect(() => {
+		axios.get(siteConfig.server_url + "/post/all")
+			.then((res) => {
+				if (res.status == HttpCodes.UNAUTHORIZED) {
+					setAmLoggedIn(false);
+					return;
+				}
+
+				if (res.status == HttpCodes.OK) {
+					setAmLoggedIn(true);
+					setPosts(res.data.data);
+				} else if (res.status == HttpCodes.INTERNAL_SERVER_ERROR) {
+					console.error(res.data.message);
+				}
+			})
+			.catch((err) => {
+				console.error(err);
+			})
+	}, []);
+
 
 	return (
 		<section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
@@ -57,26 +47,47 @@ export default function Home() {
 				</h1>
 			</div>
 
-			<div className="flex flex-wrap gap-4 justify-center items-center">
-				<Button color="primary" variant="bordered" radius="sm" size="lg">
-					<a href={getGoogleOAuthUrl()}> Login with Google </a>
-				</Button>
-			</div>
-			<div
-				className="grid md:grid-cols-3 gap-4 m-4">
-				{
-					posts.map((post, index) => (
-						<Post
-							key={index}
-							authorName={post.authorName}
-							source={post.source}
-							destination={post.destination}
-							service={post.service}
-							costInPoints={post.costInPoints}
-						/>
-					))
-				}
-			</div>
+			{
+				!amLoggedIn ?
+					<div className="flex flex-wrap gap-4 justify-center items-center">
+						<Button color="success" variant="bordered" radius="sm" size="lg"
+							onClick={
+								() => {
+									window.location.href = getGoogleOAuthUrl();
+								}
+							}>
+							Login with Google
+						</Button>
+					</div>
+					:
+					<>
+						<div className="flex flex-wrap gap-4 justify-center items-center">
+							<Button color="success" variant="bordered" radius="sm" size="lg"
+								onClick={
+									() => {
+										window.location.href = "/post/create";
+									}
+								}>
+								Create a Post
+							</Button>
+						</div>
+						<div
+							className="grid md:grid-cols-3 gap-4 m-4">
+							{
+								posts.map((post, index) => (
+									<PostComponent
+										key={index}
+										authorName={post.authorName}
+										source={post.source}
+										destination={post.destination}
+										service={post.service}
+										costInPoints={post.costInPoints}
+									/>
+								))
+							}
+						</div>
+					</>
+			}
 		</section>
 	);
 }
