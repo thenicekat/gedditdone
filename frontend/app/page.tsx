@@ -7,6 +7,7 @@ import { Button } from "@nextui-org/button";
 import axios from "axios";
 import { siteConfig } from "@/config/site";
 import { Post } from "@/types";
+import { HttpCodes } from "@/types/HttpCodes";
 
 axios.defaults.withCredentials = true;
 
@@ -14,20 +15,20 @@ export default function Home() {
 	const [posts, setPosts] = React.useState<Post[]>([]);
 	const [amLoggedIn, setAmLoggedIn] = React.useState(false);
 
-	// React.useEffect(() => {
-	// 	axios.get(siteConfig.server_url + "/user/me")
-	// 		.then((res) => {
-	// 			setAmLoggedIn(true);
-	// 		})
-	// 		.catch((err) => {
-	// 			console.error(err);
-	// 		})
-	// }, []);
-
 	React.useEffect(() => {
 		axios.get(siteConfig.server_url + "/post/all")
 			.then((res) => {
-				setPosts(res.data.data);
+				if (res.status == HttpCodes.UNAUTHORIZED) {
+					setAmLoggedIn(false);
+					return;
+				}
+
+				if (res.status == HttpCodes.OK) {
+					setAmLoggedIn(true);
+					setPosts(res.data.data);
+				} else if (res.status == HttpCodes.INTERNAL_SERVER_ERROR) {
+					console.error(res.data.message);
+				}
 			})
 			.catch((err) => {
 				console.error(err);
@@ -49,14 +50,24 @@ export default function Home() {
 			{
 				!amLoggedIn ?
 					<div className="flex flex-wrap gap-4 justify-center items-center">
-						<Button color="success" variant="bordered" radius="sm" size="lg" href={getGoogleOAuthUrl()}>
+						<Button color="success" variant="bordered" radius="sm" size="lg"
+							onClick={
+								() => {
+									window.location.href = getGoogleOAuthUrl();
+								}
+							}>
 							Login with Google
 						</Button>
 					</div>
 					:
 					<>
 						<div className="flex flex-wrap gap-4 justify-center items-center">
-							<Button color="success" variant="bordered" radius="sm" size="lg" href={"/post/create"}>
+							<Button color="success" variant="bordered" radius="sm" size="lg"
+								onClick={
+									() => {
+										window.location.href = "/post/create";
+									}
+								}>
 								Create a Post
 							</Button>
 						</div>

@@ -31,7 +31,10 @@ export default function CreatePost() {
 			if (res.status == 201) {
 				setError(null)
 				setMessage("Post created successfully.")
-			} else {
+			} else if (res.status == 401) {
+				window.location.href = "/"
+			}
+			else {
 				setError(res.data.error || "There was an error creating your post.")
 			}
 		}
