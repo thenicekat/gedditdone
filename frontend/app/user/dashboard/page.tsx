@@ -28,7 +28,7 @@ export default function UserProfile() {
   // Function to fetch user data
   const fetchUserData = async () => {
     try {
-      const response = await axios.get("/api/user/get-profile"); 
+      const response = await axios.get("/api/user/get"); 
       const userData = response.data; 
 
       // Set values for the form fields
@@ -50,7 +50,7 @@ export default function UserProfile() {
 
   const onSubmit = async (data:UserProfile) => {
     try {
-      const response = await axios.post("/api/user/update-profile", data); 
+      const response = await axios.post("/api/user/update", data); 
       const res = response.data;
 
       setMessage(res.data.message || "Profile updated successfully.");

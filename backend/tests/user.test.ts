@@ -1,7 +1,7 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
 import { newUser } from "../src/service/user.service";
-import { updatedUser } from "../src/service/user.service";
+import { updateUser } from "../src/service/user.service";
 
 describe("Create a new user", () => {
     it("should create a new user", () => {
@@ -85,7 +85,7 @@ describe ("Update user profile", () => {
 
         prismaMock.user.update.mockResolvedValue(user);
 
-        expect(updatedUser(user)).resolves.toEqual({
+        expect(updateUser(user)).resolves.toEqual({
             error: false,
             data: user
         });
@@ -102,7 +102,7 @@ describe ("Update user profile", () => {
 
         prismaMock.user.update.mockResolvedValue(user);
 
-        expect(updatedUser(user)).resolves.toEqual({
+        expect(updateUser(user)).resolves.toEqual({
             error: true,
             data: "Email is required to update profile."
         });
@@ -119,7 +119,7 @@ describe ("Update user profile", () => {
 
         prismaMock.user.update.mockResolvedValue(user);
 
-        expect(updatedUser(user)).resolves.toEqual({
+        expect(updateUser(user)).resolves.toEqual({
             error: true,
             data: "User name is required to update profile."
         });
@@ -136,7 +136,7 @@ describe ("Update user profile", () => {
 
         prismaMock.user.update.mockResolvedValue(user);
 
-        expect(updatedUser(user)).resolves.toEqual({
+        expect(updateUser(user)).resolves.toEqual({
             error: true,
             data: "Phone Number is required to update profile."
         });
