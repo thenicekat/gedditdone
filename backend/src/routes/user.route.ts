@@ -4,6 +4,7 @@ import { CustomResponse } from "../types/CustomResponse";
 import { newUser } from "../service/user.service";
 import { updateUser } from "../service/user.service";
 import { getUserByEmail } from "../service/user.service";
+import { User } from "@prisma/client";
 
 export const userRouter = Router();
 
@@ -41,14 +42,15 @@ userRouter.get("/get", async (req, res) => {
             throw new Error("Failed to fetch user data");
         }
 
-        const userData = userDataResponse.data;
+        const userData: User = userDataResponse.data as User;
 
         const response: CustomResponse = {
             error: false,
             message: "User data fetched successfully",
             data: {
                 email: userEmail,
-                user: userData
+                phoneNumber: userData.phoneNumber,
+                name: userData.name
             }
         };
 
@@ -70,11 +72,6 @@ userRouter.get("/get", async (req, res) => {
 userRouter.post("/update", async (req, res) => {
     try {
         const data = req.body;
-        const userEmail = req.session.email as string;
-
-        if (userEmail !== data.email) {
-            throw new Error("Email mismatch between session and request data.");
-        }
 
         const updateUserResponse = await updateUser(data);
 
