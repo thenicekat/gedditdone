@@ -42,13 +42,13 @@ userRouter.get("/get", async (req, res) => {
             throw new Error("Failed to fetch user data");
         }
 
-        const userData: User = userDataResponse.data as User;
+        const userData = userDataResponse.data as User;
 
         const response: CustomResponse = {
             error: false,
             message: "User data fetched successfully",
             data: {
-                email: userEmail,
+                email: userData.email,
                 phoneNumber: userData.phoneNumber,
                 name: userData.name
             }
@@ -72,18 +72,22 @@ userRouter.get("/get", async (req, res) => {
 userRouter.post("/update", async (req, res) => {
     try {
         const data = req.body;
-
         const updateUserResponse = await updateUser(data);
 
         if (updateUserResponse.error) {
-            throw new Error("Failed to update user data");
+            const response: CustomResponse = {
+                error: true,
+                message: updateUserResponse.data as string,
+                data: null
+            }
+            return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
         }
 
-        const response = {
+        const response: CustomResponse = {
             error: false,
-            message: "User data updated successfully",
+            message: "User Updated successfully",
             data: updateUserResponse.data
-        };
+        }
 
         return res.status(HttpCodes.OK).json(response);
     } catch (error) {

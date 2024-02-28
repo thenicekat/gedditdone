@@ -43,16 +43,30 @@ export const newUser = async (user: {
     }
 }
 
-export const updateUser = async (user: User): Promise<CustomReturn<User>> => {
-    if (!user.name || !user.phoneNumber || !user.email) {
+export const updateUser = async (user: {
+    name: string,
+    email: string,
+    phoneNumber: string,
+}): Promise<CustomReturn<User>> => {
+    if (!user.name || !user.phoneNumber) {
         return {
             error: true,
-            data: "Name, Email, and Phone Number are required to update the profile."
+            data: "Name and Phone Number are required to update the profile."
         };
     }
 
     try {
-        const updatedUser = await prisma.user.update({
+        let userdetail = await prisma.user.findUnique({
+            where: {
+                email: user.email
+            }
+        });
+
+        if (!userdetail) return {
+            error: true,
+            data: "User does not exist."
+        }
+        let updatedUser = await prisma.user.update({
             where: { email: user.email },
             data: {
                 name: user.name,
@@ -73,6 +87,7 @@ export const updateUser = async (user: User): Promise<CustomReturn<User>> => {
         };
     }
 };
+
 
 export const getUserByEmail = async (email: string): Promise<CustomReturn<User>> => {
     try {

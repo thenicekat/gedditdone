@@ -7,12 +7,7 @@ import { useState } from "react";
 import { Button } from "@nextui-org/button";
 import axios from "axios";
 import { siteConfig } from "@/config/site";
-
-type FormData = {
-  name: string;
-  email: string;
-  phone: string;
-};
+import { User } from "@/types";
 
 type UserProfile = {
   name: string;
@@ -53,14 +48,13 @@ export default function UserProfile() {
     fetchUserData();
   }, []);
 
-  const onSubmit: SubmitHandler<UserProfile> = async (data) => {
+  const onSubmit = async (data:User) => {
     try {
       const res = await axios.post(
         siteConfig.server_url + "/user/update",
         {
-          name: data.name,
-          email: data.email,
-          phone: data.phone
+          name : data.username,
+          phoneNumber : data.phoneNumber
         },
         {
           withCredentials: true,
@@ -76,7 +70,9 @@ export default function UserProfile() {
 			} else {
 				setError(res.data.error || "There was an error in updating profile.")
 			}
-
+      
+      setValue("name", "");
+      setValue("phone", "");
       setMessage(res.data.message || "Profile updated successfully.");
       setError(null);
     } catch (err) {
