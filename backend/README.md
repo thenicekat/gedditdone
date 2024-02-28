@@ -3,6 +3,7 @@
 -   Tech Stack: Express + Prisma + Typescript
 -   Prisma Scheme takes care of all the database schemas and the structures
 -   Whenever you update your Prisma schema, you will need to run the prisma db push command to create new indexes and regenerate Prisma Client.
+-   You will need to run `npx prisma generate` to generate the prisma client
 -   Run dev environment using `yarn dev`
 -   Run production environment using `yarn start`
 -   Run tests using `yarn test`
