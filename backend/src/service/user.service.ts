@@ -1,6 +1,7 @@
 import { User } from '@prisma/client'
 import prisma from '../db'
 import { CustomReturn } from '../types/CustomReturn'
+import { logger } from '../utils/logger'
 
 export const newUser = async (user: {
     name: string,
@@ -35,7 +36,11 @@ export const newUser = async (user: {
             error: false,
             data: newUser
         };
-    } catch (error) {
+    } catch (error: any) {
+        logger.error({
+            location: "newUser",
+            error: error.toString()
+        })
         return {
             error: true,
             data: null
