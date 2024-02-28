@@ -49,12 +49,20 @@ postsRouter.get("/my", async (req, res) => {
 })
 
 postsRouter.post("/create", async (req, res) => {
-    const data = req.body;
+    const source = req.body.source as string;
+    const destination = req.body.destination as string;
+    const service = req.body.service as string;
+    const costInPoints = parseInt(req.body.costInPoints) as number;
+
     const authorEmail = req.session.email as string;
 
-    data["authorEmail"] = authorEmail;
-
-    const crePost = await createPost(data);
+    const crePost = await createPost({
+        authorEmail,
+        source,
+        destination,
+        service,
+        costInPoints
+    });
 
     if (crePost.error) {
         const response: CustomResponse = {
