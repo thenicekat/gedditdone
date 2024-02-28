@@ -71,6 +71,16 @@ export default function Home() {
 								Create a Post
 							</Button>
 						</div>
+						<div className="flex flex-wrap gap-4 justify-center items-center">
+							<Button color="success" variant="bordered" radius="sm" size="lg"
+								onClick={
+									() => {
+										window.location.href = "/user/dashboard";
+									}
+								}>
+								My Profile
+							</Button>
+						</div>
 						<div
 							className="grid md:grid-cols-3 gap-4 m-4">
 							{

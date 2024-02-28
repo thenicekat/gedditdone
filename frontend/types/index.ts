@@ -13,8 +13,11 @@ export type Post = {
 }
 
 export type User = {
+  userId: number;
   name: string;
   email: string;
+  password: string;
+  karmapoints: number;
   phoneNumber: string;
   karmaPoints: number;
 }
