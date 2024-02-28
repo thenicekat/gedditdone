@@ -73,7 +73,7 @@ userRouter.post("/update", async (req, res) => {
     try {
         const data = req.body;
         const updateUserResponse = await updateUser(data);
-
+        
         if (updateUserResponse.error) {
             const response: CustomResponse = {
                 error: true,
