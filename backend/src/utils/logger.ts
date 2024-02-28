@@ -1,5 +1,5 @@
 import winston, { format } from "winston";
-import { __prod__ } from "../constants";
+import { __prod__, __test__ } from "../constants";
 
 const logLevels = {
     fatal: 0,
@@ -28,7 +28,7 @@ export const logger = winston.createLogger({
     )
 })
 
-if (!__prod__) {
+if (!__prod__ && !__test__) {
     logger.add(new winston.transports.Console({
         format: format.combine(
             format.colorize(),

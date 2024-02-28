@@ -37,10 +37,10 @@ export const newUser = async (user: {
             data: newUser
         };
     } catch (error: any) {
-        logger.error({
+        logger.error(JSON.stringify({
             location: "newUser",
             error: error.toString()
-        })
+        }))
         return {
             error: true,
             data: null

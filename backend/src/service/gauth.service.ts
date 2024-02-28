@@ -39,20 +39,20 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
                     data: appUser
                 }
         } catch (error: any) {
-            logger.error({
+            logger.error(JSON.stringify({
                 location: "googleOAuthHandler",
                 error: error.toString()
-            })
+            }))
             return {
                 error: true,
                 data: null
             }
         }
     } catch (error: any) {
-        logger.error({
+        logger.error(JSON.stringify({
             location: "googleOAuthHandler",
             error: error.toString()
-        })
+        }))
         return {
             error: true,
             data: null
@@ -87,7 +87,6 @@ export async function getGoogleOAuthTokens({
         );
         return res.data;
     } catch (error: any) {
-        logger.error(error.response.data.error);
         throw new Error(error.message);
     }
 }

@@ -95,10 +95,10 @@ export const createPost = async (post: {
             data: createPost
         };
     } catch (err: any) {
-        logger.error({
+        logger.error(JSON.stringify({
             location: "createPost",
             message: err.toString()
-        });
+        }));
         return {
             error: true,
             data: "Some error occurred while creating the post"
