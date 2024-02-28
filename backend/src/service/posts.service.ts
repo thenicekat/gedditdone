@@ -1,6 +1,7 @@
 import { Post } from '@prisma/client'
 import { CustomReturn } from '../types/CustomReturn'
 import prisma from '../db'
+import { logger } from '../utils/logger'
 
 
 export const getAllPosts = async (): Promise<CustomReturn<Post[]>> => {
@@ -83,19 +84,24 @@ export const createPost = async (post: {
                 service: post.service,
                 author: {
                     connect: {
-                        email: post.authorEmail
+                        email: user.email
                     }
                 }
             },
         })
+
         return {
             error: false,
             data: createPost
         };
-    } catch (error) {
+    } catch (err: any) {
+        logger.error({
+            location: "createPost",
+            message: err.toString()
+        });
         return {
             error: true,
-            data: null
+            data: "Some error occurred while creating the post"
         }
     }
 }

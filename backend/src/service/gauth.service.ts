@@ -38,13 +38,21 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
                     error: false,
                     data: appUser
                 }
-        } catch (error) {
+        } catch (error: any) {
+            logger.error({
+                location: "googleOAuthHandler",
+                error: error.toString()
+            })
             return {
                 error: true,
                 data: null
             }
         }
-    } catch (e) {
+    } catch (error: any) {
+        logger.error({
+            location: "googleOAuthHandler",
+            error: error.toString()
+        })
         return {
             error: true,
             data: null

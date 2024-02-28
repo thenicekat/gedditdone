@@ -9,7 +9,7 @@ import { siteConfig } from "@/config/site";
 import axios from "axios";
 
 export default function CreatePost() {
-	const { register, formState: { errors }, control } = useForm<Post>()
+	const { register, formState: { errors }, control, reset } = useForm<Post>()
 
 	const [message, setMessage] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
@@ -31,6 +31,7 @@ export default function CreatePost() {
 			if (res.status == 201) {
 				setError(null)
 				setMessage("Post created successfully.")
+				reset()
 			} else if (res.status == 401) {
 				window.location.href = "/"
 			}
@@ -51,7 +52,6 @@ export default function CreatePost() {
 			<p className="text-red-600 text-center text-lg m-2">
 				{
 					error ||
-					errors.authorName?.message ||
 					(errors.costInPoints?.type == "pattern" && "Please enter a valid number for cost") ||
 					(errors.costInPoints?.type == "max" && "You have exceeded max point limit of 7") ||
 					(errors.costInPoints?.type == "min" && "You are below the min point threshold of 0") ||

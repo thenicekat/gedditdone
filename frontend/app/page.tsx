@@ -87,7 +87,7 @@ export default function Home() {
 								posts.map((post, index) => (
 									<PostComponent
 										key={index}
-										authorName={post.authorName}
+										author={post.author}
 										source={post.source}
 										destination={post.destination}
 										service={post.service}
