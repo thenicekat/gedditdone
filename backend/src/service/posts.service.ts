@@ -19,7 +19,7 @@ export const getAllPosts = async (): Promise<CustomReturn<Post[]>> => {
     catch (error) {
         return {
             error: true,
-            data: null
+            data: "Some error occurred while fetching the posts"
         }
     }
 }

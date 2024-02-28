@@ -85,8 +85,6 @@ export const updateUser = async (user: {
             data: updatedUser
         };
     } catch (error) {
-        console.error("Error updating user:", error);
-
         return {
             error: true,
             data: null
