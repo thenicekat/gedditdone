@@ -71,6 +71,7 @@ export const updateUser = async (user: {
             error: true,
             data: "User does not exist."
         }
+
         let updatedUser = await prisma.user.update({
             where: { email: user.email },
             data: {

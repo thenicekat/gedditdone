@@ -12,7 +12,7 @@ import { User } from "@/types";
 type UserProfile = {
   name: string;
   email: string;
-  phone: string;
+  phoneNumber: string;
 };
 
 export default function UserProfile() {
@@ -33,7 +33,7 @@ export default function UserProfile() {
       const userData = response.data.data;
   
       setValue("name", userData.name);
-      setValue("phone", userData.phoneNumber);
+      setValue("phoneNumber", userData.phoneNumber);
 
       setMessage("User data loaded successfully.");
       setError(null);
@@ -53,7 +53,7 @@ export default function UserProfile() {
       const res = await axios.post(
         siteConfig.server_url + "/user/update",
         {
-          name : data.username,
+          name : data.name,
           phoneNumber : data.phoneNumber
         },
         {
@@ -64,15 +64,19 @@ export default function UserProfile() {
         }
       );
 
+      console.log("Request Payload:", {
+        name: data.name,
+        phoneNumber: data.phoneNumber
+      });
+
+
       if (res.status == 201) {
 				setError(null)
 				setMessage("User created successfully.")
 			} else {
 				setError(res.data.error || "There was an error in updating profile.")
 			}
-      
-      setValue("name", "");
-      setValue("phone", "");
+  
       setMessage(res.data.message || "Profile updated successfully.");
       setError(null);
     } catch (err) {
@@ -100,7 +104,7 @@ export default function UserProfile() {
         control={control}
       >
         <Input variant="underlined" {...register("name", { required: true })} />
-        <Input  variant="underlined" {...register("phone", { required: true, pattern: /^[0-9]+$/ })} />
+        <Input  variant="underlined" {...register("phoneNumber", { required: true, pattern: /^[0-9]+$/ })} />
 
         <div className="justify-around w-full flex">
           <Button type="submit" className="align-middle md:w-1/2 w-full" variant="bordered">
