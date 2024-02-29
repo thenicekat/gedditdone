@@ -8,6 +8,7 @@ import { Button } from "@nextui-org/button";
 import axios from "axios";
 import { siteConfig } from "@/config/site";
 import { User } from "@/types";
+import { HttpCodes } from "@/types/HttpCodes";
 
 type UserProfile = {
   name: string;
@@ -16,7 +17,7 @@ type UserProfile = {
 };
 
 export default function UserProfile() {
-  const { register, handleSubmit, formState: { errors }, control, setValue } = useForm();
+  const { register, handleSubmit, formState: { errors }, control, setValue, watch } = useForm();
 
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -26,12 +27,12 @@ export default function UserProfile() {
       const response = await axios.get(
         siteConfig.server_url + "/user/get",
         {
-          params:{},
+          params: {},
           withCredentials: true,
         }
       );
       const userData = response.data.data;
-  
+
       setValue("name", userData.name);
       setValue("phoneNumber", userData.phoneNumber);
 
@@ -43,18 +44,18 @@ export default function UserProfile() {
       setError("Error fetching user data.");
     }
   };
-  
+
   useEffect(() => {
     fetchUserData();
   }, []);
 
-  const onSubmit = async (data:User) => {
+  const onSubmit = async (data: User) => {
     try {
       const res = await axios.post(
         siteConfig.server_url + "/user/update",
         {
-          name : data.name,
-          phoneNumber : data.phoneNumber
+          name: data.name,
+          phoneNumber: data.phoneNumber
         },
         {
           withCredentials: true,
@@ -64,19 +65,14 @@ export default function UserProfile() {
         }
       );
 
-      console.log("Request Payload:", {
-        name: data.name,
-        phoneNumber: data.phoneNumber
-      });
 
+      if (res.status == HttpCodes.ACCEPTED) {
+        setError(null)
+        setMessage("User updated successfully.")
+      } else {
+        setError(res.data.error || "There was an error in updating profile.")
+      }
 
-      if (res.status == 201) {
-				setError(null)
-				setMessage("User created successfully.")
-			} else {
-				setError(res.data.error || "There was an error in updating profile.")
-			}
-  
       setMessage(res.data.message || "Profile updated successfully.");
       setError(null);
     } catch (err) {
@@ -95,16 +91,16 @@ export default function UserProfile() {
       <Form
         className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
         onSubmit={({ data }: any) => {
-					onSubmit(data)
-				}}
+          onSubmit(data)
+        }}
         onError={() => {
-					setMessage(null)
-					setError("There was an error updating your profile.")
-				}}
+          setMessage(null)
+          setError("There was an error updating your profile.")
+        }}
         control={control}
       >
-        <Input variant="underlined" {...register("name", { required: true })} />
-        <Input  variant="underlined" {...register("phoneNumber", { required: true, pattern: /^[0-9]+$/ })} />
+        <Input label="Name" variant="underlined" value={watch('name')} {...register("name", { required: true })} />
+        <Input label="Phone Number" variant="underlined" value={watch("phoneNumber")} {...register("phoneNumber", { required: true, pattern: /^[0-9]+$/ })} />
 
         <div className="justify-around w-full flex">
           <Button type="submit" className="align-middle md:w-1/2 w-full" variant="bordered">
