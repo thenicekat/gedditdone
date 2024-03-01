@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "@dicebear/collection": "^7.0.5",
-    "@dicebear/core": "^7.0.5",
-    "@heroicons/react": "^2.1.1",
-    "@nextui-org/tabs": "^2.0.26"
-  }
-}
