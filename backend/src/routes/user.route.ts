@@ -3,7 +3,7 @@ import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
 import { newUser } from "../service/user.service";
 import { updateUser } from "../service/user.service";
-import { getUserByEmail, getTransactionsByUserEmail } from "../service/user.service";
+import { getUserByEmail } from "../service/user.service";
 import { User } from "@prisma/client";
 
 export const userRouter = Router();
@@ -61,37 +61,6 @@ userRouter.get("/get", async (req, res) => {
         const response: CustomResponse = {
             error: true,
             message: "Failed to fetch user data",
-            data: null
-        };
-
-        return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
-    }
-});
-
-userRouter.get("/transactions", async (req, res) => {
-    try {
-        const userEmail = req.session.email as string;
-        const transactionsResponse = await getTransactionsByUserEmail(userEmail);
-
-        if (transactionsResponse.error) {
-            throw new Error("Failed to fetch transactions");
-        }
-
-        const transactions = transactionsResponse.data;
-
-        const response: CustomResponse = {
-            error: false,
-            message: "Transactions fetched successfully",
-            data: transactions
-        };
-
-        return res.status(HttpCodes.OK).json(response);
-    } catch (error) {
-        console.error("Error fetching transactions:", error);
-
-        const response: CustomResponse = {
-            error: true,
-            message: "Failed to fetch transactions",
             data: null
         };
 

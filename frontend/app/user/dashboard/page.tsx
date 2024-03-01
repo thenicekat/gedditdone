@@ -7,8 +7,13 @@ import { useState } from "react";
 import { Button } from "@nextui-org/button";
 import axios from "axios";
 import { siteConfig } from "@/config/site";
-import { User } from "@/types";
+import { User, Post } from "@/types";
 import { HttpCodes } from "@/types/HttpCodes";
+import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@nextui-org/table";
+import { Chip } from "@nextui-org/chip";
+import { Card, CardBody, CardHeader } from "@nextui-org/card";
+import { Tabs, Tab } from "@nextui-org/tabs";
+import { HandRaisedIcon, BanknotesIcon, CreditCardIcon } from '@heroicons/react/24/solid'
 
 type UserProfile = {
   name: string;
@@ -21,6 +26,26 @@ export default function UserProfile() {
 
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const [userPosts, setUserPosts] = useState<Post[]>([]);
+
+  const fetchUserPosts = async () => {
+    try {
+      const response = await axios.get(
+        siteConfig.server_url + "/post/my",
+        {
+          params: {},
+          withCredentials: true,
+        }
+      );
+
+      setUserPosts(response.data.data);
+      setError(null);
+    } catch (err) {
+      console.error("Error fetching user posts:", err);
+      setError("Error fetching user posts.");
+    }
+  };
 
   const fetchUserData = async () => {
     try {
@@ -47,6 +72,7 @@ export default function UserProfile() {
 
   useEffect(() => {
     fetchUserData();
+    fetchUserPosts();
   }, []);
 
   const onSubmit = async (data: User) => {
@@ -108,6 +134,50 @@ export default function UserProfile() {
           </Button>
         </div>
       </Form>
+
+      <h1 className={title()}>Transactions</h1>
+      <div className="p-2">
+        <Tabs aria-label="Options" color="primary" variant="bordered">
+          <Tab
+            key="myposts"
+            title={
+              <div className="flex items-center space-x-2">
+                <BanknotesIcon className="h-5 w-5" />
+                <span>My Posts</span>
+              </div>
+            }
+          >
+            <Table aria-label="Example static collection table">
+              <TableHeader>
+                <TableColumn>Post content</TableColumn>
+                <TableColumn>The guy who accepted it</TableColumn>
+                <TableColumn>Points</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {userPosts.map((post, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{post.source} to {post.destination}</TableCell>
+                    <TableCell>{post.author ? <Chip color="success">post.author.name</Chip> : <Chip color="default">Not accepted</Chip>}</TableCell>
+                    <TableCell>{post.costInPoints}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Tab>
+
+          <Tab
+            key="acceptedposts"
+            title={
+              <div className="flex items-center space-x-2">
+                <HandRaisedIcon className="h-5 w-5" />
+                <span>The Posts I accepted</span>
+              </div>
+            }
+          >
+            Wow so empty <CreditCardIcon className="h-5 w-5" />
+          </Tab>
+        </Tabs>
+      </div>
     </div>
   );
 }
