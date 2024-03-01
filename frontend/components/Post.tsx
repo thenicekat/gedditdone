@@ -15,8 +15,11 @@ export default function PostComponent({
 }: Post) {
     return (
         <Card className="min-w-md max-w-[400px] m-3">
-            <CardHeader className="flex gap-3">
-                <Avatar isBordered radius="lg" name={author.name} />
+            <CardHeader className="flex gap-3 flex-row">
+                <img
+                    src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${author.email}&size=40&radius=30`}
+                    alt="avatar"
+                />
                 <div className="flex flex-col">
                     <p className="text-md">{source} to {destination}</p>
                     <p className="text-small text-default-500">{author.name}</p>
