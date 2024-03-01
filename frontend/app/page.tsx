@@ -62,7 +62,9 @@ export default function Home() {
 					:
 					<>
 						<div className="flex flex-wrap gap-4 justify-center items-center">
-							<Button color="success" variant="bordered" radius="sm" size="lg"
+							<Button
+								className="w-full"
+								color="success" variant="bordered" radius="sm" size="lg"
 								onClick={
 									() => {
 										window.location.href = "/post/create";
@@ -70,9 +72,10 @@ export default function Home() {
 								}>
 								Create a Post
 							</Button>
-						</div>
-						<div className="flex flex-wrap gap-4 justify-center items-center">
-							<Button color="success" variant="bordered" radius="sm" size="lg"
+
+							<Button
+								className="w-full"
+								color="success" variant="bordered" radius="sm" size="lg"
 								onClick={
 									() => {
 										window.location.href = "/user/dashboard";
