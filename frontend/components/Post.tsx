@@ -32,7 +32,7 @@ export default function PostComponent({
                 <Link
                     isExternal
                     showAnchorIcon
-                    href="https://github.com/nextui-org/nextui"
+                    href={`tel:${author.phoneNumber}`}
                 >
                     Request this geddit
                 </Link>
