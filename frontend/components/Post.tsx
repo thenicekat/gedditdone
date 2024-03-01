@@ -17,7 +17,7 @@ export default function PostComponent({
         <Card className="min-w-md max-w-[400px] m-3">
             <CardHeader className="flex gap-3 flex-row">
                 <img
-                    src={`https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${author.email}&size=40&radius=30`}
+                    src={`https://api.dicebear.com/7.x/notionists/svg?seed=${author.email}&size=40&radius=0&scale=200`}
                     alt="avatar"
                 />
                 <div className="flex flex-col">
