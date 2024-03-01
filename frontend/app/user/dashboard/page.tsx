@@ -11,7 +11,6 @@ import { User, Post } from "@/types";
 import { HttpCodes } from "@/types/HttpCodes";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@nextui-org/table";
 import { Chip } from "@nextui-org/chip";
-import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Tabs, Tab } from "@nextui-org/tabs";
 import { HandRaisedIcon, BanknotesIcon, CreditCardIcon } from '@heroicons/react/24/solid'
 
