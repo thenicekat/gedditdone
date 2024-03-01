@@ -72,6 +72,9 @@ userRouter.get("/get", async (req, res) => {
 userRouter.post("/update", async (req, res) => {
     try {
         const data = req.body;
+        const email = req.session.email as string;
+        
+        data["email"] = email;
         const updateUserResponse = await updateUser(data);
         
         if (updateUserResponse.error) {

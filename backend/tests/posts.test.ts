@@ -73,6 +73,18 @@ describe("Create a new post", () => {
             data: "Karma points not enough to create a post."
         });
     })
+
+    it("should catch any error occurred", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        prismaMock.post.create.mockResolvedValue(post);
+
+        prismaMock.post.create.mockRejectedValue(new Error("Some error occurred"));
+
+        expect(createPost(post)).resolves.toEqual({
+            error: true,
+            data: "Some error occurred while creating the post"
+        });
+    })
 })
 
 describe("Get all posts", () => {
@@ -82,6 +94,15 @@ describe("Get all posts", () => {
         expect(getAllPosts()).resolves.toEqual({
             error: false,
             data: [post]
+        });
+    });
+
+    it("should catch any error occurred", () => {
+        prismaMock.post.findMany.mockRejectedValue(new Error("Some error occurred"));
+
+        expect(getAllPosts()).resolves.toEqual({
+            error: true,
+            data: "Some error occurred while fetching the posts"
         });
     });
 })
@@ -95,6 +116,17 @@ describe("Get my posts", () => {
         )).resolves.toEqual({
             error: false,
             data: [post]
+        });
+    });
+
+    it("should catch any error occurred", () => {
+        prismaMock.post.findMany.mockRejectedValue(new Error("Some error occurred"));
+
+        expect(getMyPosts(
+            post.authorEmail
+        )).resolves.toEqual({
+            error: true,
+            data: []
         });
     });
 })

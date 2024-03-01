@@ -3,7 +3,6 @@ module.exports = {
     preset: "ts-jest",
     testEnvironment: "node",
     setupFilesAfterEnv: ["<rootDir>/tests/_mockdb.ts"],
-    coverageReporters: ["html"],
     collectCoverage: true,
     collectCoverageFrom: [
         "src/service/*.{js,jsx,ts,tsx}",

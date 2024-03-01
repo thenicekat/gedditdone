@@ -7,7 +7,7 @@ import { Chip } from "@nextui-org/chip";
 import { Post } from "@/types";
 
 export default function PostComponent({
-    authorName,
+    author,
     source,
     destination,
     service,
@@ -16,10 +16,10 @@ export default function PostComponent({
     return (
         <Card className="min-w-md max-w-[400px] m-3">
             <CardHeader className="flex gap-3">
-                <Avatar isBordered radius="lg" name={authorName} />
+                <Avatar isBordered radius="lg" name={author.name} />
                 <div className="flex flex-col">
                     <p className="text-md">{source} to {destination}</p>
-                    <p className="text-small text-default-500">{authorName}</p>
+                    <p className="text-small text-default-500">{author.name}</p>
                 </div>
             </CardHeader>
             <Divider />
