@@ -3,7 +3,7 @@ import 'dotenv/config'
 import express, { Express } from 'express'
 import session from 'express-session'
 const cors = require('cors');
-import { PORT, SESSIONKEY, __prod__ } from './constants'
+import { FRONTEND_URL, PORT, SESSIONKEY, __prod__ } from './constants'
 // Middleware
 import { loggerMiddleware } from './middleware/logger.middleware'
 import { errorsMiddleware } from './middleware/error.middleware'
@@ -22,7 +22,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors({
     optionsSuccessStatus: 200,
     credentials: true,
-    origin: "http://localhost:3000"
+    origin: FRONTEND_URL
 }))
 
 // Add session middleware

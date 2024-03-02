@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { googleOAuthHandler } from "../service/gauth.service";
 import { logger } from "../utils/logger";
+import { FRONTEND_URL } from "../constants";
 
 export const gauthRouter = Router();
 
@@ -11,11 +12,11 @@ gauthRouter.get("/", async (req, res) => {
 
     if (appUser.error) {
         logger.info("Creating new user");
-        res.redirect('http://localhost:3000/user/create');
+        res.redirect(FRONTEND_URL + 'user/create');
         return;
     } else {
         logger.info("User already exists");
-        res.redirect('http://localhost:3000');
+        res.redirect(FRONTEND_URL);
         return;
     }
 });
