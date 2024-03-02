@@ -29,8 +29,8 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
 
             if (!appUser) {
                 return {
-                    error: true,
-                    data: appUser
+                    error: false,
+                    data: "Create new user"
                 }
             }
             else

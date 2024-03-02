@@ -19,11 +19,14 @@ const app: Express = express()
 // Add middleware
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use(cors({
+
+// CORS
+let corsOptions = {
     optionsSuccessStatus: 200,
     credentials: true,
     origin: FRONTEND_URL
-}))
+}
+app.use(cors(corsOptions))
 
 // Add session middleware
 declare module "express-session" {

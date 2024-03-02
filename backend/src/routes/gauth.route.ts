@@ -11,6 +11,11 @@ gauthRouter.get("/", async (req, res) => {
     logger.info("Setting session data: " + req.session.email);
 
     if (appUser.error) {
+        res.redirect(FRONTEND_URL);
+        return;
+    }
+
+    if (appUser.data === "Create new user") {
         logger.info("Creating new user");
         res.redirect(FRONTEND_URL + 'user/create');
         return;
