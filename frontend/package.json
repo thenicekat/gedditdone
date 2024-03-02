@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.1.1",
     "@nextui-org/avatar": "^2.0.24",
     "@nextui-org/button": "2.0.26",
     "@nextui-org/card": "^2.0.24",
@@ -22,6 +23,8 @@
     "@nextui-org/snippet": "2.0.30",
     "@nextui-org/switch": "2.0.25",
     "@nextui-org/system": "2.0.15",
+    "@nextui-org/table": "^2.0.28",
+    "@nextui-org/tabs": "^2.0.26",
     "@nextui-org/theme": "2.1.17",
     "@react-aria/ssr": "^3.8.0",
     "@react-aria/visually-hidden": "^3.8.6",
