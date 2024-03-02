@@ -47,7 +47,7 @@ app.use(errorsMiddleware)
 
 
 // Not validated routes
-app.use("/api/sessions/oauth/google", gauthRouter)
+app.use("/oauth/google", gauthRouter)
 
 // Validated routes
 app.use(validateMiddleware)

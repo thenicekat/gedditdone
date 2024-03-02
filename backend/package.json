@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "nodemon src/index.ts",
-        "start": "ts-node src/index.ts",
+        "start": "node dist/index.js",
         "build": "tsc",
         "test": "jest --detectOpenHandles --coverage"
     },
