@@ -146,7 +146,7 @@ export default function UserProfile() {
               </div>
             }
           >
-            <Table aria-label="Example static collection table">
+            <Table aria-label="Geddit Posts Table">
               <TableHeader>
                 <TableColumn>Post content</TableColumn>
                 <TableColumn>The guy who accepted it</TableColumn>
@@ -173,7 +173,22 @@ export default function UserProfile() {
               </div>
             }
           >
-            Wow so empty <CreditCardIcon className="h-5 w-5" />
+            <Table aria-label="Geddit Posts Table">
+              <TableHeader>
+                <TableColumn>Post content</TableColumn>
+                <TableColumn>The guy who accepted it</TableColumn>
+                <TableColumn>Points</TableColumn>
+              </TableHeader>
+              <TableBody>
+                {userPosts.map((post, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{post.source} to {post.destination}</TableCell>
+                    <TableCell>{post.author ? <Chip color="success">post.author.name</Chip> : <Chip color="default">Not accepted</Chip>}</TableCell>
+                    <TableCell>{post.costInPoints}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </Tab>
         </Tabs>
       </div>
