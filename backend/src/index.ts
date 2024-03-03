@@ -18,7 +18,9 @@ import { validateMiddleware } from './middleware/auth.middleware';
 
 const app: Express = express()
 
-// Add middleware
+// Add Config
+app.set("trust proxy", 1);
+
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
