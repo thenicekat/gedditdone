@@ -37,12 +37,14 @@ declare module "express-session" {
 app.use(session({
     name: "geddit-session",
     store: new session.MemoryStore(),
+    proxy: true,
     secret: SESSIONKEY,
     resave: false,
     saveUninitialized: true,
     cookie: {
         secure: __prod__,
         sameSite: "none",
+        httpOnly: false,
         maxAge: 1000 * 60 * 60 * 24 * 1 // 1 day
     },
 }))
