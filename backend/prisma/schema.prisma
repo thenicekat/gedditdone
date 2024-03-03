@@ -34,8 +34,8 @@ model User {
 model Request {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   status String @default("open")
-  sender User @relation(fields: [senderId], references: [id])
-  senderId String @db.ObjectId
+  sender User @relation(fields: [senderEmail], references: [email])
+  senderEmail String
   post Post @relation(fields: [postId], references: [id])
   postId String @db.ObjectId
 }
