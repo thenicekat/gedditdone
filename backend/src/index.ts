@@ -1,11 +1,12 @@
 // Source the env file
 import 'dotenv/config'
 import express, { Express } from 'express'
-import session from 'express-session'
+import session, { CookieOptions } from 'express-session'
 const cors = require('cors');
-const MemoryStore = require('memorystore')(session)
+const MongoDBStore = require('connect-mongodb-session')(session);
 
-import { FRONTEND_URL, PORT, SESSIONKEY, __prod__ } from './constants'
+
+import { DATABASE_URL, FRONTEND_URL, PORT, SESSIONKEY, __prod__ } from './constants'
 // Middleware
 import { loggerMiddleware } from './middleware/logger.middleware'
 import { errorsMiddleware } from './middleware/error.middleware'
@@ -33,26 +34,33 @@ let corsOptions = {
 app.use(cors(corsOptions))
 
 // Add session middleware
+const store = new MongoDBStore({
+    uri: DATABASE_URL,
+    collection: 'Session'
+});
 declare module "express-session" {
     interface SessionData {
         email: string
     }
 }
+const cookieConfig: CookieOptions = __prod__ ? {
+    secure: true,
+    sameSite: 'none',
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 1 // 1 day
+} : {
+    secure: false,
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 1 // 1 day
+}
 app.use(session({
     name: "geddit-session",
-    store: new MemoryStore({
-        checkPeriod: 86400000 // prune expired entries every 24h
-    }),
+    store: store,
     proxy: true,
     secret: SESSIONKEY,
     resave: false,
     saveUninitialized: true,
-    cookie: {
-        secure: __prod__,
-        sameSite: "none",
-        httpOnly: false,
-        maxAge: 1000 * 60 * 60 * 24 * 1 // 1 day
-    },
+    cookie: cookieConfig,
 }))
 app.use(loggerMiddleware)
 app.use(errorsMiddleware)
