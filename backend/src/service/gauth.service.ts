@@ -40,7 +40,7 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
                 }
         } catch (error: any) {
             logger.error(JSON.stringify({
-                location: "googleOAuthHandler",
+                location: "googleOAuthHandler while finding user",
                 error: error.toString()
             }))
             return {
@@ -50,7 +50,7 @@ export async function googleOAuthHandler(req: Request): Promise<CustomReturn<Use
         }
     } catch (error: any) {
         logger.error(JSON.stringify({
-            location: "googleOAuthHandler",
+            location: "googleOAuthHandler while getting tokens",
             error: error.toString()
         }))
         return {
