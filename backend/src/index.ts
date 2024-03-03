@@ -3,6 +3,8 @@ import 'dotenv/config'
 import express, { Express } from 'express'
 import session from 'express-session'
 const cors = require('cors');
+const MemoryStore = require('memorystore')(session)
+
 import { FRONTEND_URL, PORT, SESSIONKEY, __prod__ } from './constants'
 // Middleware
 import { loggerMiddleware } from './middleware/logger.middleware'
@@ -36,7 +38,9 @@ declare module "express-session" {
 }
 app.use(session({
     name: "geddit-session",
-    store: new session.MemoryStore(),
+    store: new MemoryStore({
+        checkPeriod: 86400000 // prune expired entries every 24h
+    }),
     proxy: true,
     secret: SESSIONKEY,
     resave: false,
