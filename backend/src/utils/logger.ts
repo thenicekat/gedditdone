@@ -28,7 +28,7 @@ export const logger = winston.createLogger({
     )
 })
 
-if (!__prod__ && !__test__) {
+if (!__test__) {
     logger.add(new winston.transports.Console({
         format: format.combine(
             format.colorize(),
