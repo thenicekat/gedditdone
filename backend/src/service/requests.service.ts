@@ -3,6 +3,11 @@ import prisma from "../db"
 import { CustomReturn } from "../types/CustomReturn"
 
 export const getRequestsForPost = async (postId: string): Promise<CustomReturn<Request[]>> => {
+    if (!postId) return {
+        error: true,
+        data: []
+    }
+
     try {
         let requests: Request[] = await prisma.request.findMany({
             where: {
@@ -25,6 +30,10 @@ export const getRequestsForPost = async (postId: string): Promise<CustomReturn<R
 }
 
 export const getMyRequests = async (email: string): Promise<CustomReturn<Request[]>> => {
+    if (!email) return {
+        error: true,
+        data: []
+    }
     try {
         let requests: Request[] = await prisma.request.findMany({
             where: {
@@ -110,7 +119,7 @@ export const createRequest = async (postId: string, emailId: string): Promise<Cu
     } catch (error) {
         return {
             error: true,
-            data: null
+            data: "An error occurred while creating the request. Please try again later."
         }
     }
 }
