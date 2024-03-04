@@ -16,6 +16,7 @@ import { postsRouter } from './routes/posts.route'
 import { gauthRouter } from './routes/gauth.route'
 import { userRouter } from './routes/user.route'
 import { validateMiddleware } from './middleware/auth.middleware';
+import { requestsRouter } from './routes/requests.route';
 
 const app: Express = express()
 
@@ -73,6 +74,7 @@ app.use("/oauth/google", gauthRouter)
 app.use(validateMiddleware)
 app.use('/hello', helloRouter)
 app.use('/post', postsRouter)
+app.use('/request', requestsRouter)
 app.use('/user', userRouter)
 
 
