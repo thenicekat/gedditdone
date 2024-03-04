@@ -57,7 +57,7 @@ export default function PostComponent({
             <Divider />
             <CardFooter
                 className="justify-between">
-                <Popover placement="up">
+                <Popover placement="top">
                     <PopoverTrigger>
                         <Button
                             onClick={() => {
