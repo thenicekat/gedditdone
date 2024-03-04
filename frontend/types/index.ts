@@ -5,11 +5,14 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 };
 
 export type Post = {
+  id: string
   author: User;
+  authorId: string | undefined;
   source: string;
   destination: string;
   service: string;
   costInPoints: number;
+  request: Request[] | null;
 }
 
 export type User = {
@@ -20,4 +23,13 @@ export type User = {
   karmapoints: number;
   phoneNumber: string;
   karmaPoints: number;
+}
+
+export type Request = {
+  id: string;
+  status: string
+  post: Post;
+  postId: string;
+  sender: User;
+  senderEmail: string;
 }

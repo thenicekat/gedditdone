@@ -20,7 +20,7 @@ type UserProfile = {
     phoneNumber: string;
 };
 
-export default function Transactions() {
+export default function MyPosts() {
     const [userPosts, setUserPosts] = useState<Post[]>([]);
     const [error, setError] = useState<string | null>(null);
 
@@ -48,7 +48,7 @@ export default function Transactions() {
 
     return (
         <div>
-            <h1 className={title()}>Transactions</h1>
+            <h1 className={title()}>My Posts</h1>
 
             <p className="text-red-600 text-center text-lg p-2">{error}</p>
 
@@ -56,14 +56,16 @@ export default function Transactions() {
 
                 <Table aria-label="Geddit Posts Table">
                     <TableHeader>
-                        <TableColumn>Post content</TableColumn>
-                        <TableColumn>The guy who accepted it</TableColumn>
+                        <TableColumn>Requirement</TableColumn>
+                        <TableColumn>Service</TableColumn>
+                        <TableColumn>Status</TableColumn>
                         <TableColumn>Points</TableColumn>
                     </TableHeader>
                     <TableBody>
                         {userPosts.map((post, index) => (
                             <TableRow key={index}>
                                 <TableCell>{post.source} to {post.destination}</TableCell>
+                                <TableCell>{post.service}</TableCell>
                                 <TableCell>{post.author ? <Chip color="success">post.author.name</Chip> : <Chip color="default">Not accepted</Chip>}</TableCell>
                                 <TableCell>{post.costInPoints}</TableCell>
                             </TableRow>

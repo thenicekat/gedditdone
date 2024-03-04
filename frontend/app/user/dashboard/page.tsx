@@ -1,6 +1,6 @@
 "use client"
 import UpdateProfile from "./UpdateProfile";
-import Transactions from "./Transactions";
+import MyPosts from "./MyPosts";
 import { Tab, Tabs } from "@nextui-org/tabs";
 import { BanknotesIcon, UserIcon } from "@heroicons/react/24/solid";
 
@@ -33,11 +33,11 @@ export default function UserProfile() {
           title={
             <div className="flex items-center space-x-2">
               <BanknotesIcon className="h-5 w-5" />
-              <span>Transactions</span>
+              <span>My Posts</span>
             </div>
           }
         >
-          <Transactions />
+          <MyPosts />
         </Tab>
       </Tabs>
     </>

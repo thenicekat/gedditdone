@@ -81,7 +81,7 @@ export default function Home() {
 										window.location.href = "/user/dashboard";
 									}
 								}>
-								My Profile
+								Dashboard
 							</Button>
 						</div>
 						<div
@@ -90,11 +90,14 @@ export default function Home() {
 								posts.map((post, index) => (
 									<PostComponent
 										key={index}
+										id={post.id}
 										author={post.author}
 										source={post.source}
 										destination={post.destination}
 										service={post.service}
 										costInPoints={post.costInPoints}
+										authorId={post.authorId}
+										request={post.request}
 									/>
 								))
 							}
