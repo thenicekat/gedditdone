@@ -85,7 +85,7 @@ export default function Home() {
 							</Button>
 						</div>
 						<div
-							className="grid md:grid-cols-3 gap-4 m-4">
+							className="grid md:grid-cols-3 gap-4 m-2">
 							{
 								posts.map((post, index) => (
 									<PostComponent

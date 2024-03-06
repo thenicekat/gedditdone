@@ -39,7 +39,7 @@ export default function PostComponent({
     }
 
     return (
-        <Card className="min-w-md max-w-[400px] m-3">
+        <Card className="w-full max-w-[400px] m-3">
             <CardHeader className="flex gap-3 flex-row">
                 <img
                     src={`https://api.dicebear.com/7.x/notionists/svg?seed=${author.email}&size=40&radius=0&scale=100`}
