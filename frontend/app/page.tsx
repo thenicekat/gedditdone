@@ -70,7 +70,7 @@ export default function Home() {
 										window.location.href = "/post/create";
 									}
 								}>
-								Create a Post
+								Create Post
 							</Button>
 
 							<Button
