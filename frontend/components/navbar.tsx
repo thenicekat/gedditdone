@@ -23,6 +23,7 @@ import {
 	GithubIcon,
 	SearchIcon,
 } from "@/components/icons";
+import { NotificationsDropdown } from "./NotificationsDropDown";
 
 export const Navbar = () => {
 	return (
@@ -51,10 +52,12 @@ export const Navbar = () => {
 				</ul>
 			</NavbarContent>
 
+
 			<NavbarContent
 				className="hidden sm:flex basis-1/5 sm:basis-full"
 				justify="end"
 			>
+				<NotificationsDropdown />
 				<NavbarItem className="hidden sm:flex gap-2">
 					<Link isExternal href={siteConfig.links.github} aria-label="Github">
 						<GithubIcon className="text-default-500" />

@@ -69,7 +69,7 @@ export default function PostComponent({
                     </PopoverTrigger>
                     <PopoverContent>
                         <div className="px-1 py-2">
-                            <div className="text-small font-bold">{message}</div>
+                            <div className="text-small font-bold">{message || "Loading..."}</div>
                         </div>
                     </PopoverContent>
                 </Popover>
