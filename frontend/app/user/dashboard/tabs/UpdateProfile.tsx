@@ -1,7 +1,7 @@
 "use client"
 import { useEffect } from "react";
 import { title } from "@/components/primitives";
-import { Form, SubmitHandler, useForm, UseFormRegister } from "react-hook-form";
+import { Form, set, SubmitHandler, useForm, UseFormRegister } from "react-hook-form";
 import { Input } from "@nextui-org/input";
 import { useState } from "react";
 import { Button } from "@nextui-org/button";
@@ -21,8 +21,10 @@ export default function UpdateProfile() {
 
     const [message, setMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchUserData = async () => {
+        setLoading(true);
         try {
             const response = await axios.get(
                 siteConfig.server_url + "/user/get",
@@ -35,14 +37,13 @@ export default function UpdateProfile() {
 
             setValue("name", userData.name);
             setValue("phoneNumber", userData.phoneNumber);
-
-            setMessage("User data loaded successfully.");
             setError(null);
         } catch (err) {
             console.error("Error fetching user data:", err);
             setMessage(null);
             setError("Error fetching user data.");
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -65,7 +66,6 @@ export default function UpdateProfile() {
                 }
             );
 
-
             if (res.status == HttpCodes.ACCEPTED) {
                 setError(null)
                 setMessage("User updated successfully.")
@@ -83,12 +83,12 @@ export default function UpdateProfile() {
 
     return (
         <div>
-            <h1 className={title()}>User Profile</h1>
+            <div className="text-center"><h1 className={title()}>User Profile</h1></div>
 
             <p className="text-green-600 text-center text-lg">{message}</p>
             <p className="text-red-600 text-center text-lg">{error}</p>
 
-            <Form
+            {!loading ? <Form
                 className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
                 onSubmit={({ data }: any) => {
                     onSubmit(data)
@@ -107,7 +107,10 @@ export default function UpdateProfile() {
                         Update Profile
                     </Button>
                 </div>
-            </Form>
+            </Form> :
+                <p className="text-center text-xl m-2">
+                    Loading...
+                </p>}
         </div>
     );
 }

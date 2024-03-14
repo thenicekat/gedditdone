@@ -23,8 +23,10 @@ type UserProfile = {
 export default function MyPosts() {
     const [userPosts, setUserPosts] = useState<Post[]>([]);
     const [error, setError] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const fetchUserPosts = async () => {
+        setLoading(true);
         try {
             const response = await axios.get(
                 siteConfig.server_url + "/post/my",
@@ -40,6 +42,7 @@ export default function MyPosts() {
             console.error("Error fetching user posts:", err);
             setError("Error fetching user posts.");
         }
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -48,12 +51,11 @@ export default function MyPosts() {
 
     return (
         <div>
-            <h1 className={title()}>My Posts</h1>
+            <div className="text-center"><h1 className={title()}>My Posts</h1></div>
 
             <p className="text-red-600 text-center text-lg p-2">{error}</p>
 
-            <div className="p-2">
-
+            {!loading ? <div className="p-2">
                 <Table aria-label="Geddit Posts Table">
                     <TableHeader>
                         <TableColumn>Requirement</TableColumn>
@@ -72,7 +74,10 @@ export default function MyPosts() {
                         ))}
                     </TableBody>
                 </Table>
-            </div >
+            </div> :
+                <p className="text-center text-xl m-2">
+                    Loading...
+                </p>}
         </div >
     );
 }

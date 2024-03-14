@@ -5,7 +5,7 @@ import { createPost, getAllPosts, getMyPosts } from "../service/posts.service";
 
 export const postsRouter = Router();
 
-postsRouter.get("/all", async (_, res) => {
+postsRouter.get("/all", async (req, res) => {
     const allPosts = await getAllPosts();
 
     if (allPosts.error) {
@@ -15,15 +15,25 @@ postsRouter.get("/all", async (_, res) => {
             data: null
         }
         return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
-
     }
 
-    const response: CustomResponse = {
-        error: false,
-        message: "All posts retrieved successfully",
-        data: allPosts.data
+    // Filter out posts which are the users 
+    // NOTE: here we can enforce type as not string 
+    // because in the case of posts it will always be an array
+    const authorEmail = req.session.email as string;
+    if (typeof allPosts.data != "string") {
+        const filteredPosts = allPosts?.data?.filter((post: any) => post.author.email !== authorEmail);
+
+        const response: CustomResponse = {
+            error: false,
+            message: "All posts retrieved successfully",
+            data: filteredPosts
+        }
+
+        return res.status(HttpCodes.OK).json(response);
+    } else {
+        return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(allPosts.data);
     }
-    return res.status(HttpCodes.OK).json(response);
 })
 
 postsRouter.get("/my", async (req, res) => {

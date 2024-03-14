@@ -22,7 +22,7 @@ requestsRouter.get("/post", async (req, res) => {
 
     const response: CustomResponse = {
         error: false,
-        message: "All posts retrieved successfully",
+        message: "All requests for the post retrieved successfully",
         data: requestsPerPost.data
     }
     return res.status(HttpCodes.OK).json(response);

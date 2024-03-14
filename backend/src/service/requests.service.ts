@@ -1,6 +1,7 @@
 import { Post, Request } from "@prisma/client"
 import prisma from "../db"
 import { CustomReturn } from "../types/CustomReturn"
+import { logger } from "../utils/logger"
 
 export const getRequestsForPost = async (postId: string): Promise<CustomReturn<Request[]>> => {
     if (!postId) return {
@@ -38,13 +39,20 @@ export const getMyRequests = async (email: string): Promise<CustomReturn<Request
         let requests: Request[] = await prisma.request.findMany({
             where: {
                 senderEmail: email
+            },
+            include: {
+                post: true
             }
         })
         return {
             error: false,
             data: requests
         }
-    } catch (error) {
+    } catch (error: any) {
+        logger.error(JSON.stringify({
+            location: "getMyRequests",
+            error: error.toString()
+        }))
         return {
             error: true,
             data: []
