@@ -13,14 +13,13 @@ import { NavbarItem } from "@nextui-org/navbar";
 export const NotificationsDropdown = () => {
     return (
         <Dropdown placement="bottom-end">
-
             <DropdownTrigger>
                 <NavbarItem>
                     <NotificationIcon newNotifications={true} />
                 </NavbarItem>
             </DropdownTrigger>
 
-            <DropdownMenu className="w-80" aria-label="Notifications">
+            <DropdownMenu className="w-80">
                 <DropdownSection title="Notifications">
                     <DropdownItem
                         classNames={{

@@ -8,6 +8,7 @@ import axios from "axios";
 import { siteConfig } from "@/config/site";
 import { Post } from "@/types";
 import { HttpCodes } from "@/types/HttpCodes";
+import { PlusCircleIcon } from "@heroicons/react/24/solid";
 
 axios.defaults.withCredentials = true;
 
@@ -62,16 +63,15 @@ export default function Home() {
 					:
 					<>
 						<div className="flex flex-wrap gap-4 justify-center items-center">
-							<Button
-								className="w-full"
-								color="success" variant="bordered" radius="sm" size="lg"
+							<div
+								className="z-10 w-14 fixed bottom-0 right-0 m-4 text-green-500 cursor-pointer"
 								onClick={
 									() => {
 										window.location.href = "/post/create";
 									}
 								}>
-								Create Post
-							</Button>
+								<PlusCircleIcon />
+							</div>
 
 							<Button
 								className="w-full"
@@ -85,7 +85,7 @@ export default function Home() {
 							</Button>
 						</div>
 						<div
-							className="grid md:grid-cols-3 gap-4 m-2">
+							className="grid md:grid-cols-3 gap-3 m-2 w-full">
 							{
 								posts.map((post, index) => (
 									<PostComponent
@@ -104,6 +104,6 @@ export default function Home() {
 						</div>
 					</>
 			}
-		</section>
+		</section >
 	);
 }
