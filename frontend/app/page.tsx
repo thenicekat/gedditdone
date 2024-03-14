@@ -85,7 +85,7 @@ export default function Home() {
 							</Button>
 						</div>
 						<div
-							className="grid md:grid-cols-3 gap-3 m-2 w-full">
+							className="grid md:grid-cols-3 gap-3 mx-auto place-items-center w-full">
 							{
 								posts.map((post, index) => (
 									<PostComponent
