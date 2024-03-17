@@ -20,7 +20,7 @@ export const NotificationsDropdown = () => {
             </DropdownTrigger>
 
             <DropdownMenu className="w-80">
-                <DropdownSection title="Notifications">
+                <DropdownSection>
                     <DropdownItem
                         classNames={{
                             base: "py-2",

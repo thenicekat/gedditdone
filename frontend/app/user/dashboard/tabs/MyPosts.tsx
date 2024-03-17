@@ -12,7 +12,7 @@ import { HttpCodes } from "@/types/HttpCodes";
 import { Table, TableHeader, TableBody, TableColumn, TableRow, TableCell } from "@nextui-org/table";
 import { Chip } from "@nextui-org/chip";
 import { Tabs, Tab } from "@nextui-org/tabs";
-import { HandRaisedIcon, BanknotesIcon, CreditCardIcon } from '@heroicons/react/24/solid'
+import { HandRaisedIcon, BanknotesIcon, CreditCardIcon, EyeIcon } from '@heroicons/react/24/solid'
 
 type UserProfile = {
     name: string;
@@ -62,6 +62,7 @@ export default function MyPosts() {
                         <TableColumn>Service</TableColumn>
                         <TableColumn>Status</TableColumn>
                         <TableColumn>Points</TableColumn>
+                        <TableColumn>View</TableColumn>
                     </TableHeader>
                     <TableBody>
                         {userPosts.map((post, index) => (
@@ -70,6 +71,7 @@ export default function MyPosts() {
                                 <TableCell>{post.service}</TableCell>
                                 <TableCell>{post.author ? <Chip color="success">post.author.name</Chip> : <Chip color="default">Not accepted</Chip>}</TableCell>
                                 <TableCell>{post.costInPoints}</TableCell>
+                                <TableCell><a href={`/post/details/${post.id}`}><EyeIcon className="h-5 w-5" /></a></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

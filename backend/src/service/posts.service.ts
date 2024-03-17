@@ -1,4 +1,4 @@
-import { Post } from '@prisma/client'
+import { Post, Request } from '@prisma/client'
 import { CustomReturn } from '../types/CustomReturn'
 import prisma from '../db'
 import { logger } from '../utils/logger'
@@ -42,6 +42,47 @@ export const getMyPosts = async (authorEmail: string): Promise<CustomReturn<Post
         return {
             error: true,
             data: []
+        }
+    }
+}
+
+export const getPostDetails = async (postId: string): Promise<CustomReturn<Post>> => {
+    if (!postId) return {
+        error: true,
+        data: null
+    }
+
+    try {
+        let post: (Post & { requests: Request[] }) | null = await prisma.post.findUnique({
+            where: {
+                id: postId
+            },
+            include: {
+                requests: {
+                    include: {
+                        sender: true
+                    }
+                }
+            }
+        })
+
+        if (!post) return {
+            error: true,
+            data: "Post does not exist."
+        }
+
+        return {
+            error: false,
+            data: post
+        }
+    } catch (err: any) {
+        logger.error(JSON.stringify({
+            location: "getPostDetails",
+            message: err.toString()
+        }))
+        return {
+            error: true,
+            data: null
         }
     }
 }

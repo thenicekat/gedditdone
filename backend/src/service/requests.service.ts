@@ -3,33 +3,6 @@ import prisma from "../db"
 import { CustomReturn } from "../types/CustomReturn"
 import { logger } from "../utils/logger"
 
-export const getRequestsForPost = async (postId: string): Promise<CustomReturn<Request[]>> => {
-    if (!postId) return {
-        error: true,
-        data: []
-    }
-
-    try {
-        let requests: Request[] = await prisma.request.findMany({
-            where: {
-                id: postId
-            },
-            include: {
-                sender: true
-            }
-        })
-        return {
-            error: false,
-            data: requests
-        }
-    } catch (error) {
-        return {
-            error: true,
-            data: []
-        }
-    }
-}
-
 export const getMyRequests = async (email: string): Promise<CustomReturn<Request[]>> => {
     if (!email) return {
         error: true,
