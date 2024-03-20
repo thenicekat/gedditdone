@@ -104,3 +104,64 @@ export const createRequest = async (postId: string, emailId: string): Promise<Cu
         }
     }
 }
+
+export const acceptRequest = async (requestId: string): Promise<CustomReturn<Request>> => {
+    try {
+        let request: Request | null = await prisma.request.findFirst({
+            where: {
+                id: requestId
+            }
+        })
+        if (!request) {
+            return {
+                error: true,
+                data: "Request does not exist."
+            }
+        }
+        let post: Post | null = await prisma.post.findFirst({
+            where: {
+                id: request.postId
+            }
+        })
+        if (!post) {
+            return {
+                error: true,
+                data: "Post does not exist."
+            }
+        }
+
+        if (post.status === "closed") {
+            return {
+                error: true,
+                data: "Post is already closed."
+            }
+        }
+
+        await prisma.post.update({
+            where: {
+                id: post.id
+            },
+            data: {
+                status: "closed"
+            }
+        })
+
+        let updatedRequest: Request = await prisma.request.update({
+            where: {
+                id: request.id
+            },
+            data: {
+                status: "accepted"
+            }
+        })
+        return {
+            error: false,
+            data: updatedRequest
+        }
+    } catch (error) {
+        return {
+            error: true,
+            data: "An error occurred while accepting the request. Please try again later."
+        }
+    }
+}

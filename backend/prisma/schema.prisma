@@ -19,6 +19,7 @@ model Post {
   destination String
   service String
   requests Request[]
+  status String @default("open")
 }
 
 model User {

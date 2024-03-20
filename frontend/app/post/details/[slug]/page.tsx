@@ -50,8 +50,24 @@ const PostDetailsPage = ({ params }: Props) => {
         setLoading(false);
     }
 
-    const acceptRequest = async () => {
+    const acceptRequest = async (requestId: string) => {
+        try {
+            const response = await axios.post(
+                siteConfig.server_url + "/request/accept",
+                {
+                    requestId: requestId
+                },
+                {
+                    withCredentials: true,
+                }
+            );
 
+            setMessage(response.data.message);
+            fetchPostDetails();
+        } catch (err) {
+            console.error("Error accepting request:", err);
+            setError("Error accepting request.");
+        }
     }
 
     React.useEffect(() => {
@@ -116,7 +132,7 @@ const PostDetailsPage = ({ params }: Props) => {
                                         <TableCell>{request.sender.phoneNumber}</TableCell>
                                         <TableCell>{request.status}</TableCell>
                                         <TableCell
-                                            onClick={acceptRequest}
+                                            onClick={() => acceptRequest(request.id)}
                                             className='cursor-pointer'>
                                             <TicketIcon className='w-5 h-5' />
                                         </TableCell>
