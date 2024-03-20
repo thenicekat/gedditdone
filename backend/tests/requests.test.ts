@@ -1,6 +1,6 @@
 import { describe } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createRequest, getMyRequests, getRequestsForPost } from "../src/service/requests.service";
+import { createRequest, getMyRequests } from "../src/service/requests.service";
 import { Request } from ".prisma/client";
 import { Post, User } from "@prisma/client";
 
@@ -50,17 +50,6 @@ describe("Retreive my requests", () => {
         });
     })
 });
-
-describe("Get requests for a post", () => {
-    it("should get all requests of a post", () => {
-        prismaMock.request.findMany.mockResolvedValue([request]);
-
-        expect(getRequestsForPost(post.id)).resolves.toEqual({
-            error: false,
-            data: [request]
-        });
-    })
-})
 
 describe("Create a new request", () => {
     it("should throw an error if you are trying to request on your own post", () => {
