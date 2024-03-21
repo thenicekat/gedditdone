@@ -64,9 +64,9 @@ const PostDetailsPage = ({ params }: Props) => {
 
             setMessage(response.data.message);
             fetchPostDetails();
-        } catch (err) {
+        } catch (err: any) {
             console.error("Error accepting request:", err);
-            setError("Error accepting request.");
+            setError(err.response.data.message || "Error accepting request.");
         }
     }
 
