@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
-import { createPost, getAllPosts, getMyPosts, getPostDetails } from "../service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails,editPost } from "../service/posts.service";
 
 export const postsRouter = Router();
 
@@ -89,6 +89,43 @@ postsRouter.post("/create", async (req, res) => {
         data: crePost.data
     }
     return res.status(HttpCodes.CREATED).json(response);
+})
+
+postsRouter.post("/update", async (req, res) => {
+    const requestId = req.body.requestId as string;
+    const source = req.body.source as string;
+    const destination = req.body.destination as string;
+    const service = req.body.service as string;
+    const costInPoints = parseInt(req.body.costInPoints) as number;
+    const status= req.body.status as string;
+
+    const authorEmail = req.session.email as string;
+
+    const edPost = await editPost({
+        requestId,
+        authorEmail,
+        source,
+        destination,
+        costInPoints,
+        status,
+        service
+    });
+
+    if (edPost.error) {
+        const response: CustomResponse = {
+            error: true,
+            message: edPost.data as string,
+            data: null
+        }
+        return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
+    }
+
+    const response: CustomResponse = {
+        error: false,
+        message: "Post updated successfully",
+        data: edPost.data
+    }
+    return res.status(HttpCodes.OK).json(response);
 })
 
 postsRouter.get("/get", async (req, res) => {
