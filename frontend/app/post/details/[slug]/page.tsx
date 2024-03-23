@@ -101,15 +101,41 @@ const PostDetailsPage = ({ params }: Props) => {
 				window.location.href = "/"
 			}
 			else {
-				setError(res.data.error || "There was an error creating your post.")
+				setError(res.data.error || "There was an error editing your post.")
 			}
 		}
 		catch (err) {
 			console.error(err)
-			setError("There was an error creating your post.")
+			setError("There was an error editing your post.")
 		}
 	}
+    const onDelete = async (data: Post) => {
+		try {
+			const res = await axios.post(siteConfig.server_url + "/post/delete", {
+                requestId: params.slug,
+				service: data.service,
+			}, {
+				withCredentials: true,
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
 
+			if (res.status == HttpCodes.OK) {
+				setError("")
+				setMessage("Post deleted successfully.")
+			} else if (res.status == HttpCodes.UNAUTHORIZED) {
+				window.location.href = "/"
+			}
+			else {
+				setError(res.data.error || "There was an error deleting your post.")
+			}
+		}
+		catch (err) {
+			console.error(err)
+			setError("There was an error deleting your post.")
+		}
+	}
     return (
         <div>
             <h1 className={title()}>Your Post</h1>
