@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
-import { createPost, getAllPosts, getMyPosts, getPostDetails,editPost } from "../service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails,editPost, deletePost } from "../service/posts.service";
 
 export const postsRouter = Router();
 
@@ -123,6 +123,37 @@ postsRouter.post("/update", async (req, res) => {
     const response: CustomResponse = {
         error: false,
         message: "Post updated successfully",
+        data: edPost.data
+    }
+    return res.status(HttpCodes.OK).json(response);
+})
+
+postsRouter.post("/delete", async (req, res) => {
+    const requestId = req.body.requestId as string;
+    const service = req.body.service as string;
+    const status= req.body.status as string;
+
+    const authorEmail = req.session.email as string;
+
+    const edPost = await deletePost({
+        requestId,
+        authorEmail,
+        status,
+        service
+    });
+
+    if (edPost.error) {
+        const response: CustomResponse = {
+            error: true,
+            message: edPost.data as string,
+            data: null
+        }
+        return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
+    }
+
+    const response: CustomResponse = {
+        error: false,
+        message: "Post Deleted Successfully",
         data: edPost.data
     }
     return res.status(HttpCodes.OK).json(response);
