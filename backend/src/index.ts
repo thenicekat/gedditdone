@@ -17,6 +17,7 @@ import { gauthRouter } from './routes/gauth.route'
 import { userRouter } from './routes/user.route'
 import { validateMiddleware } from './middleware/auth.middleware';
 import { requestsRouter } from './routes/requests.route';
+import { adminRouter } from './routes/admin.route';
 
 const app: Express = express()
 
@@ -76,6 +77,7 @@ app.use('/hello', helloRouter)
 app.use('/post', postsRouter)
 app.use('/request', requestsRouter)
 app.use('/user', userRouter)
+app.use('/admin', adminRouter);
 
 
 // Start the server
