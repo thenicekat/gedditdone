@@ -164,8 +164,8 @@ const PostDetailsPage = ({ params }: Props) => {
                         setMessage("")
                         setError("There was an error creating your post.")
                     }}
-                    control={control}
-                >
+                    control={control}>
+
                     <Input label="Source" value={watch("source")} variant="underlined" {...register("source", { required: true })} />
                     <Input label="Destination" value={watch("destination")} variant="underlined" {...register("destination", { required: true })} />
                     <Input label="Service" value={watch("service")} variant="underlined" {...register("service", { required: true })} />
@@ -175,7 +175,14 @@ const PostDetailsPage = ({ params }: Props) => {
                     <Button type="submit" className="align-middle md:w-1/2 w-full" variant="bordered">
                         Edit Post
                     </Button>
-                </div>
+                    </div>
+                    <div className="m-3">
+                    </div>
+                    <div className="justify-around w-full flex">
+                    <Button onClick={(data:any) => onDelete(data)} className="align-middle md:w-1/2 w-full" variant="bordered" >
+                        Delete Post
+                    </Button>
+                    </div>
 
                     <div className="p-2">
                         <div className="m-4">
