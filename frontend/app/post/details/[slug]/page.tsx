@@ -10,6 +10,7 @@ import { Button } from "@nextui-org/button"
 import React from 'react'
 import { Form, useForm } from 'react-hook-form'
 import { HttpCodes } from '@/types/HttpCodes'
+// import { FRONTEND_URL } from ".../"
 
 type Props = {
     params: {
@@ -124,8 +125,9 @@ const PostDetailsPage = ({ params }: Props) => {
 			if (res.status == HttpCodes.OK) {
 				setError("")
 				setMessage("Post deleted successfully.")
+                window.location.href= ('/user/dashboard')
 			} else if (res.status == HttpCodes.UNAUTHORIZED) {
-				window.location.href = "/"
+				window.location.href= ('/')
 			}
 			else {
 				setError(res.data.error || "There was an error deleting your post.")
@@ -176,7 +178,7 @@ const PostDetailsPage = ({ params }: Props) => {
                         Edit Post
                     </Button>
                     </div>
-                    <div className="m-3">
+                    <div className="m-1">
                     </div>
                     <div className="justify-around w-full flex">
                     <Button onClick={(data:any) => onDelete(data)} className="align-middle md:w-1/2 w-full" variant="bordered" >

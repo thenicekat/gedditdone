@@ -2,7 +2,7 @@ import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
 import { createPost, getAllPosts, getMyPosts, getPostDetails,editPost, deletePost } from "../service/posts.service";
-import { FRONTEND_URL } from "../constants";
+//import { FRONTEND_URL } from "../constants";
 export const postsRouter = Router();
 
 postsRouter.get("/all", async (req, res) => {
@@ -154,7 +154,7 @@ postsRouter.post("/delete", async (req, res) => {
         message: "Post Deleted Successfully",
         data: delPost.data
     }
-    res.redirect(FRONTEND_URL+"/user/dashboard");
+    //res.redirect(FRONTEND_URL+'/user/dashboard');
     return res.status(HttpCodes.OK).json(response);
 })
 

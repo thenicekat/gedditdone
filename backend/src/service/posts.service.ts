@@ -252,7 +252,7 @@ export const deletePost = async(post: {
         };
     } catch (err: any) {
         logger.error(JSON.stringify({
-            location: "editPost",
+            location: "deletePost",
             message: err.toString()
         }));
         return {
