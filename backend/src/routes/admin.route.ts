@@ -34,7 +34,6 @@ adminRouter.get("/home", async(_,res)=>{
 
 adminRouter.put("/promote/:user", async(req, res) => {
     const userId = req.params.user;
-    console.log(req);
     const pro = await promoteUser(userId);
 
     if(pro.error){

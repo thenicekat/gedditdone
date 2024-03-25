@@ -1,14 +1,10 @@
 "use client"
-import { title } from "@/components/primitives";
 import { Button } from "@nextui-org/button";
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { User } from '@/types'
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table'
 import { siteConfig } from "@/config/site";
-import { HttpCodes } from "@/types/HttpCodes";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
-import { TicketIcon } from '@heroicons/react/24/solid'
 
 axios.defaults.withCredentials = true;
 
@@ -57,10 +53,10 @@ const AdminHomepage = () => {
                                     <TableRow key={index}>
                                         <TableCell>{u.name}</TableCell>
                                         <TableCell>{u.email}</TableCell>
-                                        <TableCell
-                                            onClick={() => promoteUser(u.email)}
-                                            className='cursor-pointer'>
-                                            <TicketIcon className='w-5 h-5' />
+                                        <TableCell>
+                                            <Button onClick={() => promoteUser(u.email)} className='cursor-pointer' color="primary" variant="bordered">
+                                              Select
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))}

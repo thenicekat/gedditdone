@@ -10,8 +10,6 @@ export const gauthRouter = Router();
 
 gauthRouter.get("/", async (req, res) => {
     const appUser = await googleOAuthHandler(req);
-    console.log(appUser);
-    console.log(appUser.data)
     logger.info("Setting session data: " + req.session.email);
 
     if (appUser.error) {
