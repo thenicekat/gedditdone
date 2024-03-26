@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
-import { createPost, getAllPosts, getMyPosts, getPostDetails,editPost, deletePost } from "../service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost } from "../service/posts.service";
 //import { FRONTEND_URL } from "../constants";
 export const postsRouter = Router();
 
@@ -92,17 +92,17 @@ postsRouter.post("/create", async (req, res) => {
 })
 
 postsRouter.post("/update", async (req, res) => {
-    const requestId = req.body.requestId as string;
+    const id = req.body.requestId as string;
     const source = req.body.source as string;
     const destination = req.body.destination as string;
     const service = req.body.service as string;
     const costInPoints = parseInt(req.body.costInPoints) as number;
-    const status= req.body.status as string;
+    const status = req.body.status as string;
 
     const authorEmail = req.session.email as string;
 
     const edPost = await editPost({
-        requestId,
+        id,
         authorEmail,
         source,
         destination,
@@ -129,13 +129,14 @@ postsRouter.post("/update", async (req, res) => {
 })
 
 postsRouter.post("/delete", async (req, res) => {
-    const requestId = req.body.requestId as string;
+    const id = req.body.requestId as string;
     const service = req.body.service as string;
-    const status= req.body.status as string;
+    const status = req.body.status as string;
 
     const authorEmail = req.session.email as string;
+
     const delPost = await deletePost({
-        requestId,
+        id,
         authorEmail,
         status,
         service
@@ -154,7 +155,6 @@ postsRouter.post("/delete", async (req, res) => {
         message: "Post Deleted Successfully",
         data: delPost.data
     }
-    //res.redirect(FRONTEND_URL+'/user/dashboard');
     return res.status(HttpCodes.OK).json(response);
 })
 

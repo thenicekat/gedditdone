@@ -213,7 +213,7 @@ export const editPost = async (post: {
 }
 
 export const deletePost = async (post: {
-    requestId: string,
+    id: string,
     authorEmail: string,
     status: string,
     service: string
@@ -242,7 +242,7 @@ export const deletePost = async (post: {
             }
 
         let deletePost = await prisma.post.delete({
-            where: { id: post.requestId },
+            where: { id: post.id },
         })
 
         return {
