@@ -2,7 +2,7 @@
 import { title } from '@/components/primitives'
 import { siteConfig } from '@/config/site'
 import { Request, User } from '@/types'
-import { TicketIcon } from '@heroicons/react/24/solid'
+import { EyeIcon, TicketIcon } from '@heroicons/react/24/solid'
 import { Input } from '@nextui-org/input'
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table'
 import axios from 'axios'
@@ -122,6 +122,7 @@ const PostDetailsPage = ({ params }: Props) => {
                                 <TableColumn>Email</TableColumn>
                                 <TableColumn>Phone</TableColumn>
                                 <TableColumn>Status</TableColumn>
+                                <TableColumn>View User</TableColumn>
                                 <TableColumn>Accept</TableColumn>
                             </TableHeader>
                             <TableBody>
@@ -131,6 +132,11 @@ const PostDetailsPage = ({ params }: Props) => {
                                         <TableCell>{request.sender.email}</TableCell>
                                         <TableCell>{request.sender.phoneNumber}</TableCell>
                                         <TableCell>{request.status}</TableCell>
+                                        <TableCell
+                                            onClick={() => window.open(`/user/${request.sender.userId}`)}
+                                            className='cursor-pointer'>
+                                            <EyeIcon className='w-5 h-5' />
+                                        </TableCell>
                                         <TableCell
                                             onClick={() => acceptRequest(request.id)}
                                             className='cursor-pointer'>
