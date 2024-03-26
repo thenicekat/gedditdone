@@ -78,7 +78,7 @@ const PostDetailsPage = ({ params }: Props) => {
         <div>
             <h1 className={title()}>Your Post</h1>
 
-            <p className="text-red-600 text-center text-lg m-2">
+            <p className="text-red-600 text-center text-xl m-2">
                 {
                     error
                     // || (errors.costInPoints?.type == "pattern" && "Please enter a valid number for cost")
@@ -90,7 +90,7 @@ const PostDetailsPage = ({ params }: Props) => {
                 }
             </p>
 
-            <p className="text-green-600 text-center text-lg m-2">{message}</p>
+            <p className="text-green-600 text-center text-xl m-2">{message}</p>
 
             {
                 !loading ? <Form

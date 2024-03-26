@@ -1,6 +1,6 @@
 import { describe } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createRequest, getMyRequests } from "../src/service/requests.service";
+import { createRequest, getMyRequests, acceptRequest } from "../src/service/requests.service";
 import { Request } from ".prisma/client";
 import { Post, User } from "@prisma/client";
 
@@ -10,6 +10,7 @@ const user: User = {
     email: "ben@ben.com",
     phoneNumber: "1234567890",
     karmaPoints: 10,
+    isPublic: false
 }
 
 const request: Request = {
@@ -29,6 +30,7 @@ const post: Post & {
     destination: "destination",
     costInPoints: 10,
     service: "service",
+    status: "open",
 }
 
 describe("Retreive my requests", () => {
@@ -45,6 +47,15 @@ describe("Retreive my requests", () => {
         prismaMock.request.findMany.mockResolvedValue([]);
 
         expect(getMyRequests("")).resolves.toEqual({
+            error: true,
+            data: []
+        });
+    })
+
+    it("should catch any error occurred", () => {
+        prismaMock.request.findMany.mockRejectedValue(new Error("Some error occurred"));
+
+        expect(getMyRequests(request.senderEmail)).resolves.toEqual({
             error: true,
             data: []
         });
@@ -117,3 +128,49 @@ describe("Create a new request", () => {
         post.authorId = "1";
     })
 });
+
+describe("Accept a request", () => {
+    it("should throw an error if request does not exist", () => {
+        prismaMock.request.findFirst.mockResolvedValue(null);
+        prismaMock.post.findFirst.mockResolvedValue(null);
+
+        expect(acceptRequest(request.id)).resolves.toEqual({
+            error: true,
+            data: "Request does not exist."
+        });
+    })
+
+    it("should throw an error if post does not exist", () => {
+        prismaMock.request.findFirst.mockResolvedValue(request);
+        prismaMock.post.findFirst.mockResolvedValue(null);
+
+        expect(acceptRequest(request.id)).resolves.toEqual({
+            error: true,
+            data: "Post does not exist."
+        });
+    })
+
+    it("should accept a request", () => {
+        prismaMock.request.findFirst.mockResolvedValue(request);
+        prismaMock.post.findFirst.mockResolvedValue(post);
+
+        request.status = "accepted";
+        prismaMock.request.update.mockResolvedValue(request);
+
+        expect(acceptRequest(request.id)).resolves.toEqual({
+            error: false,
+            data: request
+        });
+    })
+
+    it("should catch any other errors", () => {
+        prismaMock.request.findFirst.mockResolvedValue(request);
+        prismaMock.post.findFirst.mockResolvedValue(post);
+        prismaMock.request.update.mockRejectedValue(new Error("Some error"));
+
+        expect(acceptRequest(request.id)).resolves.toEqual({
+            error: true,
+            data: "An error occurred while accepting the request. Please try again later."
+        });
+    })
+})

@@ -9,17 +9,20 @@ import axios from "axios";
 import { siteConfig } from "@/config/site";
 import { User, Post } from "@/types";
 import { HttpCodes } from "@/types/HttpCodes";
+import { Chip } from "@nextui-org/chip";
 
 type UserProfile = {
     name: string;
     email: string;
     phoneNumber: string;
+    karmaPoints: number;
 };
 
 export default function UpdateProfile() {
     const { register, handleSubmit, formState: { errors }, control, setValue, watch } = useForm();
 
     const [message, setMessage] = useState<string | null>(null);
+    const [userData, setUserData] = useState<UserProfile | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -34,6 +37,7 @@ export default function UpdateProfile() {
                 }
             );
             const userData = response.data.data;
+            setUserData(userData);
 
             setValue("name", userData.name);
             setValue("phoneNumber", userData.phoneNumber);
@@ -101,6 +105,8 @@ export default function UpdateProfile() {
             >
                 <Input label="Name" variant="underlined" value={watch('name')} {...register("name", { required: true })} />
                 <Input label="Phone Number" variant="underlined" value={watch("phoneNumber")} {...register("phoneNumber", { required: true, pattern: /^[0-9]+$/ })} />
+                <Chip color="success" size="lg" className="mx-auto place-content-center">Karma Points: {userData?.karmaPoints}</Chip>
+
 
                 <div className="justify-around w-full flex">
                     <Button type="submit" className="align-middle md:w-1/2 w-full" variant="bordered">

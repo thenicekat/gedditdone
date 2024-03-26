@@ -1,6 +1,6 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createPost, getAllPosts, getMyPosts } from "../src/service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails } from "../src/service/posts.service";
 import { Post, User } from ".prisma/client";
 
 const userWith10KarmaPoints: User = {
@@ -9,6 +9,7 @@ const userWith10KarmaPoints: User = {
     email: "ben@ben.com",
     phoneNumber: "1234567890",
     karmaPoints: 10,
+    isPublic: false
 }
 
 const userWith0KarmaPoints: User = {
@@ -17,6 +18,7 @@ const userWith0KarmaPoints: User = {
     email: "ben@ben.com",
     phoneNumber: "1234567890",
     karmaPoints: 0,
+    isPublic: false
 }
 
 const post: Post & {
@@ -29,6 +31,7 @@ const post: Post & {
     destination: "destination",
     costInPoints: 10,
     service: "service",
+    status: "open",
 }
 
 describe("Create a new post", () => {
@@ -127,6 +130,41 @@ describe("Get my posts", () => {
         )).resolves.toEqual({
             error: true,
             data: []
+        });
+    });
+})
+
+describe("Get post details", () => {
+    it("should get post details", () => {
+        prismaMock.post.findUnique.mockResolvedValue(post);
+
+        expect(getPostDetails(
+            post.id
+        )).resolves.toEqual({
+            error: false,
+            data: post
+        });
+    });
+
+    it("should return an error if post does not exist", () => {
+        prismaMock.post.findUnique.mockResolvedValue(null);
+
+        expect(getPostDetails(
+            post.id
+        )).resolves.toEqual({
+            error: true,
+            data: "Post does not exist."
+        });
+    });
+
+    it("should catch any error occurred", () => {
+        prismaMock.post.findUnique.mockRejectedValue(new Error("Some error occurred"));
+
+        expect(getPostDetails(
+            post.id
+        )).resolves.toEqual({
+            error: true,
+            data: null
         });
     });
 })

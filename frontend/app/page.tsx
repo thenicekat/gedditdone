@@ -109,7 +109,7 @@ export default function Home() {
 										costInPoints={post.costInPoints}
 										authorId={post.authorId}
 										request={post.request}
-									/>
+										status={post.status} />
 								))
 							}
 						</div>

@@ -117,3 +117,37 @@ export const getUserByEmail = async (email: string): Promise<CustomReturn<User>>
         }
     }
 }
+
+export const getUserById = async (id: string): Promise<CustomReturn<User>> => {
+    try {
+        let user = await prisma.user.findUnique({
+            where: {
+                id: id
+            },
+            include: {
+                posts: true,
+                requests: true,
+            }
+        });
+
+        if (!user) return {
+            error: true,
+            data: "User does not exist."
+        }
+
+        if (!user.isPublic) return {
+            error: true,
+            data: "User is not public."
+        }
+
+        return {
+            error: false,
+            data: user
+        }
+    } catch (error) {
+        return {
+            error: true,
+            data: null
+        }
+    }
+}

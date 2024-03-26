@@ -1,10 +1,10 @@
 import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
-import { newUser } from "../service/user.service";
+import { getUserById, newUser } from "../service/user.service";
 import { updateUser } from "../service/user.service";
 import { getUserByEmail } from "../service/user.service";
-import { User } from "@prisma/client";
+import { Post, User } from "@prisma/client";
 
 export const userRouter = Router();
 
@@ -50,7 +50,8 @@ userRouter.get("/get", async (req, res) => {
             data: {
                 email: userData.email,
                 phoneNumber: userData.phoneNumber,
-                name: userData.name
+                name: userData.name,
+                karmaPoints: userData.karmaPoints
             }
         };
 
@@ -68,15 +69,53 @@ userRouter.get("/get", async (req, res) => {
     }
 });
 
+userRouter.get("/get/:userId", async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const userDataResponse = await getUserById(userId);
+
+        if (userDataResponse.error) {
+            return res.status(HttpCodes.NOT_FOUND).json({
+                error: true,
+                message: userDataResponse.data as string,
+                data: null
+            })
+        }
+
+        const userData = userDataResponse.data as (User & { posts: Post[] } & { requests: Request[] });
+
+        const response: CustomResponse = {
+            error: false,
+            message: "User data fetched successfully",
+            data: {
+                name: userData.name,
+                karmaPoints: userData.karmaPoints,
+                previousPosts: userData.posts,
+                previousRequests: userData.requests
+            }
+        };
+
+        return res.status(HttpCodes.OK).json(response);
+    } catch (error: any) {
+        const response: CustomResponse = {
+            error: true,
+            message: "Failed to fetch user data",
+            data: null
+        };
+
+        return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
+    }
+})
+
 
 userRouter.post("/update", async (req, res) => {
     try {
         const data = req.body;
         const email = req.session.email as string;
-        
+
         data["email"] = email;
         const updateUserResponse = await updateUser(data);
-        
+
         if (updateUserResponse.error) {
             const response: CustomResponse = {
                 error: true,

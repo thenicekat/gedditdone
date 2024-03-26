@@ -1,6 +1,6 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { getUserByEmail, newUser } from "../src/service/user.service";
+import { getUserByEmail, newUser, getUserById } from "../src/service/user.service";
 import { updateUser } from "../src/service/user.service";
 
 describe("Create a new user", () => {
@@ -10,7 +10,8 @@ describe("Create a new user", () => {
             name: "name",
             email: "email@email.com",
             phoneNumber: "9999999999",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         }
 
         prismaMock.user.create.mockResolvedValue(user);
@@ -27,7 +28,8 @@ describe("Create a new user", () => {
             name: "name",
             email: "",
             phoneNumber: "phoneNumber",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         }
 
         prismaMock.user.create.mockResolvedValue(user);
@@ -44,7 +46,8 @@ describe("Create a new user", () => {
             name: "",
             email: "email",
             phoneNumber: "phoneNumber",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         }
 
         prismaMock.user.create.mockResolvedValue(user);
@@ -61,7 +64,8 @@ describe("Create a new user", () => {
             name: "name",
             email: "email",
             phoneNumber: "",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         }
 
         prismaMock.user.create.mockResolvedValue(user);
@@ -78,8 +82,8 @@ describe("Create a new user", () => {
             name: "name",
             email: "email",
             phoneNumber: "phoneNumber",
-            karmaPoints: 0
-        
+            karmaPoints: 0,
+            isPublic: true
         }
 
         prismaMock.user.create.mockRejectedValue(new Error("User already exists."));
@@ -97,7 +101,8 @@ describe("Update user profile", () => {
             name: "",
             email: "email",
             phoneNumber: "phoneNumber",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         };
 
         expect(updateUser(user)).resolves.toEqual({
@@ -127,14 +132,16 @@ describe("Update user profile", () => {
             name: "NewName",
             email: "email",
             phoneNumber: "newPhoneNumber",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         };
         prismaMock.user.findUnique.mockResolvedValue({
             id: "1",
             name: "OldName",
             email: "email",
             phoneNumber: "oldPhoneNumber",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         });
 
         prismaMock.user.update.mockResolvedValue(user);
@@ -144,16 +151,35 @@ describe("Update user profile", () => {
             data: user
         });
     });
+
+    it("should catch any other errors", () => {
+        const user = {
+            id: "1",
+            name: "name",
+            email: "email",
+            phoneNumber: "phoneNumber",
+            karmaPoints: 0,
+            isPublic: true
+        };
+
+        prismaMock.user.findUnique.mockRejectedValue(new Error("Some error"));
+
+        expect(updateUser(user)).resolves.toEqual({
+            error: true,
+            data: null
+        });
+    })
 });
 
-describe ("Fetch user data", () => {
+describe("Fetch user data using email", () => {
     it("should fetch user data", () => {
         const user = {
             id: "1",
             name: "name",
             email: "email",
             phoneNumber: "phoneNumber",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         };
 
         prismaMock.user.findUnique.mockResolvedValue(user);
@@ -170,7 +196,8 @@ describe ("Fetch user data", () => {
             name: "name",
             email: "email",
             phoneNumber: "phoneNumber",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         };
 
         prismaMock.user.findUnique.mockResolvedValue(null);
@@ -180,4 +207,78 @@ describe ("Fetch user data", () => {
             data: "User does not exist."
         });
     });
+
+    it("should catch any other errors", () => {
+        const user = {
+            id: "1",
+            name: "name",
+            email: "email",
+            phoneNumber: "phoneNumber",
+            karmaPoints: 0,
+            isPublic: true
+        };
+
+        prismaMock.user.findUnique.mockRejectedValue(new Error("Some error"));
+
+        expect(getUserByEmail(user.id)).resolves.toEqual({
+            error: true,
+            data: null
+        });
+    })
 });
+
+describe("Fetch user data using id", () => {
+    it("should fetch user data", () => {
+        const user = {
+            id: "1",
+            name: "name",
+            email: "email",
+            phoneNumber: "phoneNumber",
+            karmaPoints: 0,
+            isPublic: true
+        };
+
+        prismaMock.user.findUnique.mockResolvedValue(user);
+
+        expect(getUserById(user.id)).resolves.toEqual({
+            error: false,
+            data: user
+        });
+    });
+
+    it("should throw error if user is not public", () => {
+        const user = {
+            id: "1",
+            name: "name",
+            email: "email",
+            phoneNumber: "phoneNumber",
+            karmaPoints: 0,
+            isPublic: false
+        };
+
+        prismaMock.user.findUnique.mockResolvedValue(user);
+
+        expect(getUserById(user.id)).resolves.toEqual({
+            error: true,
+            data: "User is not public."
+        });
+    })
+
+    it("should catch any other errors", () => {
+        const user = {
+            id: "1",
+            name: "name",
+            email: "email",
+            phoneNumber: "phoneNumber",
+            karmaPoints: 0,
+            isPublic: true
+        };
+
+        prismaMock.user.findUnique.mockRejectedValue(new Error("Some error"));
+
+        expect(getUserById(user.id)).resolves.toEqual({
+            error: true,
+            data: null
+        });
+    })
+})
