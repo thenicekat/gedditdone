@@ -49,7 +49,7 @@ export default function CreatePost() {
 		<div>
 			<h1 className={title()}>Create Post</h1>
 
-			<p className="text-red-600 text-center text-lg m-2">
+			<p className="text-red-600 text-center text-xl m-2">
 				{
 					error ||
 					(errors.costInPoints?.type == "pattern" && "Please enter a valid number for cost") ||
@@ -61,7 +61,7 @@ export default function CreatePost() {
 				}
 			</p>
 
-			<p className="text-green-600 text-center text-lg m-2">{message}</p>
+			<p className="text-green-600 text-center text-xl m-2">{message}</p>
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"

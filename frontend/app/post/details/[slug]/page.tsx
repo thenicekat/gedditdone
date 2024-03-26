@@ -2,7 +2,7 @@
 import { title } from '@/components/primitives'
 import { siteConfig } from '@/config/site'
 import { Post, Request, User } from '@/types'
-import { TicketIcon } from '@heroicons/react/24/solid'
+import { EyeIcon, TicketIcon } from '@heroicons/react/24/solid'
 import { Input } from '@nextui-org/input'
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table'
 import axios from 'axios'
@@ -81,68 +81,68 @@ const PostDetailsPage = ({ params }: Props) => {
     }, [params])
 
     const onSubmit = async (data: Post) => {
-		try {
-			const res = await axios.post(siteConfig.server_url + "/post/update", {
+        try {
+            const res = await axios.post(siteConfig.server_url + "/post/update", {
                 requestId: params.slug,
-				source: data.source,
-				destination: data.destination,
-				service: data.service,
-				costInPoints: data.costInPoints
-			}, {
-				withCredentials: true,
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
+                source: data.source,
+                destination: data.destination,
+                service: data.service,
+                costInPoints: data.costInPoints
+            }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-			if (res.status == HttpCodes.OK) {
-				setError("")
-				setMessage("Post edited successfully.")
-			} else if (res.status == HttpCodes.UNAUTHORIZED) {
-				window.location.href = "/"
-			}
-			else {
-				setError(res.data.error || "There was an error editing your post.")
-			}
-		}
-		catch (err) {
-			console.error(err)
-			setError("There was an error editing your post.")
-		}
-	}
+            if (res.status == HttpCodes.OK) {
+                setError("")
+                setMessage("Post edited successfully.")
+            } else if (res.status == HttpCodes.UNAUTHORIZED) {
+                window.location.href = "/"
+            }
+            else {
+                setError(res.data.error || "There was an error editing your post.")
+            }
+        }
+        catch (err) {
+            console.error(err)
+            setError("There was an error editing your post.")
+        }
+    }
     const onDelete = async (data: Post) => {
-		try {
-			const res = await axios.post(siteConfig.server_url + "/post/delete", {
+        try {
+            const res = await axios.post(siteConfig.server_url + "/post/delete", {
                 requestId: params.slug,
-				service: data.service,
-			}, {
-				withCredentials: true,
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			});
+                service: data.service,
+            }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
-			if (res.status == HttpCodes.OK) {
-				setError("")
-				setMessage("Post deleted successfully.")
-                window.location.href= ('/user/dashboard')
-			} else if (res.status == HttpCodes.UNAUTHORIZED) {
-				window.location.href= ('/')
-			}
-			else {
-				setError(res.data.error || "There was an error deleting your post.")
-			}
-		}
-		catch (err) {
-			console.error(err)
-			setError("There was an error deleting your post.")
-		}
-	}
+            if (res.status == HttpCodes.OK) {
+                setError("")
+                setMessage("Post deleted successfully.")
+                window.location.href = ('/user/dashboard')
+            } else if (res.status == HttpCodes.UNAUTHORIZED) {
+                window.location.href = ('/')
+            }
+            else {
+                setError(res.data.error || "There was an error deleting your post.")
+            }
+        }
+        catch (err) {
+            console.error(err)
+            setError("There was an error deleting your post.")
+        }
+    }
     return (
         <div>
             <h1 className={title()}>Your Post</h1>
 
-            <p className="text-red-600 text-center text-lg m-2">
+            <p className="text-red-600 text-center text-xl m-2">
                 {
                     error
                     // || (errors.costInPoints?.type == "pattern" && "Please enter a valid number for cost")
@@ -154,7 +154,7 @@ const PostDetailsPage = ({ params }: Props) => {
                 }
             </p>
 
-            <p className="text-green-600 text-center text-lg m-2">{message}</p>
+            <p className="text-green-600 text-center text-xl m-2">{message}</p>
 
             {
                 !loading ? <Form
@@ -174,16 +174,16 @@ const PostDetailsPage = ({ params }: Props) => {
                     <Input label="Cost In Points" value={watch("costInPoints")} variant="underlined" {...register("costInPoints", { required: true, pattern: /^[0-9]+$/, min: 0, max: 7 })} />
 
                     <div className="justify-around w-full flex">
-                    <Button type="submit" className="align-middle md:w-1/2 w-full" variant="bordered">
-                        Edit Post
-                    </Button>
+                        <Button type="submit" className="align-middle md:w-1/2 w-full" variant="bordered">
+                            Edit Post
+                        </Button>
                     </div>
                     <div className="m-1">
                     </div>
                     <div className="justify-around w-full flex">
-                    <Button onClick={(data:any) => onDelete(data)} className="align-middle md:w-1/2 w-full" variant="bordered" >
-                        Delete Post
-                    </Button>
+                        <Button onClick={(data: any) => onDelete(data)} className="align-middle md:w-1/2 w-full" variant="bordered" >
+                            Delete Post
+                        </Button>
                     </div>
 
                     <div className="p-2">
@@ -195,6 +195,7 @@ const PostDetailsPage = ({ params }: Props) => {
                                 <TableColumn>Email</TableColumn>
                                 <TableColumn>Phone</TableColumn>
                                 <TableColumn>Status</TableColumn>
+                                <TableColumn>View User</TableColumn>
                                 <TableColumn>Accept</TableColumn>
                             </TableHeader>
                             <TableBody>
@@ -204,6 +205,11 @@ const PostDetailsPage = ({ params }: Props) => {
                                         <TableCell>{request.sender.email}</TableCell>
                                         <TableCell>{request.sender.phoneNumber}</TableCell>
                                         <TableCell>{request.status}</TableCell>
+                                        <TableCell
+                                            onClick={() => window.open(`/user/details/${request.sender.id}`)}
+                                            className='cursor-pointer'>
+                                            <EyeIcon className='w-5 h-5' />
+                                        </TableCell>
                                         <TableCell
                                             onClick={() => acceptRequest(request.id)}
                                             className='cursor-pointer'>

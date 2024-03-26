@@ -118,6 +118,7 @@ export const acceptRequest = async (requestId: string): Promise<CustomReturn<Req
                 data: "Request does not exist."
             }
         }
+
         let post: Post | null = await prisma.post.findFirst({
             where: {
                 id: request.postId
@@ -136,7 +137,6 @@ export const acceptRequest = async (requestId: string): Promise<CustomReturn<Req
                 data: "Post is already closed."
             }
         }
-
         await prisma.post.update({
             where: {
                 id: post.id
@@ -146,12 +146,20 @@ export const acceptRequest = async (requestId: string): Promise<CustomReturn<Req
             }
         })
 
-        let updatedRequest: Request = await prisma.request.update({
+        let updatedRequest = await prisma.request.update({
             where: {
                 id: request.id
             },
             data: {
                 status: "accepted"
+            },
+            select: {
+                id: true,
+                status: true,
+                post: true,
+                postId: true,
+                sender: true,
+                senderEmail: true,
             }
         })
         return {

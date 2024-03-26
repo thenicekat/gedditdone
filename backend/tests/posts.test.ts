@@ -1,6 +1,6 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createPost, getAllPosts, getMyPosts,editPost, deletePost } from "../src/service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost } from "../src/service/posts.service";
 import { Post, User } from ".prisma/client";
 
 const userWith10KarmaPoints: User = {
@@ -9,6 +9,7 @@ const userWith10KarmaPoints: User = {
     email: "ben@ben.com",
     phoneNumber: "1234567890",
     karmaPoints: 10,
+    isPublic: false
 }
 
 const userWith0KarmaPoints: User = {
@@ -17,6 +18,7 @@ const userWith0KarmaPoints: User = {
     email: "ben@ben.com",
     phoneNumber: "1234567890",
     karmaPoints: 0,
+    isPublic: false
 }
 
 const post: Post & {
@@ -29,6 +31,7 @@ const post: Post & {
     destination: "destination",
     costInPoints: 10,
     service: "service",
+    status: "open",
 }
 
 describe("Create a new post", () => {
@@ -131,13 +134,48 @@ describe("Get my posts", () => {
     });
 })
 
+describe("Get post details", () => {
+    it("should get post details", () => {
+        prismaMock.post.findUnique.mockResolvedValue(post);
+
+        expect(getPostDetails(
+            post.id
+        )).resolves.toEqual({
+            error: false,
+            data: post
+        });
+    });
+
+    it("should return an error if post does not exist", () => {
+        prismaMock.post.findUnique.mockResolvedValue(null);
+
+        expect(getPostDetails(
+            post.id
+        )).resolves.toEqual({
+            error: true,
+            data: "Post does not exist."
+        });
+    });
+
+    it("should catch any error occurred", () => {
+        prismaMock.post.findUnique.mockRejectedValue(new Error("Some error occurred"));
+
+        expect(getPostDetails(
+            post.id
+        )).resolves.toEqual({
+            error: true,
+            data: null
+        });
+    });
+})
+
 describe("Edit the post", () => {
     it("should update the post", () => {
 
         prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
         prismaMock.post.create.mockResolvedValue(post);
 
-        const newpost= {
+        const newpost = {
             requestId: "1",
             authorEmail: "ben@ben.com",
             source: "source1",
@@ -156,7 +194,7 @@ describe("Edit the post", () => {
     it("should return an error if mail is not given", () => {
         let originalEmail = post.authorEmail;
         prismaMock.post.create.mockResolvedValue(post);
-        const newpost= {
+        const newpost = {
             requestId: "1",
             authorEmail: "",
             source: "source1",
@@ -175,7 +213,7 @@ describe("Edit the post", () => {
 
     it("should return an error if mail is given but user does not exist", () => {
         prismaMock.user.findUnique.mockResolvedValue(null);
-        const newpost= {
+        const newpost = {
             requestId: "1",
             authorEmail: "ben@ben.com",
             source: "source1",
@@ -193,7 +231,7 @@ describe("Edit the post", () => {
     it("should return an error if user does not have points", () => {
         prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
         prismaMock.post.create.mockResolvedValue(post);
-        const newpost= {
+        const newpost = {
             requestId: "1",
             authorEmail: "ben@ben.com",
             source: "source1",
@@ -213,7 +251,7 @@ describe("Edit the post", () => {
         prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
         prismaMock.post.create.mockResolvedValue(post);
 
-        const newpost= {
+        const newpost = {
             requestId: "1",
             authorEmail: "ben@ben.com",
             source: "source1",
@@ -231,7 +269,7 @@ describe("Edit the post", () => {
 
     it("should catch any error occurred", () => {
         prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
-        const newpost= {
+        const newpost = {
             requestId: "1",
             authorEmail: "ben@ben.com",
             source: "source1",

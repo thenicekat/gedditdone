@@ -12,17 +12,18 @@ export type Post = {
   destination: string;
   service: string;
   costInPoints: number;
+  status: string;
   request: Request[] | null;
 }
 
 export type User = {
-  userId: number;
+  id: number;
   name: string;
   email: string;
   password: string;
-  karmapoints: number;
   phoneNumber: string;
   karmaPoints: number;
+  isPublic: boolean;
 }
 
 export type Request = {
