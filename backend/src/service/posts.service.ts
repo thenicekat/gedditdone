@@ -148,8 +148,8 @@ export const createPost = async (post: {
 }
 
 
-export const editPost = async(post: {
-    requestId: string,
+export const editPost = async (post: {
+    id: string,
     authorEmail: string,
     source: string,
     destination: string
@@ -157,7 +157,6 @@ export const editPost = async(post: {
     status: string,
     service: string
 }): Promise<CustomReturn<Post>> => {
-
     if (!post.authorEmail) return {
         error: true,
         data: "Author email is required."
@@ -181,14 +180,14 @@ export const editPost = async(post: {
                 data: "Karma points not enough to create a post."
             }
 
-        if (post.status=="closed")
-            return{
-            error: true,
-            data: "Post has already been closed."
-        }
+        if (post.status == "closed")
+            return {
+                error: true,
+                data: "Post has already been closed."
+            }
 
-        let editPost= await prisma.post.update({
-            where: { id: post.requestId },
+        let editPost = await prisma.post.update({
+            where: { id: post.id },
             data: {
                 source: post.source,
                 destination: post.destination,
@@ -208,12 +207,12 @@ export const editPost = async(post: {
         }));
         return {
             error: true,
-            data: "Some error occurred while creating the post"
+            data: "Some error occurred while updating the post"
         }
     }
 }
 
-export const deletePost = async(post: {
+export const deletePost = async (post: {
     requestId: string,
     authorEmail: string,
     status: string,
@@ -236,13 +235,13 @@ export const deletePost = async(post: {
             data: "User does not exist."
         }
 
-        if (post.status=="closed")
-            return{
-            error: true,
-            data: "Post has already been closed."
-        }
+        if (post.status == "closed")
+            return {
+                error: true,
+                data: "Post has already been closed."
+            }
 
-        let deletePost= await prisma.post.delete({
+        let deletePost = await prisma.post.delete({
             where: { id: post.requestId },
         })
 

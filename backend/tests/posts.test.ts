@@ -1,6 +1,6 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createPost, getAllPosts, getMyPosts, getPostDetails } from "../src/service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost } from "../src/service/posts.service";
 import { Post, User } from ".prisma/client";
 
 const userWith10KarmaPoints: User = {
@@ -165,6 +165,61 @@ describe("Get post details", () => {
         )).resolves.toEqual({
             error: true,
             data: null
+        });
+    });
+})
+
+describe("Update post", () => {
+    it("should update post", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        prismaMock.post.update.mockResolvedValue(post);
+
+        expect(editPost({
+            id: post.id,
+            source: post.source,
+            destination: post.destination,
+            costInPoints: post.costInPoints,
+            service: post.service,
+            status: post.status,
+            authorEmail: post.authorEmail
+        })).resolves.toEqual({
+            error: false,
+            data: post
+        });
+    });
+
+    it("should throw an error if new karma higher than user karma", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+
+        expect(editPost({
+            id: post.id,
+            source: post.source,
+            destination: post.destination,
+            costInPoints: post.costInPoints,
+            service: post.service,
+            status: post.status,
+            authorEmail: post.authorEmail
+        })).resolves.toEqual({
+            error: true,
+            data: "Karma points not enough to create a post."
+        });
+
+    })
+
+    it("should catch any error occurred", () => {
+        prismaMock.user.findUnique.mockRejectedValue(new Error("Some error occurred"));
+
+        expect(editPost({
+            id: post.id,
+            source: post.source,
+            destination: post.destination,
+            costInPoints: post.costInPoints,
+            service: post.service,
+            status: post.status,
+            authorEmail: post.authorEmail
+        })).resolves.toEqual({
+            error: true,
+            data: "Some error occurred while updating the post"
         });
     });
 })
