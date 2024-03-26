@@ -51,7 +51,8 @@ userRouter.get("/get", async (req, res) => {
                 email: userData.email,
                 phoneNumber: userData.phoneNumber,
                 name: userData.name,
-                karmaPoints: userData.karmaPoints
+                karmaPoints: userData.karmaPoints,
+                isPublic: userData.isPublic
             }
         };
 
@@ -91,7 +92,7 @@ userRouter.get("/get/:userId", async (req, res) => {
                 name: userData.name,
                 karmaPoints: userData.karmaPoints,
                 previousPosts: userData.posts,
-                previousRequests: userData.requests
+                previousRequests: userData.requests,
             }
         };
 

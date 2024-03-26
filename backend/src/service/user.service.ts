@@ -52,11 +52,12 @@ export const updateUser = async (user: {
     name: string,
     email: string,
     phoneNumber: string,
+    isPublic: boolean
 }): Promise<CustomReturn<User>> => {
-    if (!user.name || !user.phoneNumber) {
+    if (!user.name || !user.phoneNumber || user.isPublic == null) {
         return {
             error: true,
-            data: "Name and Phone Number are required to update the profile."
+            data: "Name and Phone Number and Public Status are required to update the profile."
         };
     }
 
@@ -77,6 +78,7 @@ export const updateUser = async (user: {
             data: {
                 name: user.name,
                 phoneNumber: user.phoneNumber,
+                isPublic: user.isPublic
             },
         });
 

@@ -7,23 +7,29 @@ import { useState } from "react";
 import { Button } from "@nextui-org/button";
 import axios from "axios";
 import { siteConfig } from "@/config/site";
-import { User, Post } from "@/types";
+import { User } from "@/types";
 import { HttpCodes } from "@/types/HttpCodes";
+import { Switch } from "@nextui-org/switch";
 import { Chip } from "@nextui-org/chip";
+import React from "react";
 
 type UserProfile = {
     name: string;
     email: string;
     phoneNumber: string;
     karmaPoints: number;
+    isPublic: boolean;
 };
 
 export default function UpdateProfile() {
     const { register, handleSubmit, formState: { errors }, control, setValue, watch } = useForm();
 
     const [message, setMessage] = useState<string | null>(null);
-    const [userData, setUserData] = useState<UserProfile | null>(null);
     const [error, setError] = useState<string | null>(null);
+
+    const [userData, setUserData] = useState<UserProfile | null>(null);
+    const [userIsPublic, setUserIsPublic] = useState<boolean>(false);
+
     const [loading, setLoading] = useState<boolean>(false);
 
     const fetchUserData = async () => {
@@ -38,6 +44,7 @@ export default function UpdateProfile() {
             );
             const userData = response.data.data;
             setUserData(userData);
+            setUserIsPublic(userData.isPublic);
 
             setValue("name", userData.name);
             setValue("phoneNumber", userData.phoneNumber);
@@ -54,13 +61,14 @@ export default function UpdateProfile() {
         fetchUserData();
     }, []);
 
-    const onSubmit = async (data: User) => {
+    const onSubmit = async (data: UserProfile) => {
         try {
             const res = await axios.post(
                 siteConfig.server_url + "/user/update",
                 {
                     name: data.name,
-                    phoneNumber: data.phoneNumber
+                    phoneNumber: data.phoneNumber,
+                    isPublic: userIsPublic
                 },
                 {
                     withCredentials: true,
@@ -85,6 +93,16 @@ export default function UpdateProfile() {
         }
     };
 
+    React.useEffect(() => {
+        if (userData) {
+            setMessage("")
+            onSubmit({
+                ...userData,
+                isPublic: userIsPublic
+            })
+        }
+    }, [userIsPublic])
+
     return (
         <div>
             <div className="text-center"><h1 className={title()}>User Profile</h1></div>
@@ -103,10 +121,16 @@ export default function UpdateProfile() {
                 }}
                 control={control}
             >
+                <div className="flex justify-around m-2">
+                    <Chip color="success" size="lg" className="mx-auto place-content-center">Karma Points: {userData?.karmaPoints}</Chip>
+                    <Switch size="lg" className="mx-auto place-content-center" isSelected={userIsPublic} onValueChange={() => {
+                        setUserIsPublic(!userIsPublic)
+                    }}>
+                        Public
+                    </Switch>
+                </div>
                 <Input label="Name" variant="underlined" value={watch('name')} {...register("name", { required: true })} />
                 <Input label="Phone Number" variant="underlined" value={watch("phoneNumber")} {...register("phoneNumber", { required: true, pattern: /^[0-9]+$/ })} />
-                <Chip color="success" size="lg" className="mx-auto place-content-center">Karma Points: {userData?.karmaPoints}</Chip>
-
 
                 <div className="justify-around w-full flex">
                     <Button type="submit" className="align-middle md:w-1/2 w-full" variant="bordered">
@@ -116,7 +140,8 @@ export default function UpdateProfile() {
             </Form> :
                 <p className="text-center text-xl m-2">
                     Loading...
-                </p>}
-        </div>
+                </p>
+            }
+        </div >
     );
 }

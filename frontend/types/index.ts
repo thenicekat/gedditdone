@@ -23,6 +23,7 @@ export type User = {
   password: string;
   phoneNumber: string;
   karmaPoints: number;
+  isPublic: boolean;
 }
 
 export type Request = {
