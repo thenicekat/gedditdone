@@ -94,7 +94,7 @@ export default function UpdateProfile() {
     };
 
     React.useEffect(() => {
-        if (userData) {
+        if (userData && userData.isPublic != userIsPublic) {
             setMessage("")
             onSubmit({
                 ...userData,
@@ -126,7 +126,7 @@ export default function UpdateProfile() {
                     <Switch size="lg" className="mx-auto place-content-center" isSelected={userIsPublic} onValueChange={() => {
                         setUserIsPublic(!userIsPublic)
                     }}>
-                        Public
+                        {userIsPublic ? "Public" : "Private"}
                     </Switch>
                 </div>
                 <Input label="Name" variant="underlined" value={watch('name')} {...register("name", { required: true })} />
