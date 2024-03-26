@@ -133,7 +133,7 @@ const PostDetailsPage = ({ params }: Props) => {
                                         <TableCell>{request.sender.phoneNumber}</TableCell>
                                         <TableCell>{request.status}</TableCell>
                                         <TableCell
-                                            onClick={() => window.open(`/user/${request.sender.userId}`)}
+                                            onClick={() => window.open(`/user/${request.sender.id}`)}
                                             className='cursor-pointer'>
                                             <EyeIcon className='w-5 h-5' />
                                         </TableCell>

@@ -17,7 +17,7 @@ export type Post = {
 }
 
 export type User = {
-  userId: number;
+  id: number;
   name: string;
   email: string;
   password: string;
