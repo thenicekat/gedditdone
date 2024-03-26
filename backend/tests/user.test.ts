@@ -107,7 +107,7 @@ describe("Update user profile", () => {
 
         expect(updateUser(user)).resolves.toEqual({
             error: true,
-            data: "Name and Phone Number are required to update the profile."
+            data: "Name and Phone Number and Public Status are required to update the profile."
         });
     });
 
@@ -117,12 +117,13 @@ describe("Update user profile", () => {
             name: "name",
             email: "email",
             phoneNumber: "",
-            karmaPoints: 0
+            karmaPoints: 0,
+            isPublic: true
         };
 
         expect(updateUser(user)).resolves.toEqual({
             error: true,
-            data: "Name and Phone Number are required to update the profile."
+            data: "Name and Phone Number and Public Status are required to update the profile."
         });
     });
 
