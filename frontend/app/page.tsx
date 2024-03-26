@@ -8,7 +8,11 @@ import axios from "axios";
 import { siteConfig } from "@/config/site";
 import { Post } from "@/types";
 import { HttpCodes } from "@/types/HttpCodes";
-import { PlusCircleIcon } from "@heroicons/react/24/solid";
+import { ArchiveBoxIcon, BookmarkIcon, HomeIcon, PlusCircleIcon, UserIcon } from "@heroicons/react/24/solid";
+import MyPosts from "./tabs/MyPosts";
+import SentRequests from "./tabs/SentRequests";
+import { Tab, Tabs } from "@nextui-org/tabs";
+import UpdateProfile from "./tabs/UpdateProfile";
 
 axios.defaults.withCredentials = true;
 
@@ -63,7 +67,6 @@ export default function Home() {
 					:
 					<>
 						<div className="flex flex-wrap gap-4 justify-center items-center">
-
 							<Button className="w-full hidden md:block"
 								color="success" variant="bordered" radius="sm" size="lg"
 								onClick={
@@ -83,35 +86,78 @@ export default function Home() {
 								}>
 								<PlusCircleIcon />
 							</div>
-
-							<Button
-								className="w-full"
-								color="success" variant="bordered" radius="sm" size="lg"
-								onClick={
-									() => {
-										window.location.href = "/user/dashboard";
-									}
-								}>
-								Dashboard
-							</Button>
 						</div>
-						<div
-							className="grid md:grid-cols-3 gap-3 mx-auto place-items-center w-full">
-							{
-								posts.map((post, index) => (
-									<PostComponent
-										key={index}
-										id={post.id}
-										author={post.author}
-										source={post.source}
-										destination={post.destination}
-										service={post.service}
-										costInPoints={post.costInPoints}
-										authorId={post.authorId}
-										request={post.request}
-										status={post.status} />
-								))
-							}
+
+						<div className="w-full">
+							<Tabs
+								className="flex justify-center p-2"
+								aria-label="Options"
+								size="lg"
+								color="success"
+								variant="bordered">
+								<Tab
+									key="posts"
+									title={
+										<div className="flex items-center space-x-2">
+											<HomeIcon className="h-5 w-5" />
+											<span>Posts</span>
+										</div>
+									}
+								>
+									<div
+										className="grid md:grid-cols-3 gap-3 mx-auto place-items-center w-full">
+										{posts.map((post, index) => (
+											<PostComponent
+												key={index}
+												id={post.id}
+												author={post.author}
+												source={post.source}
+												destination={post.destination}
+												service={post.service}
+												costInPoints={post.costInPoints}
+												authorId={post.authorId}
+												request={post.request}
+												status={post.status} />
+										))}
+									</div>
+								</Tab>
+
+								<Tab
+									key="profile"
+									title={
+										<div className="flex items-center space-x-2">
+											<UserIcon className="h-5 w-5" />
+											<span>Profile</span>
+										</div>
+									}
+								>
+									<UpdateProfile />
+								</Tab>
+
+								<Tab
+									key="myposts"
+									title={
+										<div className="flex items-center space-x-2">
+											<BookmarkIcon className="h-5 w-5" />
+											<span>My Posts</span>
+										</div>
+									}
+								>
+									<MyPosts />
+								</Tab>
+
+								<Tab
+									key="sentrequests"
+									title={
+										<div className="flex items-center space-x-2">
+											<ArchiveBoxIcon className="h-5 w-5" />
+											<span>Sent Requests</span>
+										</div>
+									}
+								>
+									<SentRequests />
+								</Tab>
+							</Tabs>
 						</div>
 					</>
 			}
