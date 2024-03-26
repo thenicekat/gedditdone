@@ -1,13 +1,16 @@
 "use client"
 import { title } from '@/components/primitives'
 import { siteConfig } from '@/config/site'
-import { Request, User } from '@/types'
+import { Post, Request, User } from '@/types'
 import { EyeIcon, TicketIcon } from '@heroicons/react/24/solid'
 import { Input } from '@nextui-org/input'
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table'
 import axios from 'axios'
+import { Button } from "@nextui-org/button"
 import React from 'react'
 import { Form, useForm } from 'react-hook-form'
+import { HttpCodes } from '@/types/HttpCodes'
+// import { FRONTEND_URL } from ".../"
 
 type Props = {
     params: {
@@ -19,6 +22,8 @@ const PostDetailsPage = ({ params }: Props) => {
     const [message, setMessage] = React.useState<string>("")
     const [error, setError] = React.useState<string>("")
     const [loading, setLoading] = React.useState<boolean>(true)
+
+    const [postData, setPostData] = React.useState();
 
     const [postRequests, setPostRequests] = React.useState<Request[] & ({
         sender: User
@@ -41,6 +46,7 @@ const PostDetailsPage = ({ params }: Props) => {
             setValue("destination", postData.destination);
             setValue("service", postData.service);
             setValue("costInPoints", postData.costInPoints);
+            setPostData(postData);
 
             setPostRequests(postData.requests)
         } catch (err) {
@@ -74,6 +80,64 @@ const PostDetailsPage = ({ params }: Props) => {
         if (params.slug) fetchPostDetails()
     }, [params])
 
+    const onSubmit = async (data: Post) => {
+        try {
+            const res = await axios.post(siteConfig.server_url + "/post/update", {
+                requestId: params.slug,
+                source: data.source,
+                destination: data.destination,
+                service: data.service,
+                costInPoints: data.costInPoints
+            }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (res.status == HttpCodes.OK) {
+                setError("")
+                setMessage("Post edited successfully.")
+            } else if (res.status == HttpCodes.UNAUTHORIZED) {
+                window.location.href = "/"
+            }
+            else {
+                setError(res.data.error || "There was an error editing your post.")
+            }
+        }
+        catch (err) {
+            console.error(err)
+            setError("There was an error editing your post.")
+        }
+    }
+    const onDelete = async (data: Post) => {
+        try {
+            const res = await axios.post(siteConfig.server_url + "/post/delete", {
+                requestId: params.slug,
+                service: data.service,
+            }, {
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (res.status == HttpCodes.OK) {
+                setError("")
+                setMessage("Post deleted successfully.")
+                window.location.href = ('/user/dashboard')
+            } else if (res.status == HttpCodes.UNAUTHORIZED) {
+                window.location.href = ('/')
+            }
+            else {
+                setError(res.data.error || "There was an error deleting your post.")
+            }
+        }
+        catch (err) {
+            console.error(err)
+            setError("There was an error deleting your post.")
+        }
+    }
     return (
         <div>
             <h1 className={title()}>Your Post</h1>
@@ -95,27 +159,36 @@ const PostDetailsPage = ({ params }: Props) => {
             {
                 !loading ? <Form
                     className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-                    // onSubmit={({ data }: any) => {
-                    //     onSubmit(data)
-                    // }}
-                    // onError={() => {
-                    //     setMessage(null)
-                    //     setError("There was an error creating your post.")
-                    // }}
-                    control={control}
-                >
+                    onSubmit={({ data }: any) => {
+                        onSubmit(data)
+                    }}
+                    onError={() => {
+                        setMessage("")
+                        setError("There was an error creating your post.")
+                    }}
+                    control={control}>
+
                     <Input label="Source" value={watch("source")} variant="underlined" {...register("source", { required: true })} />
                     <Input label="Destination" value={watch("destination")} variant="underlined" {...register("destination", { required: true })} />
                     <Input label="Service" value={watch("service")} variant="underlined" {...register("service", { required: true })} />
                     <Input label="Cost In Points" value={watch("costInPoints")} variant="underlined" {...register("costInPoints", { required: true, pattern: /^[0-9]+$/, min: 0, max: 7 })} />
 
-                    {/* <div className="justify-around w-full flex">
-                    <Button type="submit" className="align-middle md:w-1/2 w-full" variant="bordered">
-                        Create Post
-                    </Button>
-                </div> */}
+                    <div className="justify-around w-full flex">
+                        <Button type="submit" className="align-middle md:w-1/2 w-full" variant="bordered">
+                            Edit Post
+                        </Button>
+                    </div>
+                    <div className="m-1">
+                    </div>
+                    <div className="justify-around w-full flex">
+                        <Button onClick={(data: any) => onDelete(data)} className="align-middle md:w-1/2 w-full" variant="bordered" >
+                            Delete Post
+                        </Button>
+                    </div>
 
                     <div className="p-2">
+                        <div className="m-4">
+                        </div>
                         <Table aria-label="Requests Table">
                             <TableHeader>
                                 <TableColumn>Name</TableColumn>

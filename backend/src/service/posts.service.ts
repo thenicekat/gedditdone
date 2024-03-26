@@ -146,3 +146,118 @@ export const createPost = async (post: {
         }
     }
 }
+
+
+export const editPost = async(post: {
+    requestId: string,
+    authorEmail: string,
+    source: string,
+    destination: string
+    costInPoints: number,
+    status: string,
+    service: string
+}): Promise<CustomReturn<Post>> => {
+
+    if (!post.authorEmail) return {
+        error: true,
+        data: "Author email is required."
+    }
+
+    try {
+        let user = await prisma.user.findUnique({
+            where: {
+                email: post.authorEmail
+            }
+        });
+
+        if (!user) return {
+            error: true,
+            data: "User does not exist."
+        }
+
+        if (user?.karmaPoints < post.costInPoints)
+            return {
+                error: true,
+                data: "Karma points not enough to create a post."
+            }
+
+        if (post.status=="closed")
+            return{
+            error: true,
+            data: "Post has already been closed."
+        }
+
+        let editPost= await prisma.post.update({
+            where: { id: post.requestId },
+            data: {
+                source: post.source,
+                destination: post.destination,
+                costInPoints: post.costInPoints,
+                service: post.service
+            },
+        })
+
+        return {
+            error: false,
+            data: editPost
+        };
+    } catch (err: any) {
+        logger.error(JSON.stringify({
+            location: "editPost",
+            message: err.toString()
+        }));
+        return {
+            error: true,
+            data: "Some error occurred while creating the post"
+        }
+    }
+}
+
+export const deletePost = async(post: {
+    requestId: string,
+    authorEmail: string,
+    status: string,
+    service: string
+}): Promise<CustomReturn<Post>> => {
+    if (!post.authorEmail) return {
+        error: true,
+        data: "Author email is required."
+    }
+
+    try {
+        let user = await prisma.user.findUnique({
+            where: {
+                email: post.authorEmail
+            }
+        });
+
+        if (!user) return {
+            error: true,
+            data: "User does not exist."
+        }
+
+        if (post.status=="closed")
+            return{
+            error: true,
+            data: "Post has already been closed."
+        }
+
+        let deletePost= await prisma.post.delete({
+            where: { id: post.requestId },
+        })
+
+        return {
+            error: false,
+            data: deletePost
+        };
+    } catch (err: any) {
+        logger.error(JSON.stringify({
+            location: "deletePost",
+            message: err.toString()
+        }));
+        return {
+            error: true,
+            data: "Some error occurred while creating the post"
+        }
+    }
+}

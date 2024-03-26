@@ -1,6 +1,6 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createPost, getAllPosts, getMyPosts, getPostDetails } from "../src/service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost } from "../src/service/posts.service";
 import { Post, User } from ".prisma/client";
 
 const userWith10KarmaPoints: User = {
@@ -167,4 +167,122 @@ describe("Get post details", () => {
             data: null
         });
     });
+})
+
+describe("Edit the post", () => {
+    it("should update the post", () => {
+
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        prismaMock.post.create.mockResolvedValue(post);
+
+        const newpost = {
+            requestId: "1",
+            authorEmail: "ben@ben.com",
+            source: "source1",
+            destination: "destination1",
+            costInPoints: 10,
+            status: "open",
+            service: "service2",
+        }
+
+        expect(editPost(newpost)).resolves.toEqual({
+            error: false,
+            data: newpost
+        });
+    });
+
+    it("should return an error if mail is not given", () => {
+        let originalEmail = post.authorEmail;
+        prismaMock.post.create.mockResolvedValue(post);
+        const newpost = {
+            requestId: "1",
+            authorEmail: "",
+            source: "source1",
+            destination: "destination1",
+            costInPoints: 10,
+            status: "open",
+            service: "service2",
+        }
+
+        expect(editPost(newpost)).resolves.toEqual({
+            error: true,
+            data: "Author email is required."
+        });
+        post.authorEmail = originalEmail;
+    })
+
+    it("should return an error if mail is given but user does not exist", () => {
+        prismaMock.user.findUnique.mockResolvedValue(null);
+        const newpost = {
+            requestId: "1",
+            authorEmail: "ben@ben.com",
+            source: "source1",
+            destination: "destination1",
+            costInPoints: 10,
+            status: "open",
+            service: "service2",
+        }
+        expect(editPost(newpost)).resolves.toEqual({
+            error: true,
+            data: "User does not exist."
+        });
+    })
+
+    it("should return an error if user does not have points", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+        prismaMock.post.create.mockResolvedValue(post);
+        const newpost = {
+            requestId: "1",
+            authorEmail: "ben@ben.com",
+            source: "source1",
+            destination: "destination1",
+            costInPoints: 10,
+            status: "open",
+            service: "service2",
+        }
+        expect(editPost(newpost)).resolves.toEqual({
+            error: true,
+            data: "Karma points not enough to create a post."
+        });
+    })
+
+    it("should return an error if post is closed", () => {
+
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        prismaMock.post.create.mockResolvedValue(post);
+
+        const newpost = {
+            requestId: "1",
+            authorEmail: "ben@ben.com",
+            source: "source1",
+            destination: "destination1",
+            costInPoints: 10,
+            status: "closed",
+            service: "service2",
+        }
+
+        expect(editPost(newpost)).resolves.toEqual({
+            error: true,
+            data: "Post has already been closed."
+        });
+    });
+
+    it("should catch any error occurred", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        const newpost = {
+            requestId: "1",
+            authorEmail: "ben@ben.com",
+            source: "source1",
+            destination: "destination1",
+            costInPoints: 10,
+            status: "closed",
+            service: "service2",
+        }
+        prismaMock.post.create.mockResolvedValue(newpost);
+        prismaMock.post.create.mockRejectedValue(new Error("Some error occurred"));
+        expect(editPost(newpost)).resolves.toEqual({
+            error: true,
+            data: "Some error occurred while editing the post"
+        });
+    })
 })
