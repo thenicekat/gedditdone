@@ -90,6 +90,7 @@ userRouter.get("/get/:userId", async (req, res) => {
             message: "User data fetched successfully",
             data: {
                 name: userData.name,
+                email: userData.email,
                 karmaPoints: userData.karmaPoints,
                 previousPosts: userData.posts,
                 previousRequests: userData.requests,
