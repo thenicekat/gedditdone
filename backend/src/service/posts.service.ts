@@ -242,13 +242,13 @@ export const deletePost = async(post: {
             data: "Post has already been closed."
         }
 
-        let editPost= await prisma.post.delete({
+        let deletePost= await prisma.post.delete({
             where: { id: post.requestId },
         })
 
         return {
             error: false,
-            data: editPost
+            data: deletePost
         };
     } catch (err: any) {
         logger.error(JSON.stringify({
