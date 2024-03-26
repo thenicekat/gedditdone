@@ -63,8 +63,19 @@ export default function Home() {
 					:
 					<>
 						<div className="flex flex-wrap gap-4 justify-center items-center">
+
+							<Button className="w-full hidden md:block"
+								color="success" variant="bordered" radius="sm" size="lg"
+								onClick={
+									() => {
+										window.location.href = "/post/create";
+									}
+								}>
+								Create a Post
+							</Button>
+
 							<div
-								className="z-10 w-14 fixed bottom-0 right-0 m-4 text-green-500 cursor-pointer"
+								className="z-10 w-14 fixed bottom-0 right-0 m-4 text-green-500 cursor-pointer md:hidden"
 								onClick={
 									() => {
 										window.location.href = "/post/create";
