@@ -212,6 +212,24 @@ describe("Update post", () => {
 
     })
 
+    it("should throw an error if post has already been closed", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+
+        expect(editPost({
+            id: post.id,
+            source: post.source,
+            destination: post.destination,
+            costInPoints: post.costInPoints,
+            service: post.service,
+            status: "closed",
+            authorEmail: post.authorEmail
+        })).resolves.toEqual({
+            error: true,
+            data: "Post has already been closed."
+        });
+
+    })
+
     it("should catch any error occurred", () => {
         prismaMock.user.findUnique.mockRejectedValue(new Error("Some error occurred"));
 
