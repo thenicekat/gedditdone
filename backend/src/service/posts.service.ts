@@ -213,11 +213,15 @@ export const editPost = async (post: {
 }
 
 export const deletePost = async (post: {
-    id: string,
+    id: string
     authorEmail: string,
+    source: string,
+    destination: string
+    costInPoints: number,
     status: string,
     service: string
-}): Promise<CustomReturn<Post>> => {
+}
+): Promise<CustomReturn<Post>> => {
     if (!post.authorEmail) return {
         error: true,
         data: "Author email is required."

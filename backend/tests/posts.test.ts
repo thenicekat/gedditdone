@@ -176,12 +176,12 @@ describe("Update post", () => {
 
         expect(editPost({
             id: post.id,
-            authorEmail: post.authorEmail,
             source: post.source,
             destination: post.destination,
             costInPoints: post.costInPoints,
-            status: post.status,
             service: post.service,
+            status: post.status,
+            authorEmail: post.authorEmail
         })).resolves.toEqual({
             error: false,
             data: post
@@ -225,32 +225,33 @@ describe("Update post", () => {
 })
 
 describe("Delete post", ()=>{
-    it("should delete post", () => {
-        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
-        prismaMock.post.create.mockResolvedValue(post);
 
-        expect(deletePost({
-            id: post.id,
-            authorEmail: post.authorEmail,
-            status: post.status,
-            service: post.service
-        })).resolves.toEqual({
-            error: false,
-            data: post
-        })
-    })
-
-    it("should catch any error occured", () => {
-        prismaMock.user.findUnique.mockRejectedValue(new Error("Some error occurred"));
-
-        expect(deletePost({
-            id: post.id,
-            authorEmail: post.authorEmail,
-            status: post.status,
-            service: post.service
-        })).resolves.toEqual({
+    it("should throw an error if user does not exist", () => {
+        prismaMock.post.findUnique.mockResolvedValue(post);
+        expect(deletePost(post)).resolves.toEqual({
             error: true,
-            data: "Some error occured while deleting the post."
-        })
-    })
+            data: "User does not exist."
+        });
+    });
+
+    it("should throw an error if post has already been closed", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        const post: Post & {
+            authorEmail: string
+        } = {
+            id: "1",
+            authorId: "1",
+            authorEmail: "ben@ben.com",
+            source: "source",
+            destination: "destination",
+            costInPoints: 10,
+            service: "service",
+            status: "closed",
+        }
+        prismaMock.post.findUnique.mockResolvedValue(post);
+        expect(deletePost(post)).resolves.toEqual({
+            error: true,
+            data: "Post has already been closed."
+        });
+    });
 })
