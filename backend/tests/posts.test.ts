@@ -1,7 +1,7 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
 import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost } from "../src/service/posts.service";
-import { Post, User } from ".prisma/client";
+import { Post, User, /*Request*/ } from ".prisma/client";
 
 const userWith10KarmaPoints: User = {
     id: "1",
@@ -34,6 +34,12 @@ const post: Post & {
     status: "open",
 }
 
+// const request: Request ={
+//     id:"1",
+//     status:"open",
+//     senderEmail: "ban@ban.com",
+//     postId:"1"
+// }
 describe("Create a new post", () => {
     it("should create a new post", () => {
 
@@ -254,4 +260,23 @@ describe("Delete post", ()=>{
             data: "Post has already been closed."
         });
     });
+
+    it("should catch any error occurred", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        prismaMock.post.findUnique.mockRejectedValue(new Error("Some Error ocurred"));
+        expect(deletePost(post)).resolves.toEqual({
+            error: true,
+            data: "Some error occurred while deleting the post"
+        });
+    });
+
+    // it("should delete the post successfully", () => {
+    //     prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+    //     prismaMock.post.delete.mockResolvedValue(post);
+    //     prismaMock.request.findUnique.mockResolvedValue(request);
+    //     expect(deletePost(post)).resolves.toEqual({
+    //         error: false,
+    //         data: post
+    //     });
+    // });
 })

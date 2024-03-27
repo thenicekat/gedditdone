@@ -249,7 +249,7 @@ export const deletePost = async (post: {
             where:{id:post.id},
         })
         const deletePostRequests=prisma.request.deleteMany({
-            where:{id:post.id},
+            where:{postId:post.id},
         })
 
         let deletePost = await prisma.$transaction([
