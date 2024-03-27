@@ -177,7 +177,7 @@ export const editPost = async (post: {
         if (user?.karmaPoints < post.costInPoints)
             return {
                 error: true,
-                data: "Karma points not enough to create a post."
+                data: "Karma points not enough to edit a post."
             }
 
         if (post.status == "closed")
@@ -186,7 +186,7 @@ export const editPost = async (post: {
                 data: "Post has already been closed."
             }
 
-        let editPost = await prisma.post.update({
+        let editedPost = await prisma.post.update({
             where: { id: post.id },
             data: {
                 source: post.source,
@@ -198,7 +198,7 @@ export const editPost = async (post: {
 
         return {
             error: false,
-            data: editPost
+            data: editedPost
         };
     } catch (err: any) {
         logger.error(JSON.stringify({
@@ -239,15 +239,23 @@ export const deletePost = async (post: {
             return {
                 error: true,
                 data: "Post has already been closed."
-            }
+        }
 
-        let deletePost = await prisma.post.delete({
-            where: { id: post.id },
+        const deleteOnlyPost=prisma.post.delete({
+            where:{id:post.id},
         })
+        const deletePostRequests=prisma.request.deleteMany({
+            where:{id:post.id},
+        })
+
+        let deletePost = await prisma.$transaction([
+            deletePostRequests,
+            deleteOnlyPost
+        ]);
 
         return {
             error: false,
-            data: deletePost
+            data: deletePost[1]
         };
     } catch (err: any) {
         logger.error(JSON.stringify({
@@ -256,7 +264,7 @@ export const deletePost = async (post: {
         }));
         return {
             error: true,
-            data: "Some error occurred while creating the post"
+            data: "Some error occurred while deleting the post"
         }
     }
 }

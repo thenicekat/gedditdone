@@ -1,6 +1,6 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost } from "../src/service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost } from "../src/service/posts.service";
 import { Post, User } from ".prisma/client";
 
 const userWith10KarmaPoints: User = {
@@ -176,12 +176,12 @@ describe("Update post", () => {
 
         expect(editPost({
             id: post.id,
+            authorEmail: post.authorEmail,
             source: post.source,
             destination: post.destination,
             costInPoints: post.costInPoints,
-            service: post.service,
             status: post.status,
-            authorEmail: post.authorEmail
+            service: post.service,
         })).resolves.toEqual({
             error: false,
             data: post
@@ -201,7 +201,7 @@ describe("Update post", () => {
             authorEmail: post.authorEmail
         })).resolves.toEqual({
             error: true,
-            data: "Karma points not enough to create a post."
+            data: "Karma points not enough to edit a post."
         });
 
     })
@@ -222,4 +222,35 @@ describe("Update post", () => {
             data: "Some error occurred while updating the post"
         });
     });
+})
+
+describe("Delete post", ()=>{
+    it("should delete post", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        prismaMock.post.create.mockResolvedValue(post);
+
+        expect(deletePost({
+            id: post.id,
+            authorEmail: post.authorEmail,
+            status: post.status,
+            service: post.service
+        })).resolves.toEqual({
+            error: false,
+            data: post
+        })
+    })
+
+    it("should catch any error occured", () => {
+        prismaMock.user.findUnique.mockRejectedValue(new Error("Some error occurred"));
+
+        expect(deletePost({
+            id: post.id,
+            authorEmail: post.authorEmail,
+            status: post.status,
+            service: post.service
+        })).resolves.toEqual({
+            error: true,
+            data: "Some error occured while deleting the post."
+        })
+    })
 })
