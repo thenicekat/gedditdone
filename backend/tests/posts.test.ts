@@ -1,7 +1,7 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
 import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost } from "../src/service/posts.service";
-import { Post, User, /*Request*/ } from ".prisma/client";
+import { Post, User, Request } from ".prisma/client";
 
 const userWith10KarmaPoints: User = {
     id: "1",
@@ -34,12 +34,13 @@ const post: Post & {
     status: "open",
 }
 
-// const request: Request ={
-//     id:"1",
-//     status:"open",
-//     senderEmail: "ban@ban.com",
-//     postId:"1"
-// }
+const request: Request = {
+    id: "1",
+    postId: "1",
+    senderEmail: "tom@ben.com",
+    status: "open"
+}
+
 describe("Create a new post", () => {
     it("should create a new post", () => {
 
@@ -141,7 +142,7 @@ describe("Get my posts", () => {
 })
 
 describe("Get post details", () => {
-    it("should get post details", () => {
+    it("should get post details successfully", () => {
         prismaMock.post.findUnique.mockResolvedValue(post);
 
         expect(getPostDetails(
@@ -176,7 +177,7 @@ describe("Get post details", () => {
 })
 
 describe("Update post", () => {
-    it("should update post", () => {
+    it("should update the post successfully", () => {
         prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
         prismaMock.post.update.mockResolvedValue(post);
 
@@ -193,6 +194,23 @@ describe("Update post", () => {
             data: post
         });
     });
+
+    it("should throw an error if user does not exist", () => {
+        prismaMock.user.findUnique.mockResolvedValue(null);
+
+        expect(editPost({
+            id: post.id,
+            source: post.source,
+            destination: post.destination,
+            costInPoints: post.costInPoints,
+            service: post.service,
+            status: post.status,
+            authorEmail: post.authorEmail
+        })).resolves.toEqual({
+            error: true,
+            data: "User does not exist."
+        });
+    })
 
     it("should throw an error if new karma higher than user karma", () => {
         prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
@@ -248,8 +266,7 @@ describe("Update post", () => {
     });
 })
 
-describe("Delete post", ()=>{
-
+describe("Delete post", () => {
     it("should throw an error if user does not exist", () => {
         prismaMock.post.findUnique.mockResolvedValue(post);
         expect(deletePost(post)).resolves.toEqual({
@@ -288,13 +305,13 @@ describe("Delete post", ()=>{
         });
     });
 
-    // it("should delete the post successfully", () => {
-    //     prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
-    //     prismaMock.post.delete.mockResolvedValue(post);
-    //     prismaMock.request.findUnique.mockResolvedValue(request);
-    //     expect(deletePost(post)).resolves.toEqual({
-    //         error: false,
-    //         data: post
-    //     });
-    // });
+    it("should delete the post successfully", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        prismaMock.$transaction.mockResolvedValue([[request], post]);
+
+        expect(deletePost(post)).resolves.toEqual({
+            error: false,
+            data: post
+        });
+    });
 })

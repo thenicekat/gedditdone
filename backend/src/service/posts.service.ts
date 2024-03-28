@@ -233,7 +233,6 @@ export const deletePost = async (post: {
                 email: post.authorEmail
             }
         });
-
         if (!user) return {
             error: true,
             data: "User does not exist."
@@ -243,23 +242,22 @@ export const deletePost = async (post: {
             return {
                 error: true,
                 data: "Post has already been closed."
-        }
+            }
 
-        const deleteOnlyPost=prisma.post.delete({
-            where:{id:post.id},
-        })
-        const deletePostRequests=prisma.request.deleteMany({
-            where:{postId:post.id},
-        })
-
-        let deletePost = await prisma.$transaction([
-            deletePostRequests,
-            deleteOnlyPost
+        // Delete post requests and then delete the post
+        // Make this a transaction
+        let [_returnedRequests, returnedPost] = await prisma.$transaction([
+            prisma.request.deleteMany({
+                where: { postId: post.id },
+            }),
+            prisma.post.delete({
+                where: { id: post.id },
+            })
         ]);
 
         return {
             error: false,
-            data: deletePost[1]
+            data: returnedPost
         };
     } catch (err: any) {
         logger.error(JSON.stringify({
