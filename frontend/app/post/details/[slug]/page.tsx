@@ -125,7 +125,9 @@ const PostDetailsPage = ({ params }: Props) => {
             if (res.status == HttpCodes.OK) {
                 setError("")
                 setMessage("Post deleted successfully.")
-                window.location.href = ('/user/dashboard')
+                setTimeout(function () {
+                    window.location.href = "/"; 
+                 }, 1000);
             } else if (res.status == HttpCodes.UNAUTHORIZED) {
                 window.location.href = ('/')
             }

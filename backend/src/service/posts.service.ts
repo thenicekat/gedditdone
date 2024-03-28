@@ -177,7 +177,7 @@ export const editPost = async (post: {
         if (user?.karmaPoints < post.costInPoints)
             return {
                 error: true,
-                data: "Karma points not enough to create a post."
+                data: "Karma points not enough to edit a post."
             }
 
         if (post.status == "closed")
@@ -186,7 +186,7 @@ export const editPost = async (post: {
                 data: "Post has already been closed."
             }
 
-        let editPost = await prisma.post.update({
+        let editedPost = await prisma.post.update({
             where: { id: post.id },
             data: {
                 source: post.source,
@@ -198,7 +198,7 @@ export const editPost = async (post: {
 
         return {
             error: false,
-            data: editPost
+            data: editedPost
         };
     } catch (err: any) {
         logger.error(JSON.stringify({
@@ -213,11 +213,15 @@ export const editPost = async (post: {
 }
 
 export const deletePost = async (post: {
-    id: string,
+    id: string
     authorEmail: string,
+    source: string,
+    destination: string
+    costInPoints: number,
     status: string,
     service: string
-}): Promise<CustomReturn<Post>> => {
+}
+): Promise<CustomReturn<Post>> => {
     if (!post.authorEmail) return {
         error: true,
         data: "Author email is required."
@@ -229,7 +233,6 @@ export const deletePost = async (post: {
                 email: post.authorEmail
             }
         });
-
         if (!user) return {
             error: true,
             data: "User does not exist."
@@ -241,13 +244,20 @@ export const deletePost = async (post: {
                 data: "Post has already been closed."
             }
 
-        let deletePost = await prisma.post.delete({
-            where: { id: post.id },
-        })
+        // Delete post requests and then delete the post
+        // Make this a transaction
+        let [_returnedRequests, returnedPost] = await prisma.$transaction([
+            prisma.request.deleteMany({
+                where: { postId: post.id },
+            }),
+            prisma.post.delete({
+                where: { id: post.id },
+            })
+        ]);
 
         return {
             error: false,
-            data: deletePost
+            data: returnedPost
         };
     } catch (err: any) {
         logger.error(JSON.stringify({
@@ -256,7 +266,7 @@ export const deletePost = async (post: {
         }));
         return {
             error: true,
-            data: "Some error occurred while creating the post"
+            data: "Some error occurred while deleting the post"
         }
     }
 }
