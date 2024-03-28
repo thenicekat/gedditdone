@@ -132,6 +132,9 @@ postsRouter.post("/delete", async (req, res) => {
     const id = req.body.requestId as string;
     const service = req.body.service as string;
     const status = req.body.status as string;
+    const source = req.body.source as string;
+    const destination = req.body.destination as string;
+    const costInPoints = parseInt(req.body.costInPoints) as number;
 
     const authorEmail = req.session.email as string;
 
@@ -139,7 +142,10 @@ postsRouter.post("/delete", async (req, res) => {
         id,
         authorEmail,
         status,
-        service
+        service,
+        source,
+        destination,
+        costInPoints
     });
 
     if (delPost.error) {

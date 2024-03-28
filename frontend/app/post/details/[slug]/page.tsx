@@ -115,6 +115,10 @@ const PostDetailsPage = ({ params }: Props) => {
             const res = await axios.post(siteConfig.server_url + "/post/delete", {
                 requestId: params.slug,
                 service: data.service,
+                status: data.service,
+                source: data.source,
+                destination: data.destination,
+                costInPoints: data.costInPoints
             }, {
                 withCredentials: true,
                 headers: {
@@ -126,8 +130,8 @@ const PostDetailsPage = ({ params }: Props) => {
                 setError("")
                 setMessage("Post deleted successfully.")
                 setTimeout(function () {
-                    window.location.href = "/"; 
-                 }, 1000);
+                    window.location.href = "/";
+                }, 1000);
             } else if (res.status == HttpCodes.UNAUTHORIZED) {
                 window.location.href = ('/')
             }
