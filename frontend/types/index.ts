@@ -22,7 +22,7 @@ export type User = {
   password: string;
   karmapoints: number;
   phoneNumber: string;
-  karmaPoints: number;
+  role: string;
 }
 
 export type Request = {

@@ -1,5 +1,5 @@
 "use client"
-import { Button } from "@nextui-org/button";
+import { Switch } from "@nextui-org/react";
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { User } from '@/types'
@@ -9,33 +9,43 @@ import { siteConfig } from "@/config/site";
 axios.defaults.withCredentials = true;
 
 const AdminHomepage = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<User[] | never[]>([]);
   const [error, setError] = useState<string>("");
-
+  const [loading, setLoading] = useState<boolean>(true); // Add loading state
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(siteConfig.server_url+'/admin/home');
+        // console.log(response.data.data);
         setUsers(response.data.data);
+        setLoading(false);
       } catch (error) {
-        console.log(error);
+        setError("error occured");
+        setLoading(false);
       }
     };
 
     fetchUsers();
   }, []);
 
-  const promoteUser = async (usermail: string) => {
+  const changeUserRole = async (usermail: string, admin: boolean) => {
     try {
+      if(admin){
       await axios.put(siteConfig.server_url + `/admin/promote/${usermail}`);
       // Refresh users list after promoting
       const response = await axios.get(siteConfig.server_url + '/admin/home');
       setUsers(response.data.data);
+      }
+      else{
+        await axios.put(siteConfig.server_url + `/admin/demote/${usermail}`);
+        // Refresh users list after promoting
+        const response = await axios.get(siteConfig.server_url + '/admin/home');
+        setUsers(response.data.data);
+      }
     } catch (error) {
-      // setError(error.response.data.message);
-      console.log(error);
+      setError("error occured");
     }
-  };
+  }
 
   return (
     <div>
@@ -50,13 +60,17 @@ const AdminHomepage = () => {
                             </TableHeader>
                             <TableBody>
                                 {users.map((u, index) => (
-                                    <TableRow key={index}>
+                                    <TableRow key = {index}>
                                         <TableCell>{u.name}</TableCell>
                                         <TableCell>{u.email}</TableCell>
                                         <TableCell>
-                                            <Button onClick={() => promoteUser(u.email)} className='cursor-pointer' color="primary" variant="bordered">
+                                            {/* <Button onClick={() => promoteUser(u.email)} className='cursor-pointer' color="primary" variant="bordered">
                                               Select
-                                            </Button>
+                                            </Button> */}
+                                            
+                                            <Switch onChange={(event) => changeUserRole(u.email, event.target.checked)} isSelected={u.role==='admin'} >
+                                                Admin role
+                                            </Switch>
                                         </TableCell>
                                     </TableRow>
                                 ))}
@@ -64,8 +78,8 @@ const AdminHomepage = () => {
                         </Table>
                     </div>
     </div>
-  );
-};
+  )
+}
 
 export default AdminHomepage;
 

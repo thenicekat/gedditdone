@@ -41,3 +41,26 @@ export const promoteUser = async(userId: string): Promise<CustomReturn<User>> =>
         }
     }
 }
+
+export const demoteUser = async(userId: string): Promise<CustomReturn<User>> => {
+    try{
+        const updatedUser = await prisma.user.update({
+        where: { email: userId },
+        data: { role: 'user' } // Assuming 'role' is the field representing user roles
+        });
+
+        return {
+            error: false,
+            data: updatedUser
+        }
+    } catch(err: any) {
+        logger.error(JSON.stringify({
+            location: "demoteUser",
+            message: err.toString()
+        }));
+        return {
+            error: true,
+            data: "Some error occurred while demoting admin to user role"
+        }
+    }
+}
