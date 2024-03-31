@@ -1,5 +1,5 @@
 "use client"
-import { Switch } from "@nextui-org/react";
+import { Switch } from "@nextui-org/switch";
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { User } from '@/types'
