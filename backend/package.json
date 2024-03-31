@@ -15,6 +15,7 @@
     "dependencies": {
         "@prisma/client": "^5.10.2",
         "@types/express-session": "^1.17.10",
+        "@types/mime": "^4.0.0",
         "axios": "^1.6.7",
         "connect-mongodb-session": "^2.2.0",
         "connect-redis": "^7.1.1",
