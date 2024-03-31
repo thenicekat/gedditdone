@@ -15,7 +15,7 @@ const AdminHomepage = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(siteConfig.server_url+'/admin/home');
+        const response = await axios.get(siteConfig.server_url + '/admin/home');
         // console.log(response.data.data);
         setUsers(response.data.data);
         setLoading(false);
@@ -30,14 +30,16 @@ const AdminHomepage = () => {
 
   const changeUserRole = async (usermail: string, admin: boolean) => {
     try {
-      if(admin){
-      await axios.put(siteConfig.server_url + `/admin/promote/${usermail}`);
-      // Refresh users list after promoting
-      const response = await axios.get(siteConfig.server_url + '/admin/home');
-      setUsers(response.data.data);
+      if (admin) {
+        await axios.put(siteConfig.server_url + `/admin/promote/${usermail}`);
+
+        // Refresh users list after promoting
+        const response = await axios.get(siteConfig.server_url + '/admin/home');
+        setUsers(response.data.data);
       }
-      else{
+      else {
         await axios.put(siteConfig.server_url + `/admin/demote/${usermail}`);
+
         // Refresh users list after promoting
         const response = await axios.get(siteConfig.server_url + '/admin/home');
         setUsers(response.data.data);
@@ -52,31 +54,27 @@ const AdminHomepage = () => {
       <h1>Admin Homepage</h1>
       {error && <p>{error}</p>}
       <div className="p-2">
-                        <Table aria-label="Users Table">
-                            <TableHeader>
-                                <TableColumn>User Name</TableColumn>
-                                <TableColumn>User Email</TableColumn>
-                                <TableColumn>Promote to admin role</TableColumn>
-                            </TableHeader>
-                            <TableBody>
-                                {users.map((u, index) => (
-                                    <TableRow key = {index}>
-                                        <TableCell>{u.name}</TableCell>
-                                        <TableCell>{u.email}</TableCell>
-                                        <TableCell>
-                                            {/* <Button onClick={() => promoteUser(u.email)} className='cursor-pointer' color="primary" variant="bordered">
-                                              Select
-                                            </Button> */}
-                                            
-                                            <Switch onChange={(event) => changeUserRole(u.email, event.target.checked)} isSelected={u.role==='admin'} >
-                                                Admin role
-                                            </Switch>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </div>
+        <Table aria-label="Users Table">
+          <TableHeader>
+            <TableColumn>User Name</TableColumn>
+            <TableColumn>User Email</TableColumn>
+            <TableColumn>Promote to admin role</TableColumn>
+          </TableHeader>
+          <TableBody>
+            {users.map((u, index) => (
+              <TableRow key={index}>
+                <TableCell>{u.name}</TableCell>
+                <TableCell>{u.email}</TableCell>
+                <TableCell>
+                  <Switch onChange={(event) => changeUserRole(u.email, event.target.checked)} isSelected={u.role === 'admin'} >
+                    Admin role
+                  </Switch>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   )
 }
