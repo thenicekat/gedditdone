@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { CustomResponse } from "../types/CustomResponse";
-import { createRequest, getMyRequests } from "../service/requests.service";
+import { acceptRequest, createRequest, getMyRequests } from "../service/requests.service";
 import { HttpCodes } from "../types/HttpCodes";
 
 export const requestsRouter = Router()
@@ -48,4 +48,26 @@ requestsRouter.post("/create", async (req, res) => {
         data: creRequest.data
     }
     return res.status(HttpCodes.CREATED).json(response);
+})
+
+requestsRouter.post("/accept", async (req, res) => {
+    const requestId = req.body.requestId as string;
+
+    const acceptReq = await acceptRequest(requestId);
+
+    if (acceptReq.error) {
+        const response: CustomResponse = {
+            error: true,
+            message: acceptReq.data as string,
+            data: null
+        }
+        return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
+    } else {
+        const response: CustomResponse = {
+            error: false,
+            message: "Request accepted successfully",
+            data: acceptReq.data
+        }
+        return res.status(HttpCodes.OK).json(response);
+    }
 })

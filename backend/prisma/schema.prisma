@@ -19,6 +19,7 @@ model Post {
   destination String
   service String
   requests Request[]
+  status String @default("open")
 }
 
 model User {
@@ -27,6 +28,7 @@ model User {
   email String @unique()
   phoneNumber String
   karmaPoints Int @default(0)
+  isPublic Boolean @default(false)
   posts Post[]
   requests Request[]
   role String @default("user")
