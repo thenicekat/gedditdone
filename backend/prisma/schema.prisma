@@ -31,6 +31,7 @@ model User {
   isPublic Boolean @default(false)
   posts Post[]
   requests Request[]
+  role String @default("user")
 }
 
 model Request {

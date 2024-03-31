@@ -17,11 +17,12 @@ export type Post = {
 }
 
 export type User = {
-  id: number;
+  id: string;
   name: string;
   email: string;
   password: string;
   phoneNumber: string;
+  role: string;
   karmaPoints: number;
   isPublic: boolean;
 }
