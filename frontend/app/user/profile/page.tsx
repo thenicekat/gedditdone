@@ -21,7 +21,7 @@ type UserProfile = {
     isPublic: boolean;
 };
 
-export default function UpdateProfile() {
+export default function UserProfile() {
     const { register, handleSubmit, formState: { errors }, control, setValue, watch } = useForm();
 
     const [message, setMessage] = useState<string | null>(null);

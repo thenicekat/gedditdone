@@ -15,7 +15,6 @@ import clsx from "clsx";
 
 import { ThemeSwitch } from "@/components/theme-switch";
 import { GithubIcon } from "@/components/icons";
-import { NotificationsDropdown } from "@/components/NotificationsDropDown";
 
 export const Navbar = () => {
 	return (
@@ -51,7 +50,7 @@ export const Navbar = () => {
 				className="hidden sm:flex basis-1/5 sm:basis-full"
 				justify="end"
 			>
-				<NotificationsDropdown />
+				{/* <NotificationsDropdown /> */}
 				<NavbarItem className="hidden sm:flex gap-2">
 					<Link
 						isExternal
@@ -89,7 +88,7 @@ export const Navbar = () => {
 											? "danger"
 											: "foreground"
 								}
-								href="#"
+								href={item.href}
 								size="lg"
 							>
 								{item.label}
