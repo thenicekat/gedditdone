@@ -19,18 +19,18 @@ export const getAllUsers = async (): Promise<CustomReturn<User[]>> => {
     }
 }
 
-export const promoteUser = async(userId: string): Promise<CustomReturn<User>> => {
-    try{
+export const promoteUser = async (userEmailId: string): Promise<CustomReturn<User>> => {
+    try {
         const updatedUser = await prisma.user.update({
-        where: { email: userId },
-        data: { role: 'admin' } // Assuming 'role' is the field representing user roles
+            where: { email: userEmailId },
+            data: { role: 'admin' } // Assuming 'role' is the field representing user roles
         });
 
         return {
             error: false,
             data: updatedUser
         }
-    } catch(err: any) {
+    } catch (err: any) {
         logger.error(JSON.stringify({
             location: "promoteUser",
             message: err.toString()
@@ -42,18 +42,18 @@ export const promoteUser = async(userId: string): Promise<CustomReturn<User>> =>
     }
 }
 
-export const demoteUser = async(userId: string): Promise<CustomReturn<User>> => {
-    try{
+export const demoteUser = async (userEmailId: string): Promise<CustomReturn<User>> => {
+    try {
         const updatedUser = await prisma.user.update({
-        where: { email: userId },
-        data: { role: 'user' } // Assuming 'role' is the field representing user roles
+            where: { email: userEmailId },
+            data: { role: 'user' } // Assuming 'role' is the field representing user roles
         });
 
         return {
             error: false,
             data: updatedUser
         }
-    } catch(err: any) {
+    } catch (err: any) {
         logger.error(JSON.stringify({
             location: "demoteUser",
             message: err.toString()

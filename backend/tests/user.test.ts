@@ -11,7 +11,8 @@ describe("Create a new user", () => {
             email: "email@email.com",
             phoneNumber: "9999999999",
             karmaPoints: 0,
-            isPublic: true
+            isPublic: true,
+            role: "user"
         }
 
         prismaMock.user.create.mockResolvedValue(user);
@@ -29,7 +30,8 @@ describe("Create a new user", () => {
             email: "",
             phoneNumber: "phoneNumber",
             karmaPoints: 0,
-            isPublic: true
+            isPublic: true,
+            role: "user"
         }
 
         prismaMock.user.create.mockResolvedValue(user);
@@ -47,7 +49,8 @@ describe("Create a new user", () => {
             email: "email",
             phoneNumber: "phoneNumber",
             karmaPoints: 0,
-            isPublic: true
+            isPublic: true,
+            role: "user"
         }
 
         prismaMock.user.create.mockResolvedValue(user);
@@ -65,7 +68,8 @@ describe("Create a new user", () => {
             email: "email",
             phoneNumber: "",
             karmaPoints: 0,
-            isPublic: true
+            isPublic: true,
+            role: "user"
         }
 
         prismaMock.user.create.mockResolvedValue(user);
@@ -134,15 +138,18 @@ describe("Update user profile", () => {
             email: "email",
             phoneNumber: "newPhoneNumber",
             karmaPoints: 0,
-            isPublic: true
+            isPublic: true,
+            role: "user"
         };
+
         prismaMock.user.findUnique.mockResolvedValue({
             id: "1",
             name: "OldName",
             email: "email",
             phoneNumber: "oldPhoneNumber",
             karmaPoints: 0,
-            isPublic: true
+            isPublic: true,
+            role: "user"
         });
 
         prismaMock.user.update.mockResolvedValue(user);
@@ -180,7 +187,8 @@ describe("Fetch user data using email", () => {
             email: "email",
             phoneNumber: "phoneNumber",
             karmaPoints: 0,
-            isPublic: true
+            isPublic: true,
+            role: "user"
         };
 
         prismaMock.user.findUnique.mockResolvedValue(user);
@@ -236,7 +244,8 @@ describe("Fetch user data using id", () => {
             email: "email",
             phoneNumber: "phoneNumber",
             karmaPoints: 0,
-            isPublic: true
+            isPublic: true,
+            role: "user"
         };
 
         prismaMock.user.findUnique.mockResolvedValue(user);
@@ -254,7 +263,8 @@ describe("Fetch user data using id", () => {
             email: "email",
             phoneNumber: "phoneNumber",
             karmaPoints: 0,
-            isPublic: false
+            isPublic: false,
+            role: "user"
         };
 
         prismaMock.user.findUnique.mockResolvedValue(user);

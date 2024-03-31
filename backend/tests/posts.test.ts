@@ -9,7 +9,8 @@ const userWith10KarmaPoints: User = {
     email: "ben@ben.com",
     phoneNumber: "1234567890",
     karmaPoints: 10,
-    isPublic: false
+    isPublic: false,
+    role: "user"
 }
 
 const userWith0KarmaPoints: User = {
@@ -18,7 +19,8 @@ const userWith0KarmaPoints: User = {
     email: "ben@ben.com",
     phoneNumber: "1234567890",
     karmaPoints: 0,
-    isPublic: false
+    isPublic: false,
+    role: "user"
 }
 
 const post: Post & {

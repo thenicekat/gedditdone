@@ -10,7 +10,8 @@ const user: User = {
     email: "ben@ben.com",
     phoneNumber: "1234567890",
     karmaPoints: 10,
-    isPublic: false
+    isPublic: false,
+    role: "user"
 }
 
 const request: Request = {

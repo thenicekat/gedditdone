@@ -1,33 +1,36 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import {  User } from ".prisma/client";
+import { User } from ".prisma/client";
 import { getAllUsers, promoteUser, demoteUser } from "../src/service/admin.service";
 
 const user: User = {
     id: "1",
     name: "ben",
-    email : "ben@ben.com",
-    phoneNumber : "9898989898",
+    email: "ben@ben.com",
+    phoneNumber: "9898989898",
     karmaPoints: 0,
-    role: "admin"
+    role: "admin",
+    isPublic: true
 }
 
 const a: User = {
     id: "2",
     name: "ben",
-    email : "ben@hen.com",
-    phoneNumber : "9898989898",
+    email: "ben@hen.com",
+    phoneNumber: "9898989898",
     karmaPoints: 0,
-    role: "admin"
+    role: "admin",
+    isPublic: true
 }
 
 const na: User = {
     id: "2",
     name: "ben",
-    email : "ben@hen.com",
-    phoneNumber : "9898989898",
+    email: "ben@hen.com",
+    phoneNumber: "9898989898",
     karmaPoints: 0,
-    role: "user" 
+    role: "user",
+    isPublic: true
 }
 
 
@@ -64,9 +67,7 @@ describe("promote user to admin", () => {
 
     it("should return error if any error occured", () => {
         prismaMock.user.findUnique.mockResolvedValue(na);
-        prismaMock.user.update.mockResolvedValue(a);
-
-        prismaMock.post.create.mockRejectedValue(new Error("Some error occurred"));
+        prismaMock.user.update.mockRejectedValue(new Error("Some error occurred"));
 
         expect(promoteUser(na.email)).resolves.toEqual({
             error: true,
@@ -88,9 +89,7 @@ describe("demote admin to user", () => {
 
     it("should return error if any error occured", () => {
         prismaMock.user.findUnique.mockResolvedValue(a);
-        prismaMock.user.update.mockResolvedValue(na);
-
-        prismaMock.post.create.mockRejectedValue(new Error("Some error occurred"));
+        prismaMock.user.update.mockRejectedValue(new Error("Some error occurred"));
 
         expect(demoteUser(a.email)).resolves.toEqual({
             error: true,
