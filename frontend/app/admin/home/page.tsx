@@ -5,13 +5,15 @@ import React, { useEffect, useState } from 'react';
 import { User } from '@/types'
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table'
 import { siteConfig } from "@/config/site";
+import { title } from "@/components/primitives";
 
 axios.defaults.withCredentials = true;
 
 const AdminHomepage = () => {
   const [users, setUsers] = useState<User[] | never[]>([]);
   const [error, setError] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(true); // Add loading state
+  const [loading, setLoading] = useState<boolean>(true);
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -51,8 +53,10 @@ const AdminHomepage = () => {
 
   return (
     <div>
-      <h1>Admin Homepage</h1>
-      {error && <p>{error}</p>}
+      <h1 className={title()}>Your Post</h1>
+
+      {error && <p className="text-red-600 text-center text-xl m-2">{error}</p>}
+
       <div className="p-2">
         <Table aria-label="Users Table">
           <TableHeader>
