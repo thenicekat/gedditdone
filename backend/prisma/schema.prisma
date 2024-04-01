@@ -10,6 +10,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// In post, we have a reference to the author of the post
+// We don't use embedding here because we need a two sided relationship because
+// user stores n number of posts and post stores one author
+// We reference requests because it is also a 1:M relationship
 model Post {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   author User @relation(fields: [authorId], references: [id])
@@ -22,6 +26,9 @@ model Post {
   status String @default("open")
 }
 
+// User stores n number of posts and requests
+// So we have a one to many relationship with both posts and requests
+// Therefore we use references in both posts and requests
 model User {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   name String
@@ -34,6 +41,10 @@ model User {
   role String @default("user")
 }
 
+// Request stores the sender of the request and the post that the request is for
+// We use references in both sender and post even though it is a one to one relationship
+// Because using embedding will lead to a lot of space being used for every request made by a user
+// per post
 model Request {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   status String @default("open")
@@ -41,4 +52,24 @@ model Request {
   senderEmail String
   post Post @relation(fields: [postId], references: [id])
   postId String @db.ObjectId
+}
+
+// Here we are using embedding because the report is a one to one relationship with the post
+// and with the user but we do not need all the details of the user
+// We only need the email and karma points of the user
+model Report {
+  id String @id @default(auto()) @map("_id") @db.ObjectId
+  // Report details
+  reason String
+  reporterEmail String
+  status String @default("open")
+  // Post details
+  postId String @db.ObjectId
+  costInPoints Int @default(0)
+  source String
+  destination String
+  service String
+  // Author details
+  authorEmail String
+  authorKarmaPoints Int
 }
