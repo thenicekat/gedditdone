@@ -121,12 +121,12 @@ export default function UserProfile() {
                 }}
                 control={control}
             >
+                <img
+                    src={`https://api.dicebear.com/7.x/notionists/svg?seed=${userData?.email}&size=50&radius=0`}
+                    className='rounded-full border-2 w-32 h-32 border-green-500 mx-auto'
+                    alt="avatar"
+                />
                 <div className="flex justify-around m-2">
-                    <img
-                        src={`https://api.dicebear.com/7.x/notionists/svg?seed=${userData?.email}&size=50&radius=0`}
-                        className='rounded-full border-2 w-32 h-32 border-green-500 mx-auto'
-                        alt="avatar"
-                    />
                     <Chip color="success" size="lg" className="mx-auto place-content-center">Karma Points: {userData?.karmaPoints}</Chip>
                     <Switch size="lg" className="mx-auto place-content-center" isSelected={userIsPublic} onValueChange={() => {
                         setUserIsPublic(!userIsPublic)
