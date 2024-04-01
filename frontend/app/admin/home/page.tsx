@@ -53,7 +53,7 @@ const AdminHomepage = () => {
 
   return (
     <div>
-      <h1 className={title()}>Your Post</h1>
+      <h1 className={title()}>Admin Home</h1>
 
       {error && <p className="text-red-600 text-center text-xl m-2">{error}</p>}
 
