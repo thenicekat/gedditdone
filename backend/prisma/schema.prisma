@@ -16,14 +16,18 @@ datasource db {
 // We reference requests because it is also a 1:M relationship
 model Post {
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  author User @relation(fields: [authorId], references: [id])
-  authorId String @db.ObjectId
-  costInPoints Int @default(0)
   source String
   destination String
   service String
-  requests Request[]
+  costInPoints Int @default(0)
   status String @default("open")
+  // Author details
+  author User @relation(fields: [authorId], references: [id])
+  authorId String @db.ObjectId
+  // Request details
+  requests Request[]
+  // Report details
+  reports Report[]
 }
 
 // User stores n number of posts and requests
@@ -36,15 +40,18 @@ model User {
   phoneNumber String
   karmaPoints Int @default(0)
   isPublic Boolean @default(false)
-  posts Post[]
-  requests Request[]
   role String @default("user")
+  // Post details
+  posts Post[]
+  // Request details
+  requests Request[]
+  // Report details
+  reports Report[]
 }
 
 // Request stores the sender of the request and the post that the request is for
-// We use references in both sender and post even though it is a one to one relationship
-// Because using embedding will lead to a lot of space being used for every request made by a user
-// per post
+// We use references in both sender and post because it is a one to many relationship
+// that is one user can have multiple requests 
 model Request {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   status String @default("open")
@@ -61,15 +68,11 @@ model Report {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   // Report details
   reason String
-  reporterEmail String
   status String @default("open")
+  // Reporter details
+  reporter User @relation(fields: [reporterEmail], references: [email])
+  reporterEmail String
   // Post details
+  post Post @relation(fields: [postId], references: [id])
   postId String @db.ObjectId
-  costInPoints Int @default(0)
-  source String
-  destination String
-  service String
-  // Author details
-  authorEmail String
-  authorKarmaPoints Int
 }
