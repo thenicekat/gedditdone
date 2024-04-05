@@ -100,14 +100,14 @@ adminRouter.put("/ban/:user", async (req, res) => {
     if (pro.error) {
         const response: CustomResponse = {
             error: true,
-            message: "Error retrieving users",
+            message: pro.data as string,
             data: null
         }
         return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
     } else {
         const response: CustomResponse = {
             error: false,
-            message: "selected user has been banned",
+            message: "Selected user has been banned",
             data: pro
         }
 

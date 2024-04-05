@@ -19,11 +19,10 @@ const AdminHomepage = () => {
     const fetchUsers = async () => {
       try {
         const response = await axios.get(siteConfig.server_url + '/admin/home');
-        // console.log(response.data.data);
         setUsers(response.data.data);
         setLoading(false);
-      } catch (error) {
-        setError("error occured");
+      } catch (error: any) {
+        setError(error.response.data.message || "Error occured");
         setLoading(false);
       }
     };
@@ -32,10 +31,10 @@ const AdminHomepage = () => {
   }, []);
 
   const banUser = async (usermail: string) => {
-    try{
+    try {
       await axios.put(siteConfig.server_url + `/admin/ban/${usermail}`);
-    }catch(error){
-      setError("Error occurred")
+    } catch (error: any) {
+      setError(error.response.data.message || "Error occured");
     }
   }
 
@@ -55,8 +54,8 @@ const AdminHomepage = () => {
         const response = await axios.get(siteConfig.server_url + '/admin/home');
         setUsers(response.data.data);
       }
-    } catch (error) {
-      setError("error occured");
+    } catch (error: any) {
+      setError(error.response.data.message || "error occured");
     }
   }
 
@@ -72,6 +71,7 @@ const AdminHomepage = () => {
             <TableColumn>User Name</TableColumn>
             <TableColumn>User Email</TableColumn>
             <TableColumn>Promote to admin role</TableColumn>
+            <TableColumn>Ban user</TableColumn>
           </TableHeader>
           <TableBody>
             {users.map((u, index) => (
@@ -84,7 +84,7 @@ const AdminHomepage = () => {
                   </Switch>
                 </TableCell>
                 <TableCell>
-                  <Button variant="bordered" onClick={(u:any)=>banUser(u.email)}>
+                  <Button variant="bordered" onClick={() => banUser(u.email)}>
                     Ban
                   </Button>
                 </TableCell>
