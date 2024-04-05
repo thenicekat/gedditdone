@@ -1,7 +1,7 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
 import { User } from ".prisma/client";
-import { getAllUsers, promoteUser, demoteUser } from "../src/service/admin.service";
+import { getAllUsers, promoteUser, demoteUser, banUser } from "../src/service/admin.service";
 
 const user: User = {
     id: "1",
@@ -33,6 +33,15 @@ const na: User = {
     isPublic: true
 }
 
+const bu: User= {
+    id: "2",
+    name: "ben",
+    email: "ben@hen.com",
+    phoneNumber: "9898989898",
+    karmaPoints: 0,
+    role: "banned",
+    isPublic: true
+}
 
 describe("Get all users", () => {
     it("should get all users", () => {
@@ -94,6 +103,46 @@ describe("demote admin to user", () => {
         expect(demoteUser(a.email)).resolves.toEqual({
             error: true,
             data: "Some error occurred while demoting admin to user role"
+        })
+    })
+})
+
+describe("ban user", () => {
+    it("should ban user", () => {
+        prismaMock.user.findUnique.mockResolvedValue(na);
+        prismaMock.user.update.mockResolvedValue(bu);
+
+        expect(banUser(na.email)).resolves.toEqual({
+            error: false,
+            data: bu
+        })
+    })
+
+    it("should return an error if user does not exist", () => {
+
+        expect(banUser("random@random.com")).resolves.toEqual({
+            error: true,
+            data: "User does not exist."
+        })
+    })
+
+    it("should return error if user to be banned is an admin", () => {
+        prismaMock.user.findUnique.mockResolvedValue(a);
+        prismaMock.user.update.mockResolvedValue(bu);
+
+        expect(banUser(a.email)).resolves.toEqual({
+            error: true,
+            data: "An admin cannot be banned."
+        })
+    })
+
+    it("should return error if any error occured", () => {
+        prismaMock.user.findUnique.mockResolvedValue(na);
+        prismaMock.user.update.mockRejectedValue(new Error("Some error occurred"));
+
+        expect(banUser(na.email)).resolves.toEqual({
+            error: true,
+            data: "Some error occurred while banning user."
         })
     })
 })

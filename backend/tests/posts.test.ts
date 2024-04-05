@@ -23,6 +23,16 @@ const userWith0KarmaPoints: User = {
     role: "user"
 }
 
+const bannedUser: User = {
+    id: "1",
+    name: "ben",
+    email: "ben@ben.com",
+    phoneNumber: "1234567890",
+    karmaPoints: 10,
+    isPublic: false,
+    role: "banned"
+}
+
 const post: Post & {
     authorEmail: string
 } = {
@@ -83,6 +93,16 @@ describe("Create a new post", () => {
         expect(createPost(post)).resolves.toEqual({
             error: true,
             data: "Karma points not enough to create a post."
+        });
+    })
+
+    it("should return an error if user is banned", () => {
+        prismaMock.user.findUnique.mockResolvedValue(bannedUser);
+        prismaMock.post.create.mockResolvedValue(post);
+
+        expect(createPost(post)).resolves.toEqual({
+            error: true,
+            data: "You have been banned from posting for violating our policies."
         });
     })
 

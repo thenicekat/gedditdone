@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
-import { getAllUsers, promoteUser, demoteUser } from "../service/admin.service";
+import { getAllUsers, promoteUser, demoteUser, banUser } from "../service/admin.service";
 import prisma from '../db'
 export const adminRouter = Router();
 
@@ -86,6 +86,28 @@ adminRouter.put("/demote/:user", async (req, res) => {
         const response: CustomResponse = {
             error: false,
             message: "selected user is demoted from admin role to user only role",
+            data: pro
+        }
+
+        return res.status(HttpCodes.OK).json(response);
+    }
+})
+
+adminRouter.put("/ban/:user", async (req, res) => {
+    const userEmailId = req.params.user;
+    const pro = await banUser(userEmailId);
+
+    if (pro.error) {
+        const response: CustomResponse = {
+            error: true,
+            message: "Error retrieving users",
+            data: null
+        }
+        return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
+    } else {
+        const response: CustomResponse = {
+            error: false,
+            message: "selected user has been banned",
             data: pro
         }
 

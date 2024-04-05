@@ -116,7 +116,13 @@ export const createPost = async (post: {
                 error: true,
                 data: "Karma points not enough to create a post."
             }
-
+        
+        if (user?.role=="banned"){
+            return{
+                error:true,
+                data: "You have been banned from posting for violating our policies."
+            }
+        }
         let createPost = await prisma.post.create({
             data: {
                 source: post.source,

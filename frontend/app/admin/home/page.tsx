@@ -1,5 +1,6 @@
 "use client"
 import { Switch } from "@nextui-org/switch";
+import { Button } from "@nextui-org/button"
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { User } from '@/types'
@@ -29,6 +30,14 @@ const AdminHomepage = () => {
 
     fetchUsers();
   }, []);
+
+  const banUser = async (usermail: string) => {
+    try{
+      await axios.put(siteConfig.server_url + `/admin/ban/${usermail}`);
+    }catch(error){
+      setError("Error occurred")
+    }
+  }
 
   const changeUserRole = async (usermail: string, admin: boolean) => {
     try {
@@ -73,6 +82,11 @@ const AdminHomepage = () => {
                   <Switch onChange={(event) => changeUserRole(u.email, event.target.checked)} isSelected={u.role === 'admin'} >
                     Admin role
                   </Switch>
+                </TableCell>
+                <TableCell>
+                  <Button variant="bordered" onClick={(u:any)=>banUser(u.email)}>
+                    Ban
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
