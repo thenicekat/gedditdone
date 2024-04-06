@@ -9,6 +9,7 @@ import { siteConfig } from "@/config/site";
 import { title } from "@/components/primitives";
 import { Card, CardBody } from "@nextui-org/card";
 import { FlagIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
 
 axios.defaults.withCredentials = true;
 
@@ -65,10 +66,12 @@ const AdminHomepage = () => {
     <div>
       <h1 className={title()}>Admin Home</h1>
 
-      <div className="flex">
+      <Link href={'/'}><h2 className="md:mx-2 my-2 text-lg underline">Go to dashboard</h2></Link>
+
+      <div className="md:flex">
 
         {/* Users Card */}
-        <Card className="m-2 xl:max-w-sm bg-primary rounded-xl shadow-md p-3 w-full">
+        <Card className="md:mx-2 my-2 xl:max-w-sm bg-primary rounded-xl shadow-md p-3 w-full">
           <CardBody className="py-5">
             <div className="flex gap-2.5">
               <UserCircleIcon className="w-6 h-6" />
@@ -105,7 +108,7 @@ const AdminHomepage = () => {
         </Card>
 
         {/* Reports Card */}
-        <Card className="m-2 xl:max-w-sm bg-secondary rounded-xl shadow-md p-3 w-full">
+        <Card className="md:mx-2 my-2 xl:max-w-sm bg-secondary rounded-xl shadow-md p-3 w-full">
           <CardBody className="py-5">
             <div className="flex gap-2.5">
               <FlagIcon className="w-6 h-6" />
@@ -144,7 +147,7 @@ const AdminHomepage = () => {
 
       {/* User Summary */}
       {error && <p className="text-red-600 text-center text-xl m-2">{error}</p>}
-      <div className="p-2">
+      <div className="md:mx-2 my-2">
         <Table aria-label="Users Table">
           <TableHeader>
             <TableColumn>User Name</TableColumn>
