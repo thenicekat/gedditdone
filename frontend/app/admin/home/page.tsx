@@ -3,62 +3,96 @@ import { Switch } from "@nextui-org/switch";
 import { Button } from "@nextui-org/button"
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
-import { User } from '@/types'
+import { Post, User } from '@/types'
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table'
 import { siteConfig } from "@/config/site";
 import { title } from "@/components/primitives";
 import { Card, CardBody } from "@nextui-org/card";
-import { FlagIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { CubeIcon, FlagIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
+import { HttpCodes } from "@/types/HttpCodes";
+import { set } from "react-hook-form";
 
 axios.defaults.withCredentials = true;
 
 const AdminHomepage = () => {
+  const [amLoggedIn, setAmLoggedIn] = useState<boolean>(false);
+
   const [users, setUsers] = useState<User[] | never[]>([]);
+  const [posts, setPosts] = useState<Post[] | never[]>([]);
   const [error, setError] = useState<string>("");
+
   const [loading, setLoading] = useState<boolean>(true);
+  const [message, setMessage] = useState<string>("");
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get(siteConfig.server_url + '/admin/home');
+      setUsers(response.data.data);
+      setLoading(false);
+    } catch (error: any) {
+      setError(error.response.data.message || "Error occured");
+      setLoading(false);
+    }
+  };
+
+  const fetchPosts = async () => {
+    axios.get(siteConfig.server_url + "/post/all")
+      .then((res) => {
+        if (res.status == HttpCodes.UNAUTHORIZED) {
+          setAmLoggedIn(false);
+          return;
+        }
+
+        if (res.status == HttpCodes.OK) {
+          setAmLoggedIn(true);
+          setPosts(res.data.data);
+        } else if (res.status == HttpCodes.INTERNAL_SERVER_ERROR) {
+          console.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+  }
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get(siteConfig.server_url + '/admin/home');
-        setUsers(response.data.data);
-        setLoading(false);
-      } catch (error: any) {
-        setError(error.response.data.message || "Error occured");
-        setLoading(false);
-      }
-    };
-
     fetchUsers();
+    fetchPosts();
   }, []);
 
   const banUser = async (usermail: string) => {
+    setMessage("Loading...")
     try {
-      await axios.put(siteConfig.server_url + `/admin/ban/${usermail}`);
+      const res = await axios.put(siteConfig.server_url + `/admin/ban/${usermail}`);
+      setMessage(res.data.message);
+      fetchUsers()
     } catch (error: any) {
       setError(error.response.data.message || "Error occured");
+      setMessage("")
     }
   }
 
   const changeUserRole = async (usermail: string, admin: boolean) => {
+    setMessage("Loading...")
     try {
       if (admin) {
         await axios.put(siteConfig.server_url + `/admin/promote/${usermail}`);
-
+        setMessage("User promoted to admin role")
         // Refresh users list after promoting
         const response = await axios.get(siteConfig.server_url + '/admin/home');
         setUsers(response.data.data);
       }
       else {
         await axios.put(siteConfig.server_url + `/admin/demote/${usermail}`);
-
+        setMessage("User demoted to default role")
         // Refresh users list after promoting
         const response = await axios.get(siteConfig.server_url + '/admin/home');
         setUsers(response.data.data);
       }
     } catch (error: any) {
       setError(error.response.data.message || "error occured");
+      setMessage("")
     }
   }
 
@@ -143,9 +177,39 @@ const AdminHomepage = () => {
           </CardBody>
         </Card>
 
+        {/* Posts Card */}
+        <Card className="md:mx-2 my-2 xl:max-w-sm bg-red-400 rounded-xl shadow-md p-3 w-full">
+          <CardBody className="py-5">
+            <div className="flex gap-2.5">
+              <CubeIcon className="w-6 h-6" />
+              <div className="flex flex-col">
+                <span className="text-white">Number of Posts</span>
+              </div>
+            </div>
+            <div className="flex gap-2.5 py-2 items-center">
+              <span className="text-white text-xl font-semibold">{posts.length}</span>
+            </div>
+
+            <div className="flex items-center gap-6">
+              <div>
+                <div>
+                  <span className="text-xs text-white">{posts.filter(post => post.status == "open").length}</span>
+                </div>
+                <span className="text-white text-xs">Pending</span>
+              </div>
+              <div>
+                <div>
+                  <span className="text-xs text-white">{users.filter(user => user.role == "closed").length}</span>
+                </div>
+                <span className="text-white text-xs">Completed</span>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
       </div>
 
       {/* User Summary */}
+      {message && <p className="text-center text-xl m-2">{message}</p>}
       {error && <p className="text-red-600 text-center text-xl m-2">{error}</p>}
       <div className="md:mx-2 my-2">
         <Table aria-label="Users Table">
@@ -166,8 +230,11 @@ const AdminHomepage = () => {
                   </Switch>
                 </TableCell>
                 <TableCell>
-                  <Button variant="bordered" onClick={() => banUser(u.email)}>
-                    Ban
+                  <Button
+                    variant="ghost"
+                    onClick={() => banUser(u.email)}
+                  >
+                    {u.role === 'banned' ? 'Unban' : 'Ban'}
                   </Button>
                 </TableCell>
               </TableRow>

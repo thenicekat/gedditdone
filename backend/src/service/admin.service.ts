@@ -67,7 +67,7 @@ export const demoteUser = async (userEmailId: string): Promise<CustomReturn<User
 }
 
 export const banUser = async (userEmailId: string): Promise<CustomReturn<User>> => {
-    try{
+    try {
         let user = await prisma.user.findUnique({
             where: {
                 email: userEmailId
@@ -79,21 +79,35 @@ export const banUser = async (userEmailId: string): Promise<CustomReturn<User>> 
             data: "User does not exist."
         }
 
-        if(user.role=="admin"){return{
-                error:true,
-                data: "An admin cannot be banned."}
+        if (user.role == "admin") {
+            return {
+                error: true,
+                data: "An admin cannot be banned."
+            }
         }
 
-        const bannedUser = await prisma.user.update({
-            where: {email: userEmailId},
-            data: {role: 'banned' }
-        });
-        return{
-            error: false,
-            data: bannedUser
+        if (user.role == "banned") {
+            const unbannedUser = await prisma.user.update({
+                where: { email: userEmailId },
+                data: { role: 'user' }
+            });
+            return {
+                error: false,
+                data: unbannedUser
+            }
+        }
+        else {
+            const bannedUser = await prisma.user.update({
+                where: { email: userEmailId },
+                data: { role: 'banned' }
+            });
+            return {
+                error: false,
+                data: bannedUser
+            }
         }
     }
-    catch(err:any){
+    catch (err: any) {
         logger.error(JSON.stringify({
             location: "banUser",
             message: err.toString()

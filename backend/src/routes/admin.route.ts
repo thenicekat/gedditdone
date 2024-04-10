@@ -107,7 +107,7 @@ adminRouter.put("/ban/:user", async (req, res) => {
     } else {
         const response: CustomResponse = {
             error: false,
-            message: "Selected user has been banned",
+            message: "Selected user's ban status has been updated",
             data: pro
         }
 
