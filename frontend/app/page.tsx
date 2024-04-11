@@ -4,6 +4,7 @@ import { title } from "@/components/primitives";
 import PostComponent from "@/components/Post";
 import getGoogleOAuthUrl from "@/utils/getGoogleOAuthUrl";
 import { Button } from "@nextui-org/button";
+import { Select, SelectItem } from "@nextui-org/select";
 import axios from "axios";
 import { siteConfig } from "@/config/site";
 import { Post } from "@/types";
@@ -17,6 +18,13 @@ axios.defaults.withCredentials = true;
 
 export default function Home() {
 	const [posts, setPosts] = React.useState<Post[]>([]);
+
+	const [sources, setSources] = React.useState<string[]>([]);
+	const [sourceSelected, setSourceSelected] = React.useState<string>("");
+
+	const [destinations, setDestinations] = React.useState<string[]>([]);
+	const [destinationSelected, setDestinationSelected] = React.useState<string>("");
+
 	const [amLoggedIn, setAmLoggedIn] = React.useState(false);
 
 	React.useEffect(() => {
@@ -30,6 +38,9 @@ export default function Home() {
 				if (res.status == HttpCodes.OK) {
 					setAmLoggedIn(true);
 					setPosts(res.data.data);
+					setDestinations(Array.from(new Set(res.data.data.map((post: { destination: string; }) => post.destination))));
+					setSources(Array.from(new Set(res.data.data.map((post: { source: string; }) => post.source))));
+
 				} else if (res.status == HttpCodes.INTERNAL_SERVER_ERROR) {
 					console.error(res.data.message);
 				}
@@ -103,22 +114,50 @@ export default function Home() {
 										</div>
 									}
 								>
-									<div
-										className="grid md:grid-cols-3 gap-3 mx-auto place-items-center w-full">
-										{posts.map((post, index) => (
-											<PostComponent
-												key={index}
-												id={post.id}
-												author={post.author}
-												source={post.source}
-												destination={post.destination}
-												service={post.service}
-												costInPoints={post.costInPoints}
-												authorId={post.authorId}
-												request={post.request}
-												status={post.status} />
-										))}
-									</div>
+									<>
+										<div className="flex justify-center">
+											<Select
+												label="Select Source"
+												className="max-w-xs m-2"
+												onChange={(e: any) => setSourceSelected(e.target.value)}
+											>
+												{sources.map((src: string) => (
+													<SelectItem key={src} value={src} >
+														{src}
+													</SelectItem>
+												))}
+											</Select>
+											<Select
+												label="Select Destination"
+												className="max-w-xs m-2"
+												onChange={(e: any) => setDestinationSelected(e.target.value)}
+											>
+												{destinations.map((dest: string) => (
+													<SelectItem key={dest} value={dest} >
+														{dest}
+													</SelectItem>
+												))}
+											</Select>
+										</div>
+										<div
+											className="grid md:grid-cols-3 gap-3 mx-auto place-items-center w-full">
+											{posts
+												.filter(post => (sourceSelected == "" || post.source == sourceSelected) && (destinationSelected == "" || post.destination == destinationSelected))
+												.map((post, index) => (
+													<PostComponent
+														key={index}
+														id={post.id}
+														author={post.author}
+														source={post.source}
+														destination={post.destination}
+														service={post.service}
+														costInPoints={post.costInPoints}
+														authorId={post.authorId}
+														request={post.request}
+														status={post.status} />
+												))}
+										</div>
+									</>
 								</Tab>
 
 								<Tab
