@@ -12,7 +12,7 @@ type UserProfile = {
     phoneNumber: string;
 };
 
-export default function SentRequests() {
+export default function PendingRequests() {
     const [userRequests, setUserRequests] = useState<Request[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -43,7 +43,7 @@ export default function SentRequests() {
 
     return (
         <div>
-            <div className="text-center"><h1 className={title()}>Sent Requests</h1></div>
+            <div className="text-center"><h1 className={title()}>Pending Requests</h1></div>
 
             <p className="text-red-600 text-center text-lg p-2">{error}</p>
 

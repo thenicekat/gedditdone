@@ -59,6 +59,12 @@ export const createRequest = async (postId: string, emailId: string): Promise<Cu
                 data: "Post does not exist."
             }
         }
+        if (checkPostExistence.status != "open") {
+            return {
+                error: true,
+                data: "This post is not open"
+            }
+        }
 
         let checkUserExistence = await prisma.user.findFirst({
             where: {

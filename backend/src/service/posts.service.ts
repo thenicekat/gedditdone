@@ -302,17 +302,17 @@ export const completePost = async (postId: string, authorEmail: string): Promise
                 author: true
             }
         });
-
         if (!post) return {
             error: true,
             data: "Post does not exist."
         }
 
+        // You cannot mark other's post as completed
         if (post.author.email != authorEmail) return {
             error: true,
             data: "You are not the author of this post."
         }
-
+        // If post is completed or no request was accepted then throw error
         if (post.status == "completed") return {
             error: true,
             data: "Post has already been completed."
@@ -321,6 +321,39 @@ export const completePost = async (postId: string, authorEmail: string): Promise
             error: true,
             data: "Post has not been closed yet."
         }
+
+        // Find the request that was accepted
+        let completedRequest = await prisma.request.findMany({
+            where: {
+                postId: postId,
+                status: "completed"
+            }
+        });
+
+        if (!completedRequest || completedRequest.length != 1) return {
+            error: true,
+            data: "Some error occurred while finding accepted requests."
+        }
+
+        let [_returnedAuthor, _returnedRequestor] = await prisma.$transaction([
+            prisma.user.update({
+                where: { email: authorEmail },
+                data: {
+                    karmaPoints: {
+                        decrement: post.costInPoints
+                    }
+                }
+            }),
+            prisma.user.update({
+                where: { email: completedRequest[0]?.senderEmail },
+                data: {
+                    karmaPoints: {
+                        increment: post.costInPoints
+                    }
+                }
+            })
+
+        ])
 
         let updatedPost = await prisma.post.update({
             where: { id: postId },

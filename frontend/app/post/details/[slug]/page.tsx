@@ -141,9 +141,9 @@ const PostDetailsPage = ({ params }: Props) => {
                 setError(res.data.error || "There was an error deleting your post.")
             }
         }
-        catch (err) {
+        catch (err: any) {
             console.error(err)
-            setError("There was an error deleting your post.")
+            setError(err.response.data.message || "There was an error deleting your post.")
         }
     }
 
@@ -161,9 +161,9 @@ const PostDetailsPage = ({ params }: Props) => {
                 setError(res.data.error || "There was an error marking your post as completed.")
             }
         }
-        catch (err) {
+        catch (err: any) {
             console.error(err)
-            setError("There was an error marking your post as completed.")
+            setError(err.response.data.message || "There was an error marking your post as completed.")
         }
     }
     return (

@@ -31,6 +31,7 @@ export default function CreatePost() {
 			if (res.status == 201) {
 				setError(null)
 				setMessage("Post created successfully.")
+				window.location.href = "/post/details/" + res.data.id
 				reset()
 			} else if (res.status == 401) {
 				window.location.href = "/"

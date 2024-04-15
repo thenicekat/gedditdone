@@ -11,7 +11,7 @@ import { Post } from "@/types";
 import { HttpCodes } from "@/types/HttpCodes";
 import { ArchiveBoxIcon, BookmarkIcon, HomeIcon, PlusCircleIcon, UserIcon } from "@heroicons/react/24/solid";
 import MyPosts from "./tabs/MyPosts";
-import SentRequests from "./tabs/SentRequests";
+import SentRequests from "./tabs/PendingRequests";
 import { Tab, Tabs } from "@nextui-org/tabs";
 
 axios.defaults.withCredentials = true;
@@ -177,7 +177,7 @@ export default function Home() {
 									title={
 										<div className="flex items-center space-x-2">
 											<ArchiveBoxIcon className="h-5 w-5" />
-											<span>Sent Requests</span>
+											<span>Pending Requests</span>
 										</div>
 									}
 								>

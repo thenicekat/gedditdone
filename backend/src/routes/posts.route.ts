@@ -22,7 +22,7 @@ postsRouter.get("/all", async (req, res) => {
     // because in the case of posts it will always be an array
     const authorEmail = req.session.email as string;
     if (typeof allPosts.data != "string") {
-        const filteredPosts = allPosts?.data?.filter((post: any) => post.author.email !== authorEmail);
+        const filteredPosts = allPosts?.data?.filter((post: any) => post.author.email !== authorEmail && post.status === "open");
 
         const response: CustomResponse = {
             error: false,
@@ -172,7 +172,7 @@ postsRouter.get("/get", async (req, res) => {
     if (postDetails.error) {
         const response: CustomResponse = {
             error: true,
-            message: "Error retrieving post data",
+            message: postDetails.data as string,
             data: null
         }
         return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
@@ -195,7 +195,7 @@ postsRouter.put("/complete/:postId", async (req, res) => {
     if (markPostAsCompleted.error) {
         const response: CustomResponse = {
             error: true,
-            message: "Error completing post",
+            message: markPostAsCompleted.data as string,
             data: null
         }
         return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
