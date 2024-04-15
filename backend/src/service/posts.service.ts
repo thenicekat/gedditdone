@@ -317,6 +317,7 @@ export const completePost = async (postId: string, authorEmail: string): Promise
             error: true,
             data: "Post has already been completed."
         };
+        
         else if (post.status == "open") return {
             error: true,
             data: "Post has not been closed yet."

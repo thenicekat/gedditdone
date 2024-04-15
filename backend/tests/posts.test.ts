@@ -1,6 +1,6 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost } from "../src/service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost} from "../src/service/posts.service";
 import { Post, User, Request } from ".prisma/client";
 
 const userWith10KarmaPoints: User = {
