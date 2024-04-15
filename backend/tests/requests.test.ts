@@ -1,6 +1,6 @@
 import { describe } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createRequest, getMyRequests, acceptRequest } from "../src/service/requests.service";
+import { createRequest, getMyRequests, acceptRequest, completeRequest } from "../src/service/requests.service";
 import { Request } from ".prisma/client";
 import { Post, User } from "@prisma/client";
 
@@ -131,6 +131,52 @@ describe("Create a new request", () => {
 });
 
 describe("Accept a request", () => {
+    it("should throw an error if request does not exist", () => {
+        prismaMock.request.findFirst.mockResolvedValue(null);
+        prismaMock.post.findFirst.mockResolvedValue(null);
+
+        expect(acceptRequest(request.id)).resolves.toEqual({
+            error: true,
+            data: "Request does not exist."
+        });
+    })
+
+    it("should throw an error if post does not exist", () => {
+        prismaMock.request.findFirst.mockResolvedValue(request);
+        prismaMock.post.findFirst.mockResolvedValue(null);
+
+        expect(acceptRequest(request.id)).resolves.toEqual({
+            error: true,
+            data: "Post does not exist."
+        });
+    })
+
+    it("should accept a request", () => {
+        prismaMock.request.findFirst.mockResolvedValue(request);
+        prismaMock.post.findFirst.mockResolvedValue(post);
+
+        request.status = "accepted";
+        prismaMock.request.update.mockResolvedValue(request);
+
+        expect(acceptRequest(request.id)).resolves.toEqual({
+            error: false,
+            data: request
+        });
+    })
+
+    it("should catch any other errors", () => {
+        prismaMock.request.findFirst.mockResolvedValue(request);
+        prismaMock.post.findFirst.mockResolvedValue(post);
+        prismaMock.request.update.mockRejectedValue(new Error("Some error"));
+
+        expect(acceptRequest(request.id)).resolves.toEqual({
+            error: true,
+            data: "An error occurred while accepting the request. Please try again later."
+        });
+    })
+})
+
+describe("Complete a request", () => {
     it("should throw an error if request does not exist", () => {
         prismaMock.request.findFirst.mockResolvedValue(null);
         prismaMock.post.findFirst.mockResolvedValue(null);
