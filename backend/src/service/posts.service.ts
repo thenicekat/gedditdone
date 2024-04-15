@@ -335,6 +335,11 @@ export const completePost = async (postId: string, authorEmail: string): Promise
             data: "Some error occurred while finding accepted requests."
         }
 
+        if (post.costInPoints>user.karmaPoints) return {
+            error: true,
+            data: "Not enough karma to complete this post."
+        }
+
         let [_returnedAuthor, _returnedRequestor] = await prisma.$transaction([
             prisma.user.update({
                 where: { email: authorEmail },
