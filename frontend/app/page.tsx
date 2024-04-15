@@ -115,7 +115,7 @@ export default function Home() {
 									}
 								>
 									<>
-										<div className="flex justify-center">
+										<div className="flex flex-col sm:flex-row justify-center">
 											<Select
 												label="Select Source"
 												className="max-w-xs m-2"

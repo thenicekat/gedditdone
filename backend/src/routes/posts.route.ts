@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
-import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost } from "../service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost, completePost } from "../service/posts.service";
 //import { FRONTEND_URL } from "../constants";
 export const postsRouter = Router();
 
@@ -185,4 +185,27 @@ postsRouter.get("/get", async (req, res) => {
         data: postDetails.data
     }
     return res.status(HttpCodes.OK).json(response);
+})
+
+postsRouter.put("/complete/:postId", async (req, res) => {
+    const postId = req.params.postId as string;
+    const authorEmail = req.session.email as string;
+
+    const markPostAsCompleted = await completePost(postId, authorEmail);
+    if (markPostAsCompleted.error) {
+        const response: CustomResponse = {
+            error: true,
+            message: "Error completing post",
+            data: null
+        }
+        return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
+    }
+    else {
+        const response: CustomResponse = {
+            error: false,
+            message: "Post marked as completed",
+            data: markPostAsCompleted.data
+        }
+        return res.status(HttpCodes.OK).json(response);
+    }
 })

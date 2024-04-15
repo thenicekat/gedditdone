@@ -10,13 +10,14 @@ import { Button } from "@nextui-org/button"
 import React from 'react'
 import { Form, useForm } from 'react-hook-form'
 import { HttpCodes } from '@/types/HttpCodes'
-// import { FRONTEND_URL } from ".../"
 
 type Props = {
     params: {
         slug: string
     }
 }
+
+axios.defaults.withCredentials = true;
 
 const PostDetailsPage = ({ params }: Props) => {
     const [message, setMessage] = React.useState<string>("")
@@ -110,6 +111,7 @@ const PostDetailsPage = ({ params }: Props) => {
             setError("There was an error editing your post.")
         }
     }
+
     const onDelete = async (data: Post) => {
         try {
             const res = await axios.post(siteConfig.server_url + "/post/delete", {
@@ -142,6 +144,26 @@ const PostDetailsPage = ({ params }: Props) => {
         catch (err) {
             console.error(err)
             setError("There was an error deleting your post.")
+        }
+    }
+
+    const onComplete = async (data: Post) => {
+        try {
+            const res = await axios.put(siteConfig.server_url + "/post/complete/" + params.slug);
+
+            if (res.status == HttpCodes.OK) {
+                setError("")
+                setMessage("Post marked as completed successfully.")
+            } else if (res.status == HttpCodes.UNAUTHORIZED) {
+                window.location.href = ('/')
+            }
+            else {
+                setError(res.data.error || "There was an error marking your post as completed.")
+            }
+        }
+        catch (err) {
+            console.error(err)
+            setError("There was an error marking your post as completed.")
         }
     }
     return (
@@ -184,11 +206,14 @@ const PostDetailsPage = ({ params }: Props) => {
                             Edit Post
                         </Button>
                     </div>
-                    <div className="m-1">
-                    </div>
                     <div className="justify-around w-full flex">
                         <Button onClick={(data: any) => onDelete(data)} className="align-middle md:w-1/2 w-full" variant="bordered" >
                             Delete Post
+                        </Button>
+                    </div>
+                    <div className="justify-around w-full flex">
+                        <Button onClick={(data: any) => onComplete(data)} className="align-middle md:w-1/2 w-full" variant="bordered" >
+                            Mark as Completed
                         </Button>
                     </div>
 

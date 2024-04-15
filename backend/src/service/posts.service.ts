@@ -116,10 +116,10 @@ export const createPost = async (post: {
                 error: true,
                 data: "Karma points not enough to create a post."
             }
-        
-        if (user?.role=="banned"){
-            return{
-                error:true,
+
+        if (user?.role == "banned") {
+            return {
+                error: true,
                 data: "You have been banned from posting for violating our policies."
             }
         }
@@ -273,6 +273,73 @@ export const deletePost = async (post: {
         return {
             error: true,
             data: "Some error occurred while deleting the post"
+        }
+    }
+}
+
+export const completePost = async (postId: string, authorEmail: string): Promise<CustomReturn<Post>> => {
+    if (!authorEmail) return {
+        error: true,
+        data: "Author email is required."
+    }
+
+    try {
+        let user = await prisma.user.findUnique({
+            where: {
+                email: authorEmail
+            }
+        });
+        if (!user) return {
+            error: true,
+            data: "User does not exist."
+        }
+
+        let post = await prisma.post.findUnique({
+            where: {
+                id: postId
+            },
+            include: {
+                author: true
+            }
+        });
+
+        if (!post) return {
+            error: true,
+            data: "Post does not exist."
+        }
+
+        if (post.author.email != authorEmail) return {
+            error: true,
+            data: "You are not the author of this post."
+        }
+
+        if (post.status == "completed") return {
+            error: true,
+            data: "Post has already been completed."
+        };
+        else if (post.status == "open") return {
+            error: true,
+            data: "Post has not been closed yet."
+        }
+
+        let updatedPost = await prisma.post.update({
+            where: { id: postId },
+            data: {
+                status: "completed"
+            }
+        });
+        return {
+            error: false,
+            data: updatedPost
+        }
+    } catch (err: any) {
+        logger.error(JSON.stringify({
+            location: "completePost",
+            message: err.toString()
+        }));
+        return {
+            error: true,
+            data: "Some error occurred while completing the post"
         }
     }
 }

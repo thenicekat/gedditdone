@@ -69,7 +69,7 @@ export default function MyPosts() {
                             <TableRow key={index}>
                                 <TableCell>{post.source} to {post.destination}</TableCell>
                                 <TableCell>{post.service}</TableCell>
-                                <TableCell><Chip color="success">{post.status}</Chip></TableCell>
+                                <TableCell><Chip color="success">{post.status.toUpperCase()}</Chip></TableCell>
                                 <TableCell>{post.costInPoints}</TableCell>
                                 <TableCell><a href={`/post/details/${post.id}`}><EyeIcon className="h-5 w-5" /></a></TableCell>
                             </TableRow>

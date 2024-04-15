@@ -216,6 +216,12 @@ const AdminHomepage = () => {
                 <div>
                   <span className="text-xs text-white">{posts.filter(post => post.status == "closed").length}</span>
                 </div>
+                <span className="text-white text-xs">Closed</span>
+              </div>
+              <div>
+                <div>
+                  <span className="text-xs text-white">{posts.filter(post => post.status == "completed").length}</span>
+                </div>
                 <span className="text-white text-xs">Completed</span>
               </div>
             </div>
@@ -229,8 +235,9 @@ const AdminHomepage = () => {
       <div className="md:mx-2 my-2">
         <Table aria-label="Users Table">
           <TableHeader>
-            <TableColumn>User Name</TableColumn>
-            <TableColumn>User Email</TableColumn>
+            <TableColumn>Name</TableColumn>
+            <TableColumn>Email</TableColumn>
+            <TableColumn>Karma</TableColumn>
             <TableColumn>Promote to admin role</TableColumn>
             <TableColumn>Ban user</TableColumn>
           </TableHeader>
@@ -239,6 +246,7 @@ const AdminHomepage = () => {
               <TableRow key={index}>
                 <TableCell>{u.name}</TableCell>
                 <TableCell>{u.email}</TableCell>
+                <TableCell>{u.karmaPoints}</TableCell>
                 <TableCell>
                   <Switch onChange={(event) => changeUserRole(u.email, event.target.checked)} isSelected={u.role === 'admin'} >
                     Admin role
