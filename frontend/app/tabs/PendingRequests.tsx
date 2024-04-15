@@ -2,7 +2,9 @@
 import { title } from "@/components/primitives";
 import { siteConfig } from "@/config/site";
 import { Request } from "@/types";
+import { Button } from "@nextui-org/button";
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/table";
+import {Checkbox} from "@nextui-org/checkbox";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -54,6 +56,7 @@ export default function PendingRequests() {
                         <TableColumn>Source</TableColumn>
                         <TableColumn>Destination</TableColumn>
                         <TableColumn>Service</TableColumn>
+                        <TableColumn>Complete Task</TableColumn>
                     </TableHeader>
                     <TableBody>
                         {userRequests.map((request, index) => (
@@ -62,6 +65,14 @@ export default function PendingRequests() {
                                 <TableCell>{request.post.source}</TableCell>
                                 <TableCell>{request.post.destination}</TableCell>
                                 <TableCell>{request.post.service}</TableCell>
+                                <TableCell>
+                                    <Checkbox
+                                        isDisabled={request.status !== 'accepted'}
+                                        onClick={() => {/* handle completion */ }}
+                                    >
+                                        Complete Task
+                                    </Checkbox>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
