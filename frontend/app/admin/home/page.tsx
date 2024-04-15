@@ -27,7 +27,11 @@ const AdminHomepage = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(siteConfig.server_url + '/admin/home');
+      const response = await axios.get(siteConfig.server_url + '/admin/allusers');
+      if (response.status == HttpCodes.UNAUTHORIZED) {
+        window.location.href = "/";
+        return;
+      }
       setUsers(response.data.data);
       setLoading(false);
     } catch (error: any) {
@@ -37,11 +41,10 @@ const AdminHomepage = () => {
   };
 
   const fetchPosts = async () => {
-    axios.get(siteConfig.server_url + "/post/all")
+    axios.get(siteConfig.server_url + "/admin/allposts")
       .then((res) => {
         if (res.status == HttpCodes.UNAUTHORIZED) {
-          setAmLoggedIn(false);
-          return;
+          window.location.href = "/";
         }
 
         if (res.status == HttpCodes.OK) {
@@ -64,8 +67,12 @@ const AdminHomepage = () => {
   const banUser = async (usermail: string) => {
     setMessage("Loading...")
     try {
-      const res = await axios.put(siteConfig.server_url + `/admin/ban/${usermail}`);
-      setMessage(res.data.message);
+      const response = await axios.put(siteConfig.server_url + `/admin/ban/${usermail}`);
+      if (response.status == HttpCodes.UNAUTHORIZED) {
+        window.location.href = "/";
+        return;
+      }
+      setMessage(response.data.message);
       fetchUsers()
     } catch (error: any) {
       setError(error.response.data.message || "Error occured");
@@ -81,6 +88,10 @@ const AdminHomepage = () => {
         setMessage("User promoted to admin role")
         // Refresh users list after promoting
         const response = await axios.get(siteConfig.server_url + '/admin/home');
+        if (response.status == HttpCodes.UNAUTHORIZED) {
+          window.location.href = "/";
+          return;
+        }
         setUsers(response.data.data);
       }
       else {
@@ -88,6 +99,10 @@ const AdminHomepage = () => {
         setMessage("User demoted to default role")
         // Refresh users list after promoting
         const response = await axios.get(siteConfig.server_url + '/admin/home');
+        if (response.status == HttpCodes.UNAUTHORIZED) {
+          window.location.href = "/";
+          return;
+        }
         setUsers(response.data.data);
       }
     } catch (error: any) {
@@ -199,7 +214,7 @@ const AdminHomepage = () => {
               </div>
               <div>
                 <div>
-                  <span className="text-xs text-white">{users.filter(user => user.role == "closed").length}</span>
+                  <span className="text-xs text-white">{posts.filter(post => post.status == "closed").length}</span>
                 </div>
                 <span className="text-white text-xs">Completed</span>
               </div>
