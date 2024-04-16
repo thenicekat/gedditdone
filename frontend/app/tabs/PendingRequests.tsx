@@ -4,7 +4,7 @@ import { siteConfig } from "@/config/site";
 import { Request } from "@/types";
 import { Button } from "@nextui-org/button";
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from "@nextui-org/table";
-import {Checkbox} from "@nextui-org/checkbox";
+import { Checkbox } from "@nextui-org/checkbox";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
@@ -16,6 +16,7 @@ type UserProfile = {
 
 export default function PendingRequests() {
     const [userRequests, setUserRequests] = useState<Request[]>([]);
+    const [completedRequests, setCompletedRequests] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -37,6 +38,22 @@ export default function PendingRequests() {
             setError("Error fetching user posts.");
         }
         setLoading(false);
+    };
+
+    const completeRequest = async (requestId: string) => {
+        try {
+            const response = await axios.post(
+                siteConfig.server_url + "/request/complete",
+                { requestId },
+                { withCredentials: true }
+            );
+
+            if (response.data.error === false) {
+                setCompletedRequests(prevState => [...prevState, requestId]);
+            }
+        } catch (err) {
+            setError("Error completing request:" + err);
+        }
     };
 
     useEffect(() => {
@@ -67,8 +84,9 @@ export default function PendingRequests() {
                                 <TableCell>{request.post.service}</TableCell>
                                 <TableCell>
                                     <Checkbox
+                                        checked={completedRequests.includes(request.id)}
                                         isDisabled={request.status !== 'accepted'}
-                                        onClick={() => {/* handle completion */ }}
+                                        onClick={() => completeRequest(request.id)}
                                     >
                                         Complete Task
                                     </Checkbox>
