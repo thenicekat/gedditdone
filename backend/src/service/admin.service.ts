@@ -2,7 +2,6 @@ import { User } from '@prisma/client'
 import { CustomReturn } from '../types/CustomReturn'
 import prisma from '../db'
 import { logger } from '../utils/logger'
-//import { getUserByEmail } from './user.service'
 
 export const getAllUsers = async (): Promise<CustomReturn<User[]>> => {
     try {
@@ -43,7 +42,12 @@ export const promoteUser = async (userEmailId: string): Promise<CustomReturn<Use
     }
 }
 
-export const demoteUser = async (userEmailId: string): Promise<CustomReturn<User>> => {
+export const demoteUser = async (myEmail: string, userEmailId: string): Promise<CustomReturn<User>> => {
+    if (myEmail === userEmailId) return {
+        error: true,
+        data: "You cannot demote yourself."
+    }
+
     try {
         const updatedUser = await prisma.user.update({
             where: { email: userEmailId },

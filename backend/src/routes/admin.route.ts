@@ -101,7 +101,8 @@ adminRouter.put("/promote/:user", async (req, res) => {
 
 adminRouter.put("/demote/:user", async (req, res) => {
     const userEmailId = req.params.user;
-    const pro = await demoteUser(userEmailId);
+    const myEmail = req.session.email as string;
+    const pro = await demoteUser(myEmail, userEmailId);
 
     if (pro.error) {
         const response: CustomResponse = {
