@@ -73,7 +73,8 @@ userRouter.get("/get", async (req, res) => {
 userRouter.get("/get/:userId", async (req, res) => {
     try {
         const userId = req.params.userId;
-        const userDataResponse = await getUserById(userId);
+        const requestor = req.session.email as string;
+        const userDataResponse = await getUserById(userId, requestor);
 
         if (userDataResponse.error) {
             return res.status(HttpCodes.NOT_FOUND).json({
