@@ -84,7 +84,7 @@ export default function PendingRequests() {
                                 <TableCell>{request.post.service}</TableCell>
                                 <TableCell>
                                     <Checkbox
-                                        checked={completedRequests.includes(request.id)}
+                                        defaultSelected={request.status === 'completed'}
                                         isDisabled={request.status !== 'accepted'}
                                         onClick={() => completeRequest(request.id)}
                                     >
