@@ -143,6 +143,7 @@ export default function Home() {
 											className="grid md:grid-cols-3 gap-3 mx-auto place-items-center w-full">
 											{posts
 												.filter(post => (sourceSelected == "" || post.source == sourceSelected) && (destinationSelected == "" || post.destination == destinationSelected))
+												.sort((a, b) => b.costInPoints - a.costInPoints)
 												.map((post, index) => (
 													<PostComponent
 														key={index}
