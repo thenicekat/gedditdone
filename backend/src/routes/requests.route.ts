@@ -72,8 +72,8 @@ requestsRouter.post("/accept", async (req, res) => {
     }
 })
 
-requestsRouter.post("/complete", async (req, res) => {
-    const requestId = req.body.requestId as string;
+requestsRouter.put("/complete/:requestId", async (req, res) => {
+    const requestId = req.params.requestId as string;
 
     const completeReq = await completeRequest(requestId);
 

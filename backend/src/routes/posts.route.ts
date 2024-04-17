@@ -44,7 +44,7 @@ postsRouter.get("/my", async (req, res) => {
     if (myPosts.error) {
         const response: CustomResponse = {
             error: true,
-            message: "Error retrieving posts",
+            message: myPosts.data as string,
             data: null
         }
         return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);

@@ -41,9 +41,8 @@ export default function PendingRequests() {
 
     const completeRequest = async (requestId: string) => {
         try {
-            const response = await axios.post(
-                siteConfig.server_url + "/request/complete",
-                { requestId },
+            const response = await axios.put(
+                siteConfig.server_url + "/request/complete/" + requestId,
                 { withCredentials: true }
             );
 
