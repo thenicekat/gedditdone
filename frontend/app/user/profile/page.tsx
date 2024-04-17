@@ -49,10 +49,10 @@ export default function UserProfile() {
             setValue("name", userData.name);
             setValue("phoneNumber", userData.phoneNumber);
             setError(null);
-        } catch (err) {
+        } catch (err: any) {
             console.error("Error fetching user data:", err);
             setMessage(null);
-            setError("Error fetching user data.");
+            setError(err.response.data.message || "Error fetching user data.");
         }
         setLoading(false);
     };
@@ -87,9 +87,9 @@ export default function UserProfile() {
 
             setMessage(res.data.message || "Profile updated successfully.");
             setError(null);
-        } catch (err) {
+        } catch (err: any) {
             setMessage(null);
-            setError("There was an error updating your profile.");
+            setError(err.response.data.message || "There was an error updating your profile.");
         }
     };
 

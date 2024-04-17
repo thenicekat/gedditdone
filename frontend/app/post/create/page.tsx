@@ -40,9 +40,8 @@ export default function CreatePost() {
 				setError(res.data.error || "There was an error creating your post.")
 			}
 		}
-		catch (err) {
-			console.error(err)
-			setError("There was an error creating your post.")
+		catch (err: any) {
+			setError(err.response.data.message || "There was an error creating your post.")
 		}
 	}
 

@@ -50,9 +50,9 @@ const PostDetailsPage = ({ params }: Props) => {
             setPostData(postData);
 
             setPostRequests(postData.requests)
-        } catch (err) {
+        } catch (err: any) {
             console.error("Error fetching post details:", err);
-            setError("Error fetching post details.");
+            setError(err.response.data.message || "Error fetching post details.");
         }
         setLoading(false);
     }
@@ -106,9 +106,8 @@ const PostDetailsPage = ({ params }: Props) => {
                 setError(res.data.error || "There was an error editing your post.")
             }
         }
-        catch (err) {
-            console.error(err)
-            setError("There was an error editing your post.")
+        catch (err: any) {
+            setError(err.response.data.message || "There was an error editing your post.")
         }
     }
 

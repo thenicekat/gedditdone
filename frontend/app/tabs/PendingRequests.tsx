@@ -34,7 +34,6 @@ export default function PendingRequests() {
             setUserRequests(response.data.data);
             setError(null);
         } catch (err) {
-            console.error("Error fetching user posts:", err);
             setError("Error fetching user posts.");
         }
         setLoading(false);
@@ -51,8 +50,8 @@ export default function PendingRequests() {
             if (response.data.error === false) {
                 setCompletedRequests(prevState => [...prevState, requestId]);
             }
-        } catch (err) {
-            setError("Error completing request:" + err);
+        } catch (err: any) {
+            setError(err.response.data.message || "Error completing request:" + err);
         }
     };
 

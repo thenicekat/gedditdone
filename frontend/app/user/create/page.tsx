@@ -38,8 +38,8 @@ export default function CreateUser() {
 				setError(res.data.error || "There was an error creating your profile.")
 			}
 		}
-		catch (err) {
-			setError("There was an error creating your profile.")
+		catch (err: any) {
+			setError(err.response.data.message || "There was an error creating your profile.")
 		}
 	}
 
