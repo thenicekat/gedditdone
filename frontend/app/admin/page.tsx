@@ -87,7 +87,7 @@ const AdminHomepage = () => {
         await axios.put(siteConfig.server_url + `/admin/promote/${usermail}`);
         setMessage("User promoted to admin role")
         // Refresh users list after promoting
-        const response = await axios.get(siteConfig.server_url + '/admin/home');
+        const response = await axios.get(siteConfig.server_url + '/admin/');
         if (response.status == HttpCodes.UNAUTHORIZED) {
           window.location.href = "/";
           return;
@@ -98,7 +98,7 @@ const AdminHomepage = () => {
         await axios.put(siteConfig.server_url + `/admin/demote/${usermail}`);
         setMessage("User demoted to default role")
         // Refresh users list after promoting
-        const response = await axios.get(siteConfig.server_url + '/admin/home');
+        const response = await axios.get(siteConfig.server_url + '/admin/');
         if (response.status == HttpCodes.UNAUTHORIZED) {
           window.location.href = "/";
           return;
