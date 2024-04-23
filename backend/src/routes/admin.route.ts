@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { HttpCodes } from "../types/HttpCodes";
 import { CustomResponse } from "../types/CustomResponse";
-import { getAllUsers, promoteUser, demoteUser, banUser } from "../service/admin.service";
+import { getAllUsers, promoteUser, demoteUser, banUser, deltaKarma} from "../service/admin.service";
 import prisma from '../db'
 import { getAllPosts } from "../service/posts.service";
 export const adminRouter = Router();
@@ -156,6 +156,30 @@ adminRouter.put("/ban/:user", async (req, res) => {
             error: false,
             message: "Selected user's ban status has been updated",
             data: ban
+        }
+
+        return res.status(HttpCodes.OK).json(response);
+    }
+})
+
+adminRouter.put("/deltaKarma/:user", async (req, res) => {
+    const userEmailId = req.params.user;
+    const amount=  req.body.amount as number;
+    const sign= req.body.sign as boolean;
+    const fruit = await deltaKarma(userEmailId,amount,sign);
+
+    if (fruit.error) {
+        const response: CustomResponse = {
+            error: true,
+            message: fruit.data as string,
+            data: null
+        }
+        return res.status(HttpCodes.INTERNAL_SERVER_ERROR).json(response);
+    } else {
+        const response: CustomResponse = {
+            error: false,
+            message: "Selected user's karma has been updated",
+            data: fruit
         }
 
         return res.status(HttpCodes.OK).json(response);

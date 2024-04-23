@@ -122,3 +122,71 @@ export const banUser = async (userEmailId: string): Promise<CustomReturn<User>> 
         }
     }
 }
+
+export const deltaKarma =async (userEmailId: string, amount:number, sign:boolean): 
+Promise<CustomReturn<User>> => {
+    try {
+        let user = await prisma.user.findUnique({
+            where: {
+                email: userEmailId
+            }
+        });
+
+        if (!user) return {
+            error: true,
+            data: "User does not exist."
+        }
+
+        if (user.role == "admin") {
+            return {
+                error: true,
+                data: "An admin cannot be fruit :)."
+            }
+        }
+
+        if (sign==false) {
+            if(user.karmaPoints<amount){
+                return{
+                    error:true,
+                    data:"Stop, Stop! he is already dead"
+                }
+            }
+            const punishedUser= await prisma.user.update({
+                where: { email: userEmailId },
+                data: {
+                    karmaPoints: {
+                        decrement: amount
+                    }
+                }
+            })
+            return {
+                error:false,
+                data:punishedUser
+            }
+        }
+        else {
+            const cherishedUser= await prisma.user.update({
+                where: { email: userEmailId },
+                data: {
+                    karmaPoints: {
+                        increment: amount
+                    }
+                }
+            })
+            return {
+                error:false,
+                data:cherishedUser
+            }
+        }
+    }
+    catch (err: any) {
+        logger.error(JSON.stringify({
+            location: "deltaKarma",
+            message: err.toString()
+        }));
+        return {
+            error: true,
+            data: "Some error occurred while changing karma."
+        }
+    }
+}
