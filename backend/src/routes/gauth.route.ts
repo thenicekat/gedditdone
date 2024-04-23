@@ -22,7 +22,7 @@ gauthRouter.get("/", async (req, res) => {
         if (appUser.data) {
             if (typeof appUser.data !== 'string' && appUser.data.role === "admin") {
                 logger.info("Admin login");
-                res.redirect(FRONTEND_URL + '/admin/home');
+                res.redirect(FRONTEND_URL + '/admin/');
                 return;
             }
         } else {
