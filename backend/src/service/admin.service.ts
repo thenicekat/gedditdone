@@ -123,6 +123,8 @@ export const banUser = async (userEmailId: string): Promise<CustomReturn<User>> 
     }
 }
 
+//changes Karma of a user
+//use sign=false to decrease   sign=true to increase
 export const deltaKarma =async (userEmailId: string, amount:number, sign:boolean): 
 Promise<CustomReturn<User>> => {
     try {
@@ -140,7 +142,7 @@ Promise<CustomReturn<User>> => {
         if (user.role == "admin") {
             return {
                 error: true,
-                data: "An admin cannot be fruit :)."
+                data: "Admin karma cannot be updated."
             }
         }
 
@@ -148,7 +150,7 @@ Promise<CustomReturn<User>> => {
             if(user.karmaPoints<amount){
                 return{
                     error:true,
-                    data:"Stop, Stop! he is already dead"
+                    data:"Stop, Stop! he is already dead."
                 }
             }
             const punishedUser= await prisma.user.update({
