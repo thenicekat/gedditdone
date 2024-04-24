@@ -8,50 +8,25 @@ import { Button } from "@nextui-org/button";
 import { siteConfig } from "@/config/site";
 import axios from "axios";
 
-export default function CreateReport() {
-	const { register, formState: { errors }, control, reset } = useForm<String>()
-    const [postId, setPostId] = useState("");
-    useEffect(() => {
-        // Check if window is available before accessing it
-        if (typeof window !== 'undefined') {
-          const params = new URLSearchParams(window.location.search);
-          const postIdFound = params.get('value') as string ;
-          if(postIdFound) {
-            setPostId(postIdFound);
-          }
-          // Do something with postId
+type FormData = {
+	reason: string
+}
 
-        //   const onSubmit = async (reason: string) => {
-        //     try {
-        //         const res = await axios.post(siteConfig.server_url + "/report/create", {
-        //             reason: reason,
-        //             postId: postId
-        //         }, {
-        //             withCredentials: true,
-        //             headers: {
-        //                 'Content-Type': 'application/json'
-        //             }
-        //         });
-    
-        //         if (res.status == 201) {
-        //             setError(null)
-        //             setMessage("Report created successfully.")
-        //             window.location.href = "/post/details/" + res.data.data.postId
-        //             reset()
-        //         } else if (res.status == 401) {
-        //             window.location.href = "/"
-        //         }
-        //         else {
-        //             setError(res.data.error || "There was an error creating your report.")
-        //         }
-        //     }
-        //     catch (err: any) {
-        //         setError(err.response.data.message || "There was an error creating your report.")
-        //     }
-        // }
-    
-        }
-      }, []);
+export default function CreateReport() {
+	const { register, formState: { errors }, control, reset } = useForm<FormData>()
+	const [postId, setPostId] = useState("");
+
+	useEffect(() => {
+		// Check if window is available before accessing it
+		if (typeof window !== 'undefined') {
+			const params = new URLSearchParams(window.location.search);
+			const postIdFound = params.get('value') as string;
+			if (postIdFound) {
+				setPostId(postIdFound);
+			}
+		}
+	}, []);
+
 	const [message, setMessage] = useState<string | null>(null)
 	const [error, setError] = useState<string | null>(null)
 
@@ -59,7 +34,7 @@ export default function CreateReport() {
 		try {
 			const res = await axios.post(siteConfig.server_url + "/report/create", {
 				reason: reason as string,
-                postId: postId
+				postId: postId
 			}, {
 				withCredentials: true,
 				headers: {
@@ -80,7 +55,7 @@ export default function CreateReport() {
 			}
 		}
 		catch (err: any) {
-			setError( "There was an error creating your report.")
+			setError("There was an error creating your report.")
 		}
 	}
 
@@ -96,10 +71,10 @@ export default function CreateReport() {
 
 			<Form
 				className="flex flex-col gap-3 m-3 w-full mx-auto p-4 rounded-lg shadow-md"
-                onSubmit = {( {data} : any) => {
-                        onSubmit(data.reason)
-                    }
-                }
+				onSubmit={({ data }: any) => {
+					onSubmit(data.reason)
+				}
+				}
 				onError={() => {
 					setMessage(null)
 					setError("There was an error creating your report.")

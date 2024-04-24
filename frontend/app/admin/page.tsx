@@ -12,6 +12,7 @@ import { CubeIcon, FlagIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { HttpCodes } from "@/types/HttpCodes";
 import { set } from "react-hook-form";
+import { report } from "process";
 
 axios.defaults.withCredentials = true;
 
@@ -77,22 +78,22 @@ const AdminHomepage = () => {
     fetchReports();
   }, []);
 
-
-  const closeReport = async ( reportId: string ) => {
+  const closeReport = async (reportId: string) => {
     setMessage("Loading");
-      try {
-          const response = await axios.post(siteConfig.server_url + "/report/close",
-          {
-            reportId: reportId as string
-          }
-          );
-          fetchReports();
-          setMessage("");
-          
-      } catch (err: any) {
-          setError(err.response.data.message || "Error closing report:" + err);
-      }
+    try {
+      const response = await axios.post(siteConfig.server_url + "/report/close",
+        {
+          reportId: reportId as string
+        }
+      );
+      fetchReports();
+      setMessage("");
+
+    } catch (err: any) {
+      setError(err.response.data.message || "Error closing report:" + err);
+    }
   }
+
   const banUser = async (usermail: string) => {
     setMessage("Loading...")
     try {
@@ -103,7 +104,7 @@ const AdminHomepage = () => {
       }
       fetchUsers();
       setMessage("");
-      
+
     } catch (error: any) {
       setError(error.response.data.message || "Error occured");
       setMessage("")
@@ -196,27 +197,21 @@ const AdminHomepage = () => {
               </div>
             </div>
             <div className="flex gap-2.5 py-2 items-center">
-              <span className="text-white text-xl font-semibold">{users.length}</span>
+              <span className="text-white text-xl font-semibold">{reports.length}</span>
             </div>
 
             <div className="flex items-center gap-6">
               <div>
                 <div>
-                  <span className="text-xs text-white">{users.filter(user => user.role == "user").length}</span>
+                  <span className="text-xs text-white">{reports.filter(report => report.status == "open").length}</span>
                 </div>
-                <span className="text-white text-xs">Pending</span>
+                <span className="text-white text-xs">Open</span>
               </div>
               <div>
                 <div>
-                  <span className="text-xs text-white">{users.filter(user => user.role == "admin").length}</span>
+                  <span className="text-xs text-white">{reports.filter(report => report.status == "closed").length}</span>
                 </div>
-                <span className="text-white text-xs">Completed</span>
-              </div>
-              <div>
-                <div>
-                  <span className="text-xs text-white">{users.filter(user => user.role == "banned").length}</span>
-                </div>
-                <span className="text-white text-xs">Irrelevant</span>
+                <span className="text-white text-xs">Closed</span>
               </div>
             </div>
           </CardBody>
@@ -314,15 +309,15 @@ const AdminHomepage = () => {
                 <TableCell>{u.postId}</TableCell>
                 <TableCell>{u.reason}</TableCell>
                 <TableCell>
-                <Button onClick={() => closeReport(u.id)} isDisabled={u.status==="closed"} color = "primary">
-                {u.status === 'closed' ? 'Closed' : 'Open'}
-                </Button>
+                  <Button onClick={() => closeReport(u.id)} isDisabled={u.status === "closed"} color="primary">
+                    {u.status === 'closed' ? 'Closed' : 'Open'}
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </div> 
+      </div>
 
     </div >
   )
