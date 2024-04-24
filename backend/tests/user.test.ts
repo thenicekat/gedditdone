@@ -3,6 +3,8 @@ import { prismaMock } from "./_mockdb";
 import { getUserByEmail, newUser, getUserById } from "../src/service/user.service";
 import { updateUser } from "../src/service/user.service";
 
+
+
 describe("Create a new user", () => {
     it("should create a new user", () => {
         const user = {
@@ -250,7 +252,7 @@ describe("Fetch user data using id", () => {
 
         prismaMock.user.findUnique.mockResolvedValue(user);
 
-        expect(getUserById(user.id)).resolves.toEqual({
+        expect(getUserById(user.id, user.email)).resolves.toEqual({
             error: false,
             data: user
         });
@@ -269,7 +271,8 @@ describe("Fetch user data using id", () => {
 
         prismaMock.user.findUnique.mockResolvedValue(user);
 
-        expect(getUserById(user.id)).resolves.toEqual({
+
+        expect(getUserById(user.id, user.email)).resolves.toEqual({
             error: true,
             data: "User is not public."
         });
@@ -287,7 +290,7 @@ describe("Fetch user data using id", () => {
 
         prismaMock.user.findUnique.mockRejectedValue(new Error("Some error"));
 
-        expect(getUserById(user.id)).resolves.toEqual({
+        expect(getUserById(user.id, user.email)).resolves.toEqual({
             error: true,
             data: null
         });

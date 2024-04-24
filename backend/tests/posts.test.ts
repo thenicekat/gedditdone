@@ -1,6 +1,6 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost} from "../src/service/posts.service";
+import { createPost, getAllPosts, getMyPosts, getPostDetails, editPost, deletePost, completePost } from "../src/service/posts.service";
 import { Post, User, Request } from ".prisma/client";
 
 const userWith10KarmaPoints: User = {
@@ -45,6 +45,19 @@ const post: Post & {
     service: "service",
     status: "open",
 }
+
+// const completedPost: Post & {
+//     authorEmail: string
+// } = {
+//     id: "1",
+//     authorId: "1",
+//     authorEmail: "ben@ben.com",
+//     source: "source",
+//     destination: "destination",
+//     costInPoints: 10,
+//     service: "service",
+//     status: "completed",
+// }
 
 const request: Request = {
     id: "1",
@@ -284,6 +297,18 @@ describe("Update post", () => {
         })).resolves.toEqual({
             error: true,
             data: "Some error occurred while updating the post"
+        });
+    });
+})
+
+describe("Complete post", () => {
+    it("should throw error if post already completed", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+        prismaMock.post.findUnique.mockRejectedValue(new Error("some error occurred"));
+
+        expect(completePost(post.id, userWith0KarmaPoints.email)).resolves.toEqual({
+            error: true,
+            data: "Some error occurred while completing the post"
         });
     });
 })
