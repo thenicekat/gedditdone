@@ -76,7 +76,7 @@ requestsRouter.put("/complete/:requestId", async (req, res) => {
     const requestId = req.params.requestId as string;
 
     const completeReq = await completeRequest(requestId);
-
+    console.log(completeReq.data);
     if (completeReq.error) {
         const response: CustomResponse = {
             error: true,
@@ -93,3 +93,7 @@ requestsRouter.put("/complete/:requestId", async (req, res) => {
         return res.status(HttpCodes.OK).json(response);
     }
 })
+
+// requestsRouter.post('/create/report', async(req, res) => {
+
+// })

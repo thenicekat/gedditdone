@@ -18,7 +18,7 @@ import { userRouter } from './routes/user.route'
 import { validateMiddleware } from './middleware/auth.middleware';
 import { requestsRouter } from './routes/requests.route';
 import { adminRouter } from './routes/admin.route';
-
+import { reportsRouter } from './routes/report.route';
 const app: Express = express()
 
 // Add Config
@@ -78,6 +78,7 @@ app.use('/post', postsRouter)
 app.use('/request', requestsRouter)
 app.use('/user', userRouter)
 app.use('/admin', adminRouter);
+app.use('/report', reportsRouter)
 
 
 // Start the server

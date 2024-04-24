@@ -35,3 +35,13 @@ export type Request = {
   sender: User;
   senderEmail: string;
 }
+
+export type Report = {
+  id: string;
+  reason: string;
+  status: string;
+  reporter: User;
+  reporterEmail: string;
+  post: Post;
+  postId: string;
+}
