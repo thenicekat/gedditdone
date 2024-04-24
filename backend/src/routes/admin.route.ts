@@ -6,6 +6,8 @@ import prisma from '../db'
 import { getAllPosts } from "../service/posts.service";
 export const adminRouter = Router();
 
+
+
 adminRouter.get("/allusers", async (req, res) => {
     let currUserEmail = req.session.email;
     let currUser;

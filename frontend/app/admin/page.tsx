@@ -3,7 +3,7 @@ import { Switch } from "@nextui-org/switch";
 import { Button } from "@nextui-org/button"
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
-import { Post, User } from '@/types'
+import { Post, User, Report } from '@/types'
 import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/table'
 import { siteConfig } from "@/config/site";
 import { title } from "@/components/primitives";
@@ -21,9 +21,10 @@ const AdminHomepage = () => {
   const [users, setUsers] = useState<User[] | never[]>([]);
   const [posts, setPosts] = useState<Post[] | never[]>([]);
   const [error, setError] = useState<string>("");
-
+  const [reports, setReports] = useState<Report[] | never[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
+  // const [completedRequests, setCompletedRequests] = useState<string[]>([]);
 
   const fetchUsers = async () => {
     try {
@@ -34,6 +35,17 @@ const AdminHomepage = () => {
       }
       setUsers(response.data.data);
       setLoading(false);
+    } catch (error: any) {
+      setError(error.response.data.message || "Error occured");
+      setLoading(false);
+    }
+  };
+
+  const fetchReports = async () => {
+    try {
+      const response = await axios.get(siteConfig.server_url + '/report/allreports');
+      setLoading(false);
+      setReports(response.data.data);
     } catch (error: any) {
       setError(error.response.data.message || "Error occured");
       setLoading(false);
@@ -62,8 +74,25 @@ const AdminHomepage = () => {
   useEffect(() => {
     fetchUsers();
     fetchPosts();
+    fetchReports();
   }, []);
 
+
+  const closeReport = async ( reportId: string ) => {
+    setMessage("Loading");
+      try {
+          const response = await axios.post(siteConfig.server_url + "/report/close",
+          {
+            reportId: reportId as string
+          }
+          );
+          fetchReports();
+          setMessage("");
+          
+      } catch (err: any) {
+          setError(err.response.data.message || "Error closing report:" + err);
+      }
+  }
   const banUser = async (usermail: string) => {
     setMessage("Loading...")
     try {
@@ -72,8 +101,9 @@ const AdminHomepage = () => {
         window.location.href = "/";
         return;
       }
-      setMessage(response.data.message);
-      fetchUsers()
+      fetchUsers();
+      setMessage("");
+      
     } catch (error: any) {
       setError(error.response.data.message || "Error occured");
       setMessage("")
@@ -265,6 +295,35 @@ const AdminHomepage = () => {
           </TableBody>
         </Table>
       </div>
+
+      {/* Reports Summary*/}
+      {message && <p className="text-center text-xl m-2">{message}</p>}
+      {error && <p className="text-red-600 text-center text-xl m-2">{error}</p>}
+      <div className="md:mx-2 my-2">
+        <Table aria-label="Reports Table">
+          <TableHeader>
+            <TableColumn>Reporter</TableColumn>
+            <TableColumn>Post</TableColumn>
+            <TableColumn>Reason</TableColumn>
+            <TableColumn>Status</TableColumn>
+          </TableHeader>
+          <TableBody>
+            {reports.map((u, index) => (
+              <TableRow key={index}>
+                <TableCell>{u.reporterEmail}</TableCell>
+                <TableCell>{u.postId}</TableCell>
+                <TableCell>{u.reason}</TableCell>
+                <TableCell>
+                <Button onClick={() => closeReport(u.id)} isDisabled={u.status==="closed"} color = "primary">
+                {u.status === 'closed' ? 'Closed' : 'Open'}
+                </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div> 
+
     </div >
   )
 }

@@ -17,6 +17,7 @@ type Props = {
     }
 }
 
+
 axios.defaults.withCredentials = true;
 
 const PostDetailsPage = ({ params }: Props) => {
@@ -227,6 +228,7 @@ const PostDetailsPage = ({ params }: Props) => {
                                 <TableColumn>Status</TableColumn>
                                 <TableColumn>View User</TableColumn>
                                 <TableColumn>Accept</TableColumn>
+                                <TableColumn>Report</TableColumn>
                             </TableHeader>
                             <TableBody>
                                 {postRequests.map((request, index) => (
@@ -244,6 +246,14 @@ const PostDetailsPage = ({ params }: Props) => {
                                             onClick={() => acceptRequest(request.id)}
                                             className='cursor-pointer'>
                                             <TicketIcon className='w-5 h-5' />
+                                        </TableCell>
+                                        <TableCell>
+                                                <Button onClick={() => {
+										            window.location.href = `../../report/create?value=${request.postId}`;
+									            }}
+                                                isDisabled = {request.status !== 'accepted'} color="primary">
+                                                Report  
+                                                </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))}
