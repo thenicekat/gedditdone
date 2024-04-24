@@ -317,7 +317,7 @@ export const completePost = async (postId: string, authorEmail: string): Promise
             error: true,
             data: "Post has already been completed."
         };
-        
+
         else if (post.status == "open") return {
             error: true,
             data: "Post has not been closed yet."
@@ -336,7 +336,7 @@ export const completePost = async (postId: string, authorEmail: string): Promise
             data: "Some error occurred while finding accepted requests."
         }
 
-        if (post.costInPoints>user.karmaPoints) return {
+        if (post.costInPoints > user.karmaPoints) return {
             error: true,
             data: "Not enough karma to complete this post."
         }

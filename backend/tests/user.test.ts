@@ -252,7 +252,7 @@ describe("Fetch user data using id", () => {
 
         prismaMock.user.findUnique.mockResolvedValue(user);
 
-        expect(getUserById(user.id,user.id)).resolves.toEqual({
+        expect(getUserById(user.id, user.email)).resolves.toEqual({
             error: false,
             data: user
         });
@@ -271,7 +271,8 @@ describe("Fetch user data using id", () => {
 
         prismaMock.user.findUnique.mockResolvedValue(user);
 
-        expect(getUserById(user.id,user.id)).resolves.toEqual({
+
+        expect(getUserById(user.id, user.email)).resolves.toEqual({
             error: true,
             data: "User is not public."
         });
@@ -289,7 +290,7 @@ describe("Fetch user data using id", () => {
 
         prismaMock.user.findUnique.mockRejectedValue(new Error("Some error"));
 
-        expect(getUserById(user.id,user.id)).resolves.toEqual({
+        expect(getUserById(user.id, user.email)).resolves.toEqual({
             error: true,
             data: null
         });

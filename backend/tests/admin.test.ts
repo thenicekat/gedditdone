@@ -13,7 +13,7 @@ const user: User = {
     isPublic: true
 }
 
-const a: User = {
+const admin: User = {
     id: "2",
     name: "ben",
     email: "ben@hen.com",
@@ -23,7 +23,7 @@ const a: User = {
     isPublic: true
 }
 
-const na: User = {
+const notadmin: User = {
     id: "2",
     name: "ben",
     email: "ben@hen.com",
@@ -85,20 +85,20 @@ describe("Get all users", () => {
 
 describe("promote user to admin", () => {
     it("should promote user to admin role", () => {
-        prismaMock.user.findUnique.mockResolvedValue(na);
-        prismaMock.user.update.mockResolvedValue(a);
+        prismaMock.user.findUnique.mockResolvedValue(notadmin);
+        prismaMock.user.update.mockResolvedValue(admin);
 
-        expect(promoteUser(na.email)).resolves.toEqual({
+        expect(promoteUser(notadmin.email)).resolves.toEqual({
             error: false,
-            data: a
+            data: admin
         })
     })
 
     it("should return error if any error occured", () => {
-        prismaMock.user.findUnique.mockResolvedValue(na);
+        prismaMock.user.findUnique.mockResolvedValue(notadmin);
         prismaMock.user.update.mockRejectedValue(new Error("Some error occurred"));
 
-        expect(promoteUser(na.email)).resolves.toEqual({
+        expect(promoteUser(notadmin.email)).resolves.toEqual({
             error: true,
             data: "Some error occurred while promoting user to admin role"
         })
@@ -107,20 +107,22 @@ describe("promote user to admin", () => {
 
 describe("demote admin to user", () => {
     it("should demote admin to user", () => {
-        prismaMock.user.findUnique.mockResolvedValue(a);
-        prismaMock.user.update.mockResolvedValue(na);
+        prismaMock.user.findUnique.mockResolvedValue(admin);
+        prismaMock.user.update.mockResolvedValue(notadmin);
 
-        expect(demoteUser(a.email,na2.email)).resolves.toEqual({
+
+        expect(demoteUser(user.email, admin.email)).resolves.toEqual({
             error: false,
-            data: na
+            data: notadmin
         })
     })
 
     it("should return error if any error occured", () => {
-        prismaMock.user.findUnique.mockResolvedValue(a);
+        prismaMock.user.findUnique.mockResolvedValue(admin);
         prismaMock.user.update.mockRejectedValue(new Error("Some error occurred"));
 
-        expect(demoteUser(a.email,na2.email)).resolves.toEqual({
+
+        expect(demoteUser(user.email, admin.email)).resolves.toEqual({
             error: true,
             data: "Some error occurred while demoting admin to user role"
         })
@@ -129,10 +131,10 @@ describe("demote admin to user", () => {
 
 describe("ban user", () => {
     it("should ban user", () => {
-        prismaMock.user.findUnique.mockResolvedValue(na);
+        prismaMock.user.findUnique.mockResolvedValue(notadmin);
         prismaMock.user.update.mockResolvedValue(bu);
 
-        expect(banUser(na.email)).resolves.toEqual({
+        expect(banUser(notadmin.email)).resolves.toEqual({
             error: false,
             data: bu
         })
@@ -147,20 +149,20 @@ describe("ban user", () => {
     })
 
     it("should return error if user to be banned is an admin", () => {
-        prismaMock.user.findUnique.mockResolvedValue(a);
+        prismaMock.user.findUnique.mockResolvedValue(admin);
         prismaMock.user.update.mockResolvedValue(bu);
 
-        expect(banUser(a.email)).resolves.toEqual({
+        expect(banUser(admin.email)).resolves.toEqual({
             error: true,
             data: "An admin cannot be banned."
         })
     })
 
     it("should return error if any error occured", () => {
-        prismaMock.user.findUnique.mockResolvedValue(na);
+        prismaMock.user.findUnique.mockResolvedValue(notadmin);
         prismaMock.user.update.mockRejectedValue(new Error("Some error occurred"));
 
-        expect(banUser(na.email)).resolves.toEqual({
+        expect(banUser(notadmin.email)).resolves.toEqual({
             error: true,
             data: "Some error occurred while banning user."
         })
