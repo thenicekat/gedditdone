@@ -3,6 +3,8 @@ import { prismaMock } from "./_mockdb";
 import { getUserByEmail, newUser, getUserById } from "../src/service/user.service";
 import { updateUser } from "../src/service/user.service";
 
+
+
 describe("Create a new user", () => {
     it("should create a new user", () => {
         const user = {
@@ -268,6 +270,7 @@ describe("Fetch user data using id", () => {
         };
 
         prismaMock.user.findUnique.mockResolvedValue(user);
+
 
         expect(getUserById(user.id, user.email)).resolves.toEqual({
             error: true,
