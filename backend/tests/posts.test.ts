@@ -34,7 +34,10 @@ const bannedUser: User = {
 }
 
 const post: Post & {
-    authorEmail: string
+    authorEmail: string,
+    author: {
+        email: string
+    }
 } = {
     id: "1",
     authorId: "1",
@@ -44,20 +47,29 @@ const post: Post & {
     costInPoints: 10,
     service: "service",
     status: "open",
+    author: {
+        email: "ben@ben.com"
+    }
 }
 
-// const completedPost: Post & {
-//     authorEmail: string
-// } = {
-//     id: "1",
-//     authorId: "1",
-//     authorEmail: "ben@ben.com",
-//     source: "source",
-//     destination: "destination",
-//     costInPoints: 10,
-//     service: "service",
-//     status: "completed",
-// }
+const completedPost: Post & {
+    authorEmail: string,
+    author: {
+        email: string
+    }
+} = {
+    id: "1",
+    authorId: "1",
+    authorEmail: "ben@ben.com",
+    source: "source",
+    destination: "destination",
+    costInPoints: 10,
+    service: "service",
+    status: "completed",
+    author: {
+        email: "ben@ben.com"
+    }
+}
 
 const request: Request = {
     id: "1",
@@ -302,11 +314,80 @@ describe("Update post", () => {
 })
 
 describe("Complete post", () => {
-    it("should throw error if post already completed", () => {
+    it("should throw error if author email is not provided", () => {
+        prismaMock.post.findUnique.mockRejectedValue(post);
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+
+        expect(completePost(post.id, "")).resolves.toEqual({
+            error: true,
+            data: "Author email is required."
+        });
+    });
+
+    it("should throw error if user does not exist", () => {
+        prismaMock.user.findUnique.mockResolvedValue(null);
+
+        expect(completePost(post.id, userWith0KarmaPoints.email)).resolves.toEqual({
+            error: true,
+            data: "User does not exist."
+        });
+    });
+
+    it("should throw error if post does not exist", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+        prismaMock.post.findUnique.mockResolvedValue(null);
+
+        expect(completePost(post.id, userWith0KarmaPoints.email)).resolves.toEqual({
+            error: true,
+            data: "Post does not exist."
+        });
+    })
+
+    it("should throw an error if email does not match", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+        prismaMock.post.findUnique.mockResolvedValue(completedPost);
+
+        expect(completePost(completedPost.id, userWith0KarmaPoints.email)).resolves.toEqual({
+            error: true,
+            data: "Post has already been completed."
+        })
+    })
+
+    it("should throw an error if email does not match", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+        prismaMock.post.findUnique.mockResolvedValue(completedPost);
+
+        expect(completePost(completedPost.id, userWith0KarmaPoints.email)).resolves.toEqual({
+            error: true,
+            data: "Post has already been completed."
+        })
+    })
+
+    it("should throw error if post is already completed", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+        prismaMock.post.findUnique.mockResolvedValue(completedPost);
+
+        expect(completePost(completedPost.id, userWith0KarmaPoints.email)).resolves.toEqual({
+            error: true,
+            data: "Post has already been completed."
+        })
+    })
+
+    it("should throw error if post is not closed", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+        prismaMock.post.findUnique.mockResolvedValue(post);
+
+        expect(completePost(post.id, userWith0KarmaPoints.email)).resolves.toEqual({
+            error: true,
+            data: "Post has not been closed yet."
+        })
+    })
+
+    it("should throw error if some error occurs", () => {
         prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
         prismaMock.post.findUnique.mockRejectedValue(new Error("some error occurred"));
 
-        expect(completePost(post.id, userWith0KarmaPoints.email)).resolves.toEqual({
+        expect(completePost(completedPost.id, userWith0KarmaPoints.email)).resolves.toEqual({
             error: true,
             data: "Some error occurred while completing the post"
         });

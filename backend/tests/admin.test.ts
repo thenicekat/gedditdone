@@ -1,7 +1,7 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
 import { User } from ".prisma/client";
-import { getAllUsers, promoteUser, demoteUser, banUser, deltaKarma} from "../src/service/admin.service";
+import { getAllUsers, promoteUser, demoteUser, banUser, deltaKarma } from "../src/service/admin.service";
 
 const user: User = {
     id: "1",
@@ -33,17 +33,17 @@ const notadmin: User = {
     isPublic: true
 }
 
-const na2: User = {
-    id: "3",
-    name: "ben",
-    email: "hen@hen.com",
-    phoneNumber: "9898989898",
-    karmaPoints: 0,
-    role: "user",
-    isPublic: true
-}
+// const na2: User = {
+//     id: "3",
+//     name: "ben",
+//     email: "hen@hen.com",
+//     phoneNumber: "9898989898",
+//     karmaPoints: 0,
+//     role: "user",
+//     isPublic: true
+// }
 
-const bu: User= {
+const bu: User = {
     id: "2",
     name: "ben",
     email: "ben@hen.com",
@@ -171,29 +171,29 @@ describe("ban user", () => {
 
 describe("increase/decrease user karma", () => {
     it("should increase karma", () => {
-        prismaMock.user.findUnique.mockResolvedValue(na);
+        prismaMock.user.findUnique.mockResolvedValue(notadmin);
         prismaMock.user.update.mockResolvedValue(iku);
 
-        expect(deltaKarma(na.email,12,true)).resolves.toEqual({
+        expect(deltaKarma(notadmin.email, 12, true)).resolves.toEqual({
             error: false,
             data: iku
         })
     })
-    
+
     it("should decrease karma", () => {
         prismaMock.user.findUnique.mockResolvedValue(iku);
-        prismaMock.user.update.mockResolvedValue(na);
+        prismaMock.user.update.mockResolvedValue(notadmin);
 
-        expect(deltaKarma(iku.email,12,false)).resolves.toEqual({
+        expect(deltaKarma(iku.email, 12, false)).resolves.toEqual({
             error: false,
-            data: na
+            data: notadmin
         })
     })
 
     it("should return error if target karma is negative", () => {
-        prismaMock.user.findUnique.mockResolvedValue(na);
+        prismaMock.user.findUnique.mockResolvedValue(notadmin);
 
-        expect(deltaKarma(na.email,12,false)).resolves.toEqual({
+        expect(deltaKarma(notadmin.email, 12, false)).resolves.toEqual({
             error: true,
             data: "Stop, Stop! he is already dead."
         })
@@ -208,19 +208,19 @@ describe("increase/decrease user karma", () => {
     })
 
     it("should return error if user to be updated is an admin", () => {
-        prismaMock.user.findUnique.mockResolvedValue(a);
+        prismaMock.user.findUnique.mockResolvedValue(admin);
 
-        expect(deltaKarma(a.email,12,true)).resolves.toEqual({
+        expect(deltaKarma(admin.email, 12, true)).resolves.toEqual({
             error: true,
             data: "Admin karma cannot be updated."
         })
     })
 
     it("should return error if any error occured", () => {
-        prismaMock.user.findUnique.mockResolvedValue(na);
+        prismaMock.user.findUnique.mockResolvedValue(notadmin);
         prismaMock.user.update.mockRejectedValue(new Error("Some error occurred"));
 
-        expect(deltaKarma(na.email,12,true)).resolves.toEqual({
+        expect(deltaKarma(notadmin.email, 12, true)).resolves.toEqual({
             error: true,
             data: "Some error occurred while changing karma."
         })

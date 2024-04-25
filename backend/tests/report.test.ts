@@ -1,7 +1,7 @@
 import { describe, expect } from "@jest/globals";
 import { prismaMock } from "./_mockdb";
-import { getAllReports,createReport,closeReport } from "../src/service/report.service";
-import {Post , Report} from ".prisma/client"
+import { getAllReports, createReport, closeReport } from "../src/service/report.service";
+import { Post, Report } from ".prisma/client"
 
 const validPost: Post = {
     id: "1",
@@ -13,7 +13,7 @@ const validPost: Post = {
     status: "open",
 }
 
-const completedPost: Post  = {
+const completedPost: Post = {
     id: "1",
     authorId: "1",
     source: "source",
@@ -38,7 +38,7 @@ describe("Create a new report", () => {
         prismaMock.post.findUnique.mockResolvedValue(validPost);
         prismaMock.report.create.mockResolvedValue(report);
 
-        expect(createReport("random","abc@abc.com",validPost.id)).resolves.toEqual({
+        expect(createReport("random", "abc@abc.com", validPost.id)).resolves.toEqual({
             error: false,
             data: report
         });
@@ -47,27 +47,26 @@ describe("Create a new report", () => {
     it("should return an error if reason is not given", () => {
         prismaMock.post.findUnique.mockResolvedValue(validPost);
         prismaMock.report.create.mockResolvedValue(report);
-        expect(createReport("","abc@abc.com",validPost.id)).resolves.toEqual({
+        expect(createReport("", "abc@abc.com", validPost.id)).resolves.toEqual({
             error: true,
             data: "Reason is required."
         });
     })
 
     it("should return an error if mail is not given", () => {
-        
+
         prismaMock.post.findUnique.mockResolvedValue(validPost);
         prismaMock.report.create.mockResolvedValue(report);
-        expect(createReport("reason","",validPost.id)).resolves.toEqual({
+        expect(createReport("reason", "", validPost.id)).resolves.toEqual({
             error: true,
             data: "Author email is required."
         });
     })
 
-
     it("should return an error if post is completed", () => {
-        prismaMock.post.findFirst.mockResolvedValue(null);
+        prismaMock.post.findUnique.mockResolvedValue(completedPost);
 
-        expect(createReport("reason","abc@abc.com",completedPost.id)).resolves.toEqual({
+        expect(createReport("reason", "abc@abc.com", completedPost.id)).resolves.toEqual({
             error: true,
             data: "A Report cannot be made against a completed post."
         });
@@ -75,9 +74,7 @@ describe("Create a new report", () => {
 
     it("should catch any error occurred", () => {
         prismaMock.post.findUnique.mockResolvedValue(validPost);
-        prismaMock.report.create.mockResolvedValue(report);
-
-        prismaMock.post.create.mockRejectedValue(new Error("Some error occurred"));
+        prismaMock.report.create.mockRejectedValue(new Error("Some error occurred"));
 
         expect(createReport("reason", "abc@abc.com", validPost.id)).resolves.toEqual({
             error: true,
@@ -117,17 +114,14 @@ describe("Close a report", () => {
             error: false,
             data: report
         });
-
-        it("should catch any error occurred", () => {
-            prismaMock.report.findFirst.mockResolvedValue(report);
-            prismaMock.report.findMany.mockRejectedValue(new Error("Some error occurred"));
-    
-            expect(closeReport(report.id)).resolves.toEqual({
-                error: true,
-                data: "Some error occurred while closing the report"
-            });
-        });
     })
 
+    it("should catch any error occurred", () => {
+        prismaMock.report.update.mockRejectedValue(new Error("Some error occurred"));
 
+        expect(closeReport(report.id)).resolves.toEqual({
+            error: true,
+            data: "Some error occurred while closing the report"
+        });
+    });
 })

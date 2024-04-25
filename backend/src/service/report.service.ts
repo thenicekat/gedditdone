@@ -25,7 +25,7 @@ export const createReport = async (reason: string, emailId: string, postId: stri
         data: "Author email is required."
     }
 
-    let checkPostExistence: Post | null = await prisma.post.findFirst({
+    let checkPostExistence: Post | null = await prisma.post.findUnique({
         where: {
             id: postId,
         }
@@ -35,8 +35,8 @@ export const createReport = async (reason: string, emailId: string, postId: stri
             error: true,
             data: "Post does not exist."
         }
-    }else {
-        if(checkPostExistence.status==="completed"){
+    } else {
+        if (checkPostExistence.status === "completed") {
             return {
                 error: true,
                 data: "A Report cannot be made against a completed post."
@@ -44,18 +44,18 @@ export const createReport = async (reason: string, emailId: string, postId: stri
         }
     }
 
-    if(!reason) return {
+    if (!reason) return {
         error: true,
         data: "Reason is required."
     }
 
     let checkReportExistence: Report | null = await prisma.report.findFirst({
         where: {
-            postId: postId 
+            postId: postId
         }
     })
 
-    if(checkReportExistence) {
+    if (checkReportExistence) {
         return {
             error: true,
             data: "A report already exists on this post."
@@ -96,10 +96,9 @@ export const createReport = async (reason: string, emailId: string, postId: stri
 
 export const closeReport = async (reportId: string): Promise<CustomReturn<Report>> => {
     try {
-
         const updatedReport = await prisma.report.update({
             where: { id: reportId },
-            data: { status: "closed" } // Assuming status field exists in the Report model
+            data: { status: "closed" }
         });
 
         return {

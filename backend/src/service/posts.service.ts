@@ -282,7 +282,6 @@ export const completePost = async (postId: string, authorEmail: string): Promise
         error: true,
         data: "Author email is required."
     }
-
     try {
         let user = await prisma.user.findUnique({
             where: {
@@ -308,10 +307,13 @@ export const completePost = async (postId: string, authorEmail: string): Promise
         }
 
         // You cannot mark other's post as completed
+        console.log(post.author.email, authorEmail, post.author.email != authorEmail)
         if (post.author.email != authorEmail) return {
             error: true,
             data: "You are not the author of this post."
         }
+        console.log("Hello")
+
         // If post is completed or no request was accepted then throw error
         if (post.status == "completed") return {
             error: true,
