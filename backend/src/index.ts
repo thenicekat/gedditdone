@@ -20,6 +20,7 @@ import { requestsRouter } from './routes/requests.route';
 import { adminRouter } from './routes/admin.route';
 import { reportsRouter } from './routes/report.route';
 const app: Express = express()
+app.disable("x-powered-by");
 
 // Add Config
 app.set("trust proxy", 1);
