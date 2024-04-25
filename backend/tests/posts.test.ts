@@ -52,6 +52,25 @@ const post: Post & {
     }
 }
 
+const closedPost: Post & {
+    authorEmail: string,
+    author: {
+        email: string
+    }
+} = {
+    id: "1",
+    authorId: "1",
+    authorEmail: "ben@ben.com",
+    source: "source",
+    destination: "destination",
+    costInPoints: 10,
+    service: "service",
+    status: "closed",
+    author: {
+        email: "ben@ben.com"
+    }
+}
+
 const completedPost: Post & {
     authorEmail: string,
     author: {
@@ -76,6 +95,13 @@ const request: Request = {
     postId: "1",
     senderEmail: "tom@ben.com",
     status: "open"
+}
+
+const completedRequest: Request = {
+    id: "1",
+    postId: "1",
+    senderEmail: "tom@ben.com",
+    status: "completed"
 }
 
 describe("Create a new post", () => {
@@ -392,6 +418,31 @@ describe("Complete post", () => {
             data: "Some error occurred while completing the post"
         });
     });
+
+    it("should throw error if user does not have enough karma", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith0KarmaPoints);
+        prismaMock.post.findUnique.mockResolvedValue(closedPost);
+        prismaMock.request.findMany.mockResolvedValue([completedRequest]);
+        prismaMock.$transaction.mockResolvedValue([[completedRequest], closedPost]);
+
+        expect(completePost(closedPost.id, userWith0KarmaPoints.email)).resolves.toEqual({
+            error: true,
+            data: "Not enough karma to complete this post."
+        });
+    })
+
+    it("should complete successfully if user does have enough karma", () => {
+        prismaMock.user.findUnique.mockResolvedValue(userWith10KarmaPoints);
+        prismaMock.post.findUnique.mockResolvedValue(closedPost);
+        prismaMock.request.findMany.mockResolvedValue([completedRequest]);
+        prismaMock.$transaction.mockResolvedValue([[completedRequest], closedPost]);
+        prismaMock.post.update.mockResolvedValue(completedPost);
+
+        expect(completePost(closedPost.id, userWith10KarmaPoints.email)).resolves.toEqual({
+            error: false,
+            data: completedPost
+        });
+    })
 })
 
 describe("Delete post", () => {
