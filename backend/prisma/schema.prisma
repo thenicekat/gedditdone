@@ -26,6 +26,8 @@ model Post {
   authorId String @db.ObjectId
   // Request details
   requests Request[]
+  // Report details
+  reports Report[]
 }
 
 // User stores n number of posts and requests
@@ -68,8 +70,9 @@ model Report {
   reason String
   status String @default("open")
   // Reporter details
+  reporter User @relation(fields: [reporterEmail], references: [email])
   reporterEmail String
-  // User details
-  userReported User @relation(fields: [userReportedEmail], references: [email])
-  userReportedEmail String 
+  // Post details
+  post Post @relation(fields: [postId], references: [id])
+  postId String @db.ObjectId 
 }
