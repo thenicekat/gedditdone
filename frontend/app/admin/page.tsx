@@ -338,7 +338,7 @@ const AdminHomepage = () => {
               <ModalHeader className="flex flex-col gap-1">Change User Karma</ModalHeader>
               <ModalBody>
                 <p>
-                  You will be able to modify an user's karma using this feature
+                  You will be able to modify an user&apos;s karma using this feature
                 </p>
                 <p>
                   Email: {deltaKarmaUser}
