@@ -8,11 +8,13 @@ import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from 
 import { siteConfig } from "@/config/site";
 import { title } from "@/components/primitives";
 import { Card, CardBody } from "@nextui-org/card";
-import { CubeIcon, FlagIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { CubeIcon, FlagIcon, PencilSquareIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { HttpCodes } from "@/types/HttpCodes";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
 import { set } from "react-hook-form";
-import { report } from "process";
+import { Input } from "@nextui-org/input";
+
 
 axios.defaults.withCredentials = true;
 
@@ -25,7 +27,11 @@ const AdminHomepage = () => {
   const [reports, setReports] = useState<Report[] | never[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [message, setMessage] = useState<string>("");
-  // const [completedRequests, setCompletedRequests] = useState<string[]>([]);
+
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [deltaKarmaValue, setDeltaKarmaValue] = useState<number>(0);
+  const [deltaKarmaUser, setDeltaKarmaUser] = useState<string>("");
+  const [deltaKarmaCurrent, setDeltaKarmaCurrent] = useState<number>(0);
 
   const fetchUsers = async () => {
     try {
@@ -79,6 +85,7 @@ const AdminHomepage = () => {
   }, []);
 
   const closeReport = async (reportId: string) => {
+    setError("");
     setMessage("Loading");
     try {
       const response = await axios.post(siteConfig.server_url + "/report/close",
@@ -95,6 +102,7 @@ const AdminHomepage = () => {
   }
 
   const banUser = async (usermail: string) => {
+    setError("")
     setMessage("Loading...")
     try {
       const response = await axios.put(siteConfig.server_url + `/admin/ban/${usermail}`);
@@ -112,13 +120,14 @@ const AdminHomepage = () => {
   }
 
   const changeUserRole = async (usermail: string, admin: boolean) => {
+    setError("")
     setMessage("Loading...")
     try {
       if (admin) {
         await axios.put(siteConfig.server_url + `/admin/promote/${usermail}`);
         setMessage("User promoted to admin role")
         // Refresh users list after promoting
-        const response = await axios.get(siteConfig.server_url + '/admin/');
+        const response = await axios.get(siteConfig.server_url + '/admin/allusers');
         if (response.status == HttpCodes.UNAUTHORIZED) {
           window.location.href = "/";
           return;
@@ -129,7 +138,7 @@ const AdminHomepage = () => {
         await axios.put(siteConfig.server_url + `/admin/demote/${usermail}`);
         setMessage("User demoted to default role")
         // Refresh users list after promoting
-        const response = await axios.get(siteConfig.server_url + '/admin/');
+        const response = await axios.get(siteConfig.server_url + '/admin/allusers');
         if (response.status == HttpCodes.UNAUTHORIZED) {
           window.location.href = "/";
           return;
@@ -137,7 +146,29 @@ const AdminHomepage = () => {
         setUsers(response.data.data);
       }
     } catch (error: any) {
-      setError(error.response.data.message || "error occured");
+      setError(error.response.data.message || "Error occured");
+      setMessage("")
+    }
+  }
+
+  const deltaKarma = async (usermail: string, delta: number) => {
+    setError("");
+    setMessage("Loading...")
+    try {
+      const response = await axios.put(siteConfig.server_url + `/admin/deltaKarma/${usermail}`, {
+        amount: Math.abs(delta),
+        sign: delta > 0
+      });
+
+      if (response.status == HttpCodes.UNAUTHORIZED) {
+        window.location.href = "/";
+        return;
+      }
+
+      setMessage("Karma updated")
+      fetchUsers();
+    } catch (error: any) {
+      setError(error.response.data.message || "Error occured");
       setMessage("")
     }
   }
@@ -257,12 +288,13 @@ const AdminHomepage = () => {
       {/* User Summary */}
       {message && <p className="text-center text-xl m-2">{message}</p>}
       {error && <p className="text-red-600 text-center text-xl m-2">{error}</p>}
+
       <div className="md:mx-2 my-2">
         <Table aria-label="Users Table">
           <TableHeader>
             <TableColumn>Name</TableColumn>
             <TableColumn>Email</TableColumn>
-            <TableColumn>Karma</TableColumn>
+            <TableColumn>Modify Karma</TableColumn>
             <TableColumn>Promote to admin role</TableColumn>
             <TableColumn>Ban user</TableColumn>
           </TableHeader>
@@ -271,7 +303,11 @@ const AdminHomepage = () => {
               <TableRow key={index}>
                 <TableCell>{u.name}</TableCell>
                 <TableCell>{u.email}</TableCell>
-                <TableCell>{u.karmaPoints}</TableCell>
+                <TableCell onClick={() => {
+                  setDeltaKarmaUser(u.email);
+                  setDeltaKarmaCurrent(u.karmaPoints);
+                  onOpen()
+                }}><span className="flex cursor-pointer">{u.karmaPoints} <PencilSquareIcon className="w-5 h-5 mx-3" /></span></TableCell>
                 <TableCell>
                   <Switch onChange={(event) => changeUserRole(u.email, event.target.checked)} isSelected={u.role === 'admin'} >
                     Admin role
@@ -290,6 +326,49 @@ const AdminHomepage = () => {
           </TableBody>
         </Table>
       </div>
+
+      <Modal
+        size={'xl'}
+        isOpen={isOpen}
+        onClose={onClose}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">Change User Karma</ModalHeader>
+              <ModalBody>
+                <p>
+                  You will be able to modify an user's karma using this feature
+                </p>
+                <p>
+                  Email: {deltaKarmaUser}
+                  <br />
+                  Current Karma: {deltaKarmaCurrent}
+                </p>
+                <p>
+                  <Input
+                    type="number"
+                    label="Change Karma"
+                    value={deltaKarmaValue.toString()}
+                    onChange={(e) => setDeltaKarmaValue(parseInt(e.target.value))}
+                  />
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={onClose}>
+                  Close
+                </Button>
+                <Button color="primary" onPress={() => {
+                  deltaKarma(deltaKarmaUser, deltaKarmaValue);
+                  onClose();
+                }}>
+                  Submit
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
 
       {/* Reports Summary*/}
       {message && <p className="text-center text-xl m-2">{message}</p>}

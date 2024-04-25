@@ -124,9 +124,9 @@ export const banUser = async (userEmailId: string): Promise<CustomReturn<User>> 
 }
 
 //changes Karma of a user
-//use sign=false to decrease   sign=true to increase
-export const deltaKarma =async (userEmailId: string, amount:number, sign:boolean): 
-Promise<CustomReturn<User>> => {
+//use sign=false to decrease sign=true to increase
+export const deltaKarma = async (userEmailId: string, amount: number, sign: boolean):
+    Promise<CustomReturn<User>> => {
     try {
         let user = await prisma.user.findUnique({
             where: {
@@ -146,14 +146,14 @@ Promise<CustomReturn<User>> => {
             }
         }
 
-        if (sign==false) {
-            if(user.karmaPoints<amount){
-                return{
-                    error:true,
-                    data:"Stop, Stop! he is already dead."
+        if (sign == false) {
+            if (user.karmaPoints < amount) {
+                return {
+                    error: true,
+                    data: "Stop, Stop! he is already dead."
                 }
             }
-            const punishedUser= await prisma.user.update({
+            const punishedUser = await prisma.user.update({
                 where: { email: userEmailId },
                 data: {
                     karmaPoints: {
@@ -162,12 +162,12 @@ Promise<CustomReturn<User>> => {
                 }
             })
             return {
-                error:false,
-                data:punishedUser
+                error: false,
+                data: punishedUser
             }
         }
         else {
-            const cherishedUser= await prisma.user.update({
+            const cherishedUser = await prisma.user.update({
                 where: { email: userEmailId },
                 data: {
                     karmaPoints: {
@@ -176,8 +176,8 @@ Promise<CustomReturn<User>> => {
                 }
             })
             return {
-                error:false,
-                data:cherishedUser
+                error: false,
+                data: cherishedUser
             }
         }
     }
