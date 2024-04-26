@@ -14,7 +14,7 @@ import { HttpCodes } from "@/types/HttpCodes";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
 import { set } from "react-hook-form";
 import { Input } from "@nextui-org/input";
-import { DonutChart } from "@tremor/react";
+import { DonutChart, Legend, CustomTooltipProps } from "@tremor/react";
 
 
 axios.defaults.withCredentials = true;
@@ -175,6 +175,95 @@ const AdminHomepage = () => {
     }
   }
 
+  var dataPostsDonut = [{
+    Status: "Pending ",
+    Posts: posts.filter(post => post.status == "open").length
+  },
+  {
+    Status: "Closed ",
+    Posts: posts.filter(post => post.status == "closed").length
+  },
+  {
+    Status: "Completed ",
+    Posts: posts.filter(post => post.status == "completed").length
+  }];
+
+  var dataReportsDonut = [{
+    Status: "Open ",
+    Reports: reports.filter(reports => reports.status == "open").length
+  },
+  {
+    Status: "Closed ",
+    Reports: reports.filter(reports => reports.status == "closed").length
+  }];
+
+  //Donut chart colors
+  const reportsDonutCol = ['orange-500', 'blue-600']
+  const postsDonutCol = ['teal-500', 'blue-600', 'orange-500']
+  const usersDonutCol = ['lime-500', 'violet-600', 'orange-500']
+
+  var dataUsersDonut = [{
+    Role: "Default",
+    Users: users.filter(user => user.role == "user").length
+  },
+  {
+    Role: "Admin",
+    Users: users.filter(user => user.role == "admin").length
+  },
+  {
+    Role: "Banned",
+    Users: users.filter(user => user.role == "banned").length
+  }]
+
+
+  const valueFormatterPosts = (number: number,) => {
+    const total = dataPostsDonut.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.Posts,
+      0,
+    )
+    const percentage = Math.round((number / total) * 100)
+    return `\n${percentage}% Posts`
+  }
+
+  const valueFormatterReports = (number: number,) => {
+    const total = dataReportsDonut.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.Reports,
+      0,
+    )
+    const percentage = Math.round((number / total) * 100)
+    return `\n${percentage}% Posts`
+  }
+
+  const valueFormatterUsers = (number: number,) => {
+    const total = dataUsersDonut.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.Users,
+      0,
+    )
+    const percentage = Math.round((number / total) * 100)
+    return `\n${percentage}% Users`
+  }
+
+  const customTooltip = (props: CustomTooltipProps) => {
+    const { payload, active } = props;
+    if (!active || !payload) return null;
+    const categoryPayload = payload?.[0]; if (!categoryPayload) return null;
+    return (<div
+      className="dark:invert w-56 rounded-tremor-default border border-tremor-border dark:border-dark-tremor-border bg-tremor-background dark:bg-dark-tremor-background p-2 text-tremor-default shadow-tremor-dropdown">
+      <div className="flex flex-1 space-x-2.5">
+        <div className={`flex w-1.5 flex-col bg-${categoryPayload?.color}-500 rounded`} />
+        <div className="w-full">
+          <div className="flex items-center justify-between space-x-8">
+            <p className="whitespace-nowrap text-right text-tremor-content dark:text-dark-tremor-brand-emphasis">
+              {categoryPayload.name}              </p>
+            <p className="whitespace-nowrap text-right font-medium text-tremor-content-emphasis dark:text-dark-tremor-content-emphasis">
+              {categoryPayload.value}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>);
+  };
+
   return (
     <div>
       <h1 className={title()}>Admin Home</h1>
@@ -286,57 +375,60 @@ const AdminHomepage = () => {
           </CardBody>
         </Card>
       </div>
-      <div className="md:flex">
-        <Card className="dark:bg-slate-700 md:mx-2 my-2 xl:max-w-sm rounded-xl w-full p-3">
-          <DonutChart 
-            data={
-              [{
-                Status: "Pending ",
-                Posts: posts.filter(post => post.status == "open").length
-              },
-              {
-                Status: "Closed ",
-                Posts: posts.filter(post => post.status == "closed").length
-              },
-              {
-                Status: "Completed ",
-                Posts: posts.filter(post => post.status == "completed").length
-              }]
-            }
-            index="Status"
-            category="Posts"
-            variant="donut"
-            colors={[
-              'white', 'black', '#6b7280']}
-          />
-        </Card>
-        <Card className="bg-white md:mx-2 my-2 xl:max-w-sm rounded-xl w-full p-3">
-          <DonutChart
-            data={
-              [{
-                Role: "Default",
-                Users: users.filter(user => user.role == "user").length
-              },
-              {
-                Role: "Admin",
-                Users: users.filter(user => user.role == "admin").length
-              },
-              {
-                Role: "Banned",
-                Users: users.filter(user => user.role == "banned").length
-              }]
-            }
+
+
+      <div className="md:flex ">
+
+        {/* Users Donut chart */}
+        <Card className="dark:bg-slate-800 md:mx-2 my-2 xl:max-w-sm rounded-xl w-full p-3 content-center">
+          <DonutChart className="dark:invert"
+            data={dataUsersDonut}
+            valueFormatter={valueFormatterUsers} //currently formats total as well
+            label={(users.length).toString()}
             index="Role"
             category="Users"
             variant="donut"
-            colors={[
-              'white',
-              'slate',
-              'red'
-            ]}
+            colors={usersDonutCol}
+            showAnimation={true}
+            customTooltip={customTooltip}
           />
+          <Legend categories={['Default', 'Admins', 'Banned']}
+            colors={usersDonutCol} className="max-w-xs dark:invert" />
         </Card>
 
+        {/* Reports Donut chart */}
+        <Card className="dark:bg-indigo-950 md:mx-2 my-2 xl:max-w-sm rounded-xl w-full p-3 content-center">
+          <DonutChart className="dark:invert"
+            data={dataReportsDonut}
+            valueFormatter={valueFormatterReports} //currently formats total as well
+            label={(reports.length).toString()}
+            index="Status"
+            category="Reports"
+            variant="donut"
+            colors={reportsDonutCol}
+            showAnimation={true}
+            customTooltip={customTooltip}
+          />
+          <Legend categories={['Open', 'Closed']}
+            colors={reportsDonutCol} className="max-w-xs dark:invert" />
+        </Card>
+
+        {/* Posts Donut chart */}
+        <Card className="dark:bg-yellow-850 md:mx-2 my-2 xl:max-w-sm rounded-xl w-full p-3">
+          <DonutChart className="dark:invert"
+            data={dataPostsDonut}
+            valueFormatter={valueFormatterPosts} //currently formats total as well
+            label={(posts.length).toString()}
+            index="Status"
+            category="Posts"
+            variant="donut"
+            colors={postsDonutCol}
+            showAnimation={true}
+            customTooltip={customTooltip}
+          />
+          <Legend categories={['Pending', 'Closed', 'Completed']}
+            colors={postsDonutCol} className="max-w-xs dark:invert" />
+        </Card>
       </div>
       {/* User Summary */}
       {message && <p className="text-center text-xl m-2">{message}</p>}
