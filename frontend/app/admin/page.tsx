@@ -384,7 +384,7 @@ const AdminHomepage = () => {
           <DonutChart className="dark:invert"
             data={dataUsersDonut}
             valueFormatter={valueFormatterUsers} //currently formats total as well
-            label={(users.length).toString()}
+            label={(users.length).toString()+" Users"}
             index="Role"
             category="Users"
             variant="donut"
@@ -401,7 +401,7 @@ const AdminHomepage = () => {
           <DonutChart className="dark:invert"
             data={dataReportsDonut}
             valueFormatter={valueFormatterReports} //currently formats total as well
-            label={(reports.length).toString()}
+            label={(reports.length).toString()+ " Reports"}
             index="Status"
             category="Reports"
             variant="donut"
@@ -418,7 +418,7 @@ const AdminHomepage = () => {
           <DonutChart className="dark:invert"
             data={dataPostsDonut}
             valueFormatter={valueFormatterPosts} //currently formats total as well
-            label={(posts.length).toString()}
+            label={(posts.length).toString()+" Posts"}
             index="Status"
             category="Posts"
             variant="donut"
