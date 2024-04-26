@@ -14,9 +14,11 @@ import { HttpCodes } from "@/types/HttpCodes";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
 import { set } from "react-hook-form";
 import { Input } from "@nextui-org/input";
+import { DonutChart } from "@tremor/react";
 
 
 axios.defaults.withCredentials = true;
+
 
 const AdminHomepage = () => {
   const [amLoggedIn, setAmLoggedIn] = useState<boolean>(false);
@@ -284,7 +286,58 @@ const AdminHomepage = () => {
           </CardBody>
         </Card>
       </div>
+      <div className="md:flex">
+        <Card className="dark:bg-slate-700 md:mx-2 my-2 xl:max-w-sm rounded-xl w-full p-3">
+          <DonutChart 
+            data={
+              [{
+                Status: "Pending ",
+                Posts: posts.filter(post => post.status == "open").length
+              },
+              {
+                Status: "Closed ",
+                Posts: posts.filter(post => post.status == "closed").length
+              },
+              {
+                Status: "Completed ",
+                Posts: posts.filter(post => post.status == "completed").length
+              }]
+            }
+            index="Status"
+            category="Posts"
+            variant="donut"
+            colors={[
+              'white', 'black', '#6b7280']}
+          />
+        </Card>
+        <Card className="bg-white md:mx-2 my-2 xl:max-w-sm rounded-xl w-full p-3">
+          <DonutChart
+            data={
+              [{
+                Role: "Default",
+                Users: users.filter(user => user.role == "user").length
+              },
+              {
+                Role: "Admin",
+                Users: users.filter(user => user.role == "admin").length
+              },
+              {
+                Role: "Banned",
+                Users: users.filter(user => user.role == "banned").length
+              }]
+            }
+            index="Role"
+            category="Users"
+            variant="donut"
+            colors={[
+              'white',
+              'slate',
+              'red'
+            ]}
+          />
+        </Card>
 
+      </div>
       {/* User Summary */}
       {message && <p className="text-center text-xl m-2">{message}</p>}
       {error && <p className="text-red-600 text-center text-xl m-2">{error}</p>}
