@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from 
 import { siteConfig } from "@/config/site";
 import { title } from "@/components/primitives";
 import { Card, CardBody } from "@nextui-org/card";
-import { CubeIcon, FlagIcon, PencilSquareIcon, UserCircleIcon } from "@heroicons/react/24/solid";
+import { CubeIcon, FlagIcon, MapPinIcon, PencilSquareIcon, UserCircleIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import { HttpCodes } from "@/types/HttpCodes";
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/modal";
@@ -24,7 +24,15 @@ const AdminHomepage = () => {
   const [amLoggedIn, setAmLoggedIn] = useState<boolean>(false);
 
   const [users, setUsers] = useState<User[] | never[]>([]);
+
   const [posts, setPosts] = useState<Post[] | never[]>([]);
+  const [postsSources, setPostsSources] = useState<{
+    [key: string]: number;
+  }>({});
+  const [postsDestinations, setPostsDestinations] = useState<{
+    [key: string]: number;
+  }>({});
+
   const [error, setError] = useState<string>("");
   const [reports, setReports] = useState<Report[] | never[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -71,6 +79,22 @@ const AdminHomepage = () => {
         if (res.status == HttpCodes.OK) {
           setAmLoggedIn(true);
           setPosts(res.data.data);
+
+          // Make a list of all sources and destinations
+          let sources: {
+            [key: string]: number;
+          } = {};
+          let destinations: {
+            [key: string]: number;
+          } = {};
+          for (let post of res.data.data) {
+            if (!sources[post.source]) sources[post.source] = 0;
+            if (!destinations[post.destination]) destinations[post.destination] = 0;
+            sources[post.source] += 1;
+            destinations[post.destination] += 1;
+          }
+          setPostsSources(sources);
+          setPostsDestinations(destinations);
         } else if (res.status == HttpCodes.INTERNAL_SERVER_ERROR) {
           console.error(res.data.message);
         }
@@ -376,6 +400,63 @@ const AdminHomepage = () => {
         </Card>
       </div>
 
+      <div className="md:flex">
+
+        {/* Sources Card */}
+        <Card className="md:mx-2 my-2 xl:w-1/2 bg-warning rounded-xl shadow-md p-3 w-full">
+          <CardBody className="py-5">
+            <div className="flex gap-2.5">
+              <MapPinIcon className="w-6 h-6" />
+              <div className="flex flex-col">
+                <span className="text-white">Top Sources</span>
+              </div>
+            </div>
+            <div className="flex gap-2.5 py-2 items-center">
+              <span className="text-white text-xl font-semibold">Unique: {Object.keys(postsSources).length}</span>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-6">
+                {Object.keys(postsSources).slice(0, 5).map((source, index) => (
+                  <div key={index}>
+                    <div>
+                      <span className="text-md text-white">{source.toUpperCase()}: {postsSources[source]}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+
+        {/* Destinations Card */}
+        <Card className="md:mx-2 my-2 xl:w-1/2 bg-success rounded-xl shadow-md p-3 w-full">
+          <CardBody className="py-5">
+            <div className="flex gap-2.5">
+              <MapPinIcon className="w-6 h-6" />
+              <div className="flex flex-col">
+                <span className="text-white">Top Destinations</span>
+              </div>
+            </div>
+            <div className="flex gap-2.5 py-2 items-center">
+              <span className="text-white text-xl font-semibold">Unique: {Object.keys(postsDestinations).length}</span>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-6">
+                {Object.keys(postsDestinations).slice(0, 5).map((destination, index) => (
+                  <div key={index}>
+                    <div>
+                      <span className="text-md text-white">{destination.toUpperCase()}: {postsDestinations[destination]}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </CardBody>
+        </Card>
+
+      </div>
 
       <div className="md:flex ">
 
@@ -384,7 +465,7 @@ const AdminHomepage = () => {
           <DonutChart className="dark:invert"
             data={dataUsersDonut}
             valueFormatter={valueFormatterUsers} //currently formats total as well
-            label={(users.length).toString()+" Users"}
+            label={(users.length).toString() + " Users"}
             index="Role"
             category="Users"
             variant="donut"
@@ -401,7 +482,7 @@ const AdminHomepage = () => {
           <DonutChart className="dark:invert"
             data={dataReportsDonut}
             valueFormatter={valueFormatterReports} //currently formats total as well
-            label={(reports.length).toString()+ " Reports"}
+            label={(reports.length).toString() + " Reports"}
             index="Status"
             category="Reports"
             variant="donut"
@@ -418,7 +499,7 @@ const AdminHomepage = () => {
           <DonutChart className="dark:invert"
             data={dataPostsDonut}
             valueFormatter={valueFormatterPosts} //currently formats total as well
-            label={(posts.length).toString()+" Posts"}
+            label={(posts.length).toString() + " Posts"}
             index="Status"
             category="Posts"
             variant="donut"
