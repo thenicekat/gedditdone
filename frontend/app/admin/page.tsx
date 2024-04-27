@@ -400,63 +400,92 @@ const AdminHomepage = () => {
         </Card>
       </div>
 
-      <div className="md:flex">
-
-        {/* Sources Card */}
-        <Card className="md:mx-2 my-2 xl:w-1/2 bg-warning rounded-xl shadow-md p-3 w-full">
-          <CardBody className="py-5">
-            <div className="flex gap-2.5">
-              <MapPinIcon className="w-6 h-6" />
-              <div className="flex flex-col">
-                <span className="text-white">Top Sources</span>
-              </div>
+      {/* Top Users Card */}
+      <Card className="my-2 w-full bg-gray-700 rounded-xl shadow-md p-3">
+        <CardBody className="py-5">
+          <div className="flex gap-2.5">
+            <MapPinIcon className="w-6 h-6" />
+            <div className="flex flex-col">
+              <span className="text-white">Top Users</span>
             </div>
-            <div className="flex gap-2.5 py-2 items-center">
-              <span className="text-white text-xl font-semibold">Unique: {Object.keys(postsSources).length}</span>
-            </div>
+          </div>
 
-            <div>
-              <div className="flex items-center gap-6">
-                {Object.keys(postsSources).slice(0, 5).map((source, index) => (
-                  <div key={index}>
-                    <div>
-                      <span className="text-md text-white">{source.toUpperCase()}: {postsSources[source]}</span>
-                    </div>
+          <div className="py-2 ">
+            <div className="flex flex-col md:flex-row items-center gap-6">
+              {users.sort((a, b) => - a.karmaPoints + b.karmaPoints).slice(0, 5).map((user, index) => (
+                <div key={index}>
+                  <div className="flex flex-col gap-2">
+                    <img
+                      src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user.email}&size=40&radius=0&scale=100`}
+                      className='rounded-full border-2 w-32 h-32 border-green-500 mx-auto'
+                      alt="avatar"
+                    />
+
+                    <p className='text-xl'>Name: {user.name}</p>
+                    <p className='text-xl'>Karma Points: {user.karmaPoints}</p>
                   </div>
-                ))}
-              </div>
-            </div>
-          </CardBody>
-        </Card>
 
-        {/* Destinations Card */}
-        <Card className="md:mx-2 my-2 xl:w-1/2 bg-success rounded-xl shadow-md p-3 w-full">
-          <CardBody className="py-5">
-            <div className="flex gap-2.5">
-              <MapPinIcon className="w-6 h-6" />
-              <div className="flex flex-col">
-                <span className="text-white">Top Destinations</span>
-              </div>
+                </div>
+              ))}
             </div>
-            <div className="flex gap-2.5 py-2 items-center">
-              <span className="text-white text-xl font-semibold">Unique: {Object.keys(postsDestinations).length}</span>
-            </div>
+          </div>
+        </CardBody>
+      </Card>
 
-            <div>
-              <div className="flex items-center gap-6">
-                {Object.keys(postsDestinations).slice(0, 5).map((destination, index) => (
-                  <div key={index}>
-                    <div>
-                      <span className="text-md text-white">{destination.toUpperCase()}: {postsDestinations[destination]}</span>
-                    </div>
+      {/* Sources Card */}
+      <Card className="my-2 w-full bg-warning rounded-xl shadow-md p-3">
+        <CardBody className="py-5">
+          <div className="flex gap-2.5">
+            <MapPinIcon className="w-6 h-6" />
+            <div className="flex flex-col">
+              <span className="text-white">Top Sources</span>
+            </div>
+          </div>
+          <div className="flex gap-2.5 py-2 items-center">
+            <span className="text-white text-xl font-semibold">Unique: {Object.keys(postsSources).length}</span>
+          </div>
+
+          <div>
+            <div className="flex items-center gap-6">
+              {Object.keys(postsSources).slice(0, 5).map((source, index) => (
+                <div key={index}>
+                  <div>
+                    <span className="text-md text-white">{source.toUpperCase()}: {postsSources[source]}</span>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          </CardBody>
-        </Card>
+          </div>
+        </CardBody>
+      </Card>
 
-      </div>
+      {/* Destinations Card */}
+      <Card className="my-2 w-full bg-success rounded-xl shadow-md p-3">
+        <CardBody className="py-5">
+          <div className="flex gap-2.5">
+            <MapPinIcon className="w-6 h-6" />
+            <div className="flex flex-col">
+              <span className="text-white">Top Destinations</span>
+            </div>
+          </div>
+          <div className="flex gap-2.5 py-2 items-center">
+            <span className="text-white text-xl font-semibold">Unique: {Object.keys(postsDestinations).length}</span>
+          </div>
+
+          <div>
+            <div className="flex items-center gap-6">
+              {Object.keys(postsDestinations).slice(0, 5).map((destination, index) => (
+                <div key={index}>
+                  <div>
+                    <span className="text-md text-white">{destination.toUpperCase()}: {postsDestinations[destination]}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </CardBody>
+      </Card>
+
 
       <div className="md:flex ">
 
