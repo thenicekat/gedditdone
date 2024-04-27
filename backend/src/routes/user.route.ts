@@ -48,6 +48,7 @@ userRouter.get("/get", async (req, res) => {
             error: false,
             message: "User data fetched successfully",
             data: {
+                id: userData.id,
                 email: userData.email,
                 phoneNumber: userData.phoneNumber,
                 name: userData.name,

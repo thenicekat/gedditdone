@@ -42,7 +42,7 @@ export default function PostComponent({
         <Card className="w-full m-3">
             <CardHeader className="flex gap-3 flex-row">
                 <img
-                    src={`https://api.dicebear.com/7.x/notionists/svg?seed=${author.email}&size=40&radius=0&scale=100`}
+                    src={`https://api.dicebear.com/7.x/notionists/svg?seed=${author.id}&size=40&radius=0&scale=100`}
                     alt="avatar"
                 />
                 <div className="flex flex-col">

@@ -14,6 +14,7 @@ import { Chip } from "@nextui-org/chip";
 import React from "react";
 
 type UserProfile = {
+    id: string;
     name: string;
     email: string;
     phoneNumber: string;
@@ -122,7 +123,7 @@ export default function UserProfile() {
                 control={control}
             >
                 <img
-                    src={`https://api.dicebear.com/7.x/notionists/svg?seed=${userData?.email}&size=50&radius=0`}
+                    src={`https://api.dicebear.com/7.x/notionists/svg?seed=${userData?.id}&size=50&radius=0`}
                     className='rounded-full border-2 w-32 h-32 border-green-500 mx-auto'
                     alt="avatar"
                 />

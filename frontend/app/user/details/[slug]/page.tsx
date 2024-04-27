@@ -65,7 +65,7 @@ const UserDetailsPage = ({ params }: Props) => {
                             <div className="flex flex-col gap-2 m-2">
                                 <div className="flex flex-col gap-2">
                                     <img
-                                        src={`https://api.dicebear.com/7.x/notionists/svg?seed=${userDetails.email}&size=50&radius=0`}
+                                        src={`https://api.dicebear.com/7.x/notionists/svg?seed=${userDetails.id}&size=50&radius=0`}
                                         className='rounded-full border-2 w-32 h-32 border-green-500 mx-auto'
                                         alt="avatar"
                                     />

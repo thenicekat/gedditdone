@@ -416,7 +416,7 @@ const AdminHomepage = () => {
                 <div key={index}>
                   <div className="flex flex-col gap-2">
                     <img
-                      src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user.email}&size=40&radius=0&scale=100`}
+                      src={`https://api.dicebear.com/7.x/notionists/svg?seed=${user.id}&size=40&radius=0&scale=100`}
                       className='rounded-full border-2 w-32 h-32 border-green-500 mx-auto'
                       alt="avatar"
                     />
