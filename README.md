@@ -1,5 +1,12 @@
 # Geddit
 
+## Contributors
+1. Divyateja Pasupuleti - 2021A7PS0075H
+2. Prachi Shah - 2021A7PS2589H
+3. Adarsh Das - 2021A7PS1511H
+4. Uday Sudani - 2022A7PS0136H
+5. Manan Gupta - The guy who dropped project half way through
+
 ## Problem Statement
 
 As students, all of us are lazy. Due to immense distances between the hostels and the stores, it is often difficult to get things from various places in the campus. We often find it hard to reach out to friends who might be in the vicinity of the respective store in order to source the item and these actions require a lot of effort.
