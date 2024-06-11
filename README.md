@@ -1,6 +1,7 @@
 # Geddit
 
 ## Contributors
+
 1. Divyateja Pasupuleti - 2021A7PS0075H
 2. Prachi Shah - 2021A7PS2589H
 3. Adarsh Das - 2021A7PS1511H
@@ -23,8 +24,10 @@ This project makes it possible to connect with students who are in the particula
 - Administrators will be able to see reports against other students and on the basis of the report they can penalize the student.
 
 ## CONTRIBUTING
+
 - Clone the repository using `git clone`
 - You don't have to fork it
+- Env is stored in bitwarden
 - Create a new branch for every feature you are working on and name it with the feature: `git checkout -b user-profile`
 - Push code to that branch and create a Pull Request
 - Ensure you have not pushed any build files and runtime files
