@@ -6,7 +6,6 @@
 2. Prachi Shah - 2021A7PS2589H
 3. Adarsh Das - 2021A7PS1511H
 4. Uday Sudani - 2022A7PS0136H
-5. Manan Gupta - The guy who dropped project half way through
 
 ## Problem Statement
 
